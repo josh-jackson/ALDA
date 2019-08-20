@@ -4,13 +4,7 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2019-08-29T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/lectures/</loc>
-    <lastmod>2019-08-29T00:00:00+00:00</lastmod>
+    <lastmod>2019-08-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -20,13 +14,19 @@
   </url>
   
   <url>
-    <loc>/lectures/02-lda-basics/</loc>
-    <lastmod>2019-08-29T00:00:00+00:00</lastmod>
+    <loc>/post/welcome-to-longitudinal-data-analysis/</loc>
+    <lastmod>2019-08-14T17:22:25-05:00</lastmod>
   </url>
   
   <url>
-    <loc>/post/welcome-to-longitudinal-data-analysis/</loc>
-    <lastmod>2019-08-14T17:22:25-05:00</lastmod>
+    <loc>/lectures/</loc>
+    <lastmod>2019-08-15T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/lectures/02-lda-basics/</loc>
+    <lastmod>2019-08-15T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -53,6 +53,11 @@
   </url>
   
   <url>
+    <loc>/lectures/2019-08-14-lecture-3-test/</loc>
+    <lastmod>2019-08-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/workshops/workshop-1/</loc>
     <lastmod>2019-08-14T17:04:12-05:00</lastmod>
   </url>
@@ -61,11 +66,6 @@
     <loc>/workshops/</loc>
     <lastmod>2019-08-14T17:04:12-05:00</lastmod>
     <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/lectures/lecture-3-test/</loc>
-    <lastmod>2019-08-14T18:03:43-05:00</lastmod>
   </url>
   
   <url>

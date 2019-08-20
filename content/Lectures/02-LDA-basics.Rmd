@@ -3,7 +3,7 @@ title: "Week 1"
 subtitle: "LDA basics"
 summary: "LDA basics"
 author: "Josh Jackson"
-date: '2019-08-29'
+date: '2019-08-15'
 type: post
 output:
   blogdown::html_page:
