@@ -1,0 +1,99 @@
+
+
+
+<div id="conditional-predictors-in-growth-models" class="section level1">
+<h1>Conditional Predictors in growth models</h1>
+<div id="intercept-effects" class="section level2">
+<h2>Intercept effects</h2>
+<p>level 1:
+<span class="math display">\[ {Y}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \varepsilon_{ij} \]</span>
+Level 2:
+<span class="math display">\[ {\beta}_{0j} = \gamma_{00} + \gamma_{01}G_{j} +   U_{0j}\]</span></p>
+<p><span class="math display">\[ {\beta}_{1j} = \gamma_{10} + U_{1j} \]</span></p>
+<p>Combined
+<span class="math display">\[ {Y}_{ij} = \gamma_{00} + \gamma_{01}G_{j}+  \gamma_{10} (Time_{ij}) + U_{0j} + U_{1j}(Time_{ij}) + \varepsilon_{ij} \]</span></p>
+<p><span class="math display">\[ \begin{pmatrix} {U}_{0j} \\ {U}_{1j} \end{pmatrix}
+\sim \mathcal{N} \begin{pmatrix} 
+  0,     &amp; \tau_{00}^{2} &amp; \tau_{01}\\ 
+  0, &amp; \tau_{01} &amp; \tau_{10}^{2}
+\end{pmatrix} \]</span></p>
+<p><span class="math display">\[ {R}_{ij} \sim \mathcal{N}(0, \sigma^{2})  \]</span></p>
+<div id="seperatinng-these-into-intercept-and-slope" class="section level3">
+<h3>Seperatinng these into intercept and slope</h3>
+<p><span class="math display">\[ {Y}_{ij} = [\gamma_{00} + \gamma_{01}G_{j}+ U_{0j}]  + [(\gamma_{10}  + U_{1j})(Time_{ij})] + \varepsilon_{ij} \]</span></p>
+<p>Understanding how to re-write the equation will help for calculating estimated scores for your predictors in addition to being able to interpret the coefficients.</p>
+<p>For example, what would differ between the two equations for group coded = 0 versus a group = 1?</p>
+</div>
+</div>
+<div id="slope-and-intercept-effects" class="section level2">
+<h2>Slope and Intercept effects</h2>
+<p>level 1:
+<span class="math display">\[ {Y}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \varepsilon_{ij} \]</span>
+Level 2:
+<span class="math display">\[ {\beta}_{0j} = \gamma_{00} + \gamma_{01}G_{j} +   U_{0j}\]</span></p>
+<p><span class="math display">\[ {\beta}_{1j} = \gamma_{10} + \gamma_{11}G_{j} + U_{1j} \]</span></p>
+<p>Notice that when we combine Level 1 and Level 2, the intercept effects predictor becomes an interaction with time. This is called “cross level” interactions. Anytime you have a slope predictor that will be an interaction with time. I.e. we are asking does group status differ in their trajectory across time. One of these is a level 2 predictor and one is a level 1 predictor, thus a “cross level” interaction.</p>
+<p>Combined
+<span class="math display">\[ {Y}_{ij} = \gamma_{00} + \gamma_{01}G_{j}+  \gamma_{10} (Time_{ij}) + \gamma_{11}(G_{j}*Time_{ij}) +  U_{0j} + U_{1j}(Time_{ij}) + \varepsilon_{ij} \]</span></p>
+<p><span class="math display">\[ \begin{pmatrix} {U}_{0j} \\ {U}_{1j} \end{pmatrix}
+\sim \mathcal{N} \begin{pmatrix} 
+  0,     &amp; \tau_{00}^{2} &amp; \tau_{01}\\ 
+  0, &amp; \tau_{01} &amp; \tau_{10}^{2}
+\end{pmatrix} \]</span></p>
+<p><span class="math display">\[ {R}_{ij} \sim \mathcal{N}(0, \sigma^{2})  \]</span></p>
+<p>Alternative combined
+<span class="math display">\[ {Y}_{ij} = [\gamma_{00} + U_{0j} +\gamma_{01}G_{j}] + [(\gamma_{10}  + \gamma_{11}G_{j}+  U_{1j})(Time_{ij})] + \varepsilon_{ij} \]</span></p>
+<div id="equations-necessary-for-plotting" class="section level3">
+<h3>Equations necessary for plotting</h3>
+<p>The above equation can be simplified to get rid of the random effects to focus only on fixed effects portion. This is what you would use to get an estimated trajectory.</p>
+<p><span class="math display">\[ \hat{Y}_{ij} = [\gamma_{00} +\gamma_{01}G_{j}] + [(\gamma_{10}  + \gamma_{11}G_{j})(Time_{ij})] \]</span></p>
+</div>
+</div>
+<div id="need-for-thinking-about-scaling-your-predictors" class="section level2">
+<h2>Need for thinking about scaling your predictors</h2>
+<p>Redux of how to interpret lower order terms in an interaction regression model. Changing the scale of your predictors changes the interpretation of your model. We already saw this with the intercept and how we scaled time. Things will be the same here but more so as you can see in the alternative combined equation.</p>
+<p>The intercept is always interpretted when the predictors are at zero. How can we interpret <span class="math inline">\(\beta_{0j}\)</span> if there is a level 1 predictor?</p>
+<p>The same logic applies for <span class="math inline">\(\beta_{1j}\)</span> in that one would want the fixed parameters to represent the average effect.</p>
+<p>How to center? You dont want to necessarily overweight people with more time points, so you should do centering in the wide format unless people have the same number of assessment points.</p>
+</div>
+<div id="time-varying-covariates-tvcs" class="section level2">
+<h2>Time-varying covariates (TVCs)</h2>
+<p>These are predictors that are assessed at level 1, which repeate. Note that there are some variables that are inherently level 2 (e.g. handedness), some that make sense more as a level 1 (e.g., mood) and some that could be considered either depending on your research question and/or your data (e.g. income). The latter type could concievably change across time (And thus be appropriate for a level 1 variable; tvc) but may not change at the rate of your construct or not be important.</p>
+<p>We will go into these in more depth in further weeks. The two points I want to discuss now are:</p>
+<ol style="list-style-type: decimal">
+<li>These can be treated as another predictor with the effect of “controlling” for some TVC. Thus the regression coefficents in the model are conditional on this covariate.</li>
+</ol>
+<p>For example, if you had group status (yes, no) as your TVC the fixed effect for this would indicate the difference in slope for the two conditions. The slope coefficient would be that average slope (depending on how the covariate is scaled)</p>
+<ol start="2" style="list-style-type: decimal">
+<li>The level 1 and level 2 models are not that different from previous forms. Here is an example model with a TVC.</li>
+</ol>
+<p>level 1:
+<span class="math display">\[ {Y}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}Job_{ij} +\varepsilon_{ij} \]</span>
+Level 2:</p>
+<p><span class="math display">\[ {\beta}_{0j} = \gamma_{00} +    U_{0j}\]</span></p>
+<p><span class="math display">\[ {\beta}_{1j} = \gamma_{10} + U_{1j} \]</span>
+<span class="math display">\[ {\beta}_{2j} = \gamma_{20} \]</span></p>
+<ol start="3" style="list-style-type: decimal">
+<li>It is not necessary to specify a random effect for the TVC. Doing so would suggest that the differences in group membership within a person is not the same across people. For example, the effect of jobloss may effect some peoples development but not others.</li>
+</ol>
+<p>The key question is whether or not we think the variability across people in their TVC effects are systematic or not. If they are systematic, then maybe it is important to predict them by another variable. Can we go further and also fit a random effects term? This is a tricky issue in that this adds an additional parameter to the random effects and thus increases the number of covariances estimated. Often our data are not large enough to estimate the increased number of parameters and results in non-convergence.</p>
+<ol start="4" style="list-style-type: decimal">
+<li>The introduction of the TVC can reduce <span class="math inline">\(\tau^2_{U_{0j}}\)</span>, <span class="math inline">\(\tau^2_{U_{1j}}\)</span> and <span class="math inline">\(\varepsilon_{ij}\)</span>. Normal time-invariant covariates only reduce the between person variance in intercept and slope and cannot account for the within person variance.</li>
+</ol>
+<p>But, but, because you are adding a new variable that changes the interpretation of the gamma terms, you may actually get increases in your variance components. As a result, it is difficult to directly compare models that have TVCs and those that do not.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>You may need to seperate between person and within person effects for TVC. This is done through various centering techniques.</li>
+</ol>
+</div>
+<div id="now-you-try" class="section level2">
+<h2>Now you try</h2>
+<ol style="list-style-type: decimal">
+<li><p>Run a series of models using a time-invariant nominal covariate. a) where the covariate only predicts the intercept b) predicts both intercept and slope c) is rescaled eg centering. For all models, how does your model change from model to model. What is your final model?</p></li>
+<li><p>Introduce a time-invariant continuous covariate and run models a-c from #1.</p></li>
+<li><p>Graph both of your final models for the continuous and nominal models above.</p></li>
+<li><p>Calculate confidence intervals around your estimates for your final models</p></li>
+<li><p>Include both types of covariates in a single model. How does your interpretation of parameters change?</p></li>
+<li><p>If you have one available, introduce a time-varying covariate.</p></li>
+</ol>
+</div>
+</div>

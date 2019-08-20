@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Syllabuses | Applied Longitudinal Data Analysis</title>
+    <link>/syllabus/</link>
+      <atom:link href="/syllabus/index.xml" rel="self" type="application/rss+xml" />
+    <description>Syllabuses</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>/img/icon-192.png</url>
+      <title>Syllabuses</title>
+      <link>/syllabus/</link>
+    </image>
+    
+    <item>
+      <title>Syllabus</title>
+      <link>/syllabus/01-syllabus/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/syllabus/01-syllabus/</guid>
+      <description>
+
+
+&lt;p&gt;&lt;strong&gt;Instructor&lt;/strong&gt;: Joshua Jackson&lt;br /&gt;
+&lt;strong&gt;Office&lt;/strong&gt;: 315B&lt;br /&gt;
+&lt;strong&gt;Office hours&lt;/strong&gt;: 1-2 Wednesday and by appointment&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TA&lt;/strong&gt;: Emorie Beck
+&lt;strong&gt;Office hours&lt;/strong&gt;: TBD&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Course Description&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This course covers modern methods of handling longitudinal, repeated measures. The class will introduce the rationale of measuring change and stability over time to study phenomena, as well as how within-person designs can increase statistical power and precision compared to more traditional designs. Most the course will use multi-level models and latent (growth) curve models to specify patterns of change across time. Additional topics include: visualization, measurement invariance, time-to- event models and power. PREREQ: Use of R will be required, Familiarity with MLM and/or Structural Equation Models.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Class textbook&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Readings will be provided&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Structure of class&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Each class will cover a specific type of longitudinal model. During that class, I will provide an overview of the important considerations or motivation for this analysis. This will take the first half of the class or a little longer. The final hour of class will be devoted to walking through code and results.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Grading&lt;/strong&gt;
+Grading consists of 3 aspects:
+1. Weekly projects uploaded to github (70% of grade)
+2. Final project covering the method and results of your main longitudinal hypothesis(es) (30%)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Schedule&lt;/strong&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;9%&#34; /&gt;
+&lt;col width=&#34;9%&#34; /&gt;
+&lt;col width=&#34;39%&#34; /&gt;
+&lt;col width=&#34;28%&#34; /&gt;
+&lt;col width=&#34;13%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th&gt;Week&lt;/th&gt;
+&lt;th&gt;Date&lt;/th&gt;
+&lt;th&gt;Topic&lt;/th&gt;
+&lt;th&gt;Workshop&lt;/th&gt;
+&lt;th&gt;Homework&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;8/29&lt;/td&gt;
+&lt;td&gt;Motivation, terms, concepts, and graphing&lt;/td&gt;
+&lt;td&gt;Data Descriptives and plotting&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;9/5&lt;/td&gt;
+&lt;td&gt;Growth curve basics; MLM in R: packages and procedures&lt;/td&gt;
+&lt;td&gt;tidyr&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;9/12&lt;/td&gt;
+&lt;td&gt;Conditional (Level 1 and 2 predictors) MLM models&lt;/td&gt;
+&lt;td&gt;purrr&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;9/19&lt;/td&gt;
+&lt;td&gt;Polynomial, piecewise and spline models&lt;/td&gt;
+&lt;td&gt;plotting redux&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;9/26&lt;/td&gt;
+&lt;td&gt;Three level and group models&lt;/td&gt;
+&lt;td&gt;brms&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;td&gt;10/03&lt;/td&gt;
+&lt;td&gt;Intensive data analysis/within person fluctuations p1&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;td&gt;10/10&lt;/td&gt;
+&lt;td&gt;Intensive data analysis/within person fluctuations p2&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;10/17&lt;/td&gt;
+&lt;td&gt;SEM and simple path models&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;9&lt;/td&gt;
+&lt;td&gt;10/24&lt;/td&gt;
+&lt;td&gt;Latent Grown (curve) Models&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;10/31&lt;/td&gt;
+&lt;td&gt;MI and Second order Model&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;11&lt;/td&gt;
+&lt;td&gt;11/7&lt;/td&gt;
+&lt;td&gt;Multiple group models&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;12&lt;/td&gt;
+&lt;td&gt;11/14&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Class canceled&lt;/em&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;13&lt;/td&gt;
+&lt;td&gt;11/21&lt;/td&gt;
+&lt;td&gt;Flexible SEM models (LCM, STATE-TRAIT; ALT-SR)&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;14&lt;/td&gt;
+&lt;td&gt;11/28&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Tofurkey day&lt;/em&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;15&lt;/td&gt;
+&lt;td&gt;12/5&lt;/td&gt;
+&lt;td&gt;Mixture Models&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Other topics: Longitudinal mediation (and multilevel mediation), two wave data, experimental approaches&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

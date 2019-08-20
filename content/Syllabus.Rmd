@@ -1,0 +1,52 @@
+---
+title: "Syllabus"
+author: "Josh Jackson"
+---
+
+
+
+**Instructor**: Joshua Jackson  
+**Office**: 315B  
+**Office hours**: 1-2 Wednesday and by appointment  
+
+**TA**: Emorie Beck
+**Office hours**: TBD
+
+**Course Description** 
+
+This course covers modern methods of handling longitudinal, repeated measures. The class will introduce the rationale of measuring change and stability over time to study phenomena, as well as how within-person designs can increase statistical power and precision compared to more traditional designs. Most the course will use multi-level models and latent (growth) curve models to specify patterns of change across time. Additional topics include: visualization, measurement invariance, time-to- event models and power. PREREQ: Use of R will be required, Familiarity with MLM and/or Structural Equation Models.
+
+**Class textbook** 
+
+Readings will be provided
+
+**Structure of class**
+
+Each class will cover a specific type of longitudinal model. During that class, I will provide an overview of the important considerations or motivation for this analysis. This will take the first half of the class or a little longer. The final hour of class will be devoted to walking through code and results.  
+
+**Grading** 
+Grading consists of 3 aspects: 
+1. Weekly projects uploaded to github (70% of grade)
+2. Final project covering the method and results of your main longitudinal hypothesis(es) (30%)
+
+**Schedule**
+
+| Week | Date  |  Topic                      | Workshop             | Homework |
+-------|-------|------------------------------|----------------------|----------|
+| 1    | 8/29  | Motivation, terms, concepts, and graphing     |  Data Descriptives and plotting     |                  |
+| 2    | 9/5    | Growth curve basics; MLM in R: packages and procedures | tidyr |                      |
+| 3    | 9/12   |  Conditional (Level 1 and 2 predictors) MLM models  | purrr  |                      |
+| 4    | 9/19   |  Polynomial, piecewise and spline models   |  plotting redux     |        |
+| 5    | 9/26   |  Three level and group models       |   brms   |                      |
+| 6    | 10/03  | Intensive data analysis/within person fluctuations p1 | |                      |
+| 7    | 10/10  | Intensive data analysis/within person fluctuations p2 |  |                      |
+| 8    | 10/17   |   SEM and simple path models                    |         |         |
+| 9    | 10/24  | Latent Grown (curve) Models   |              |                      |
+| 10   | 10/31  |   MI and Second order Model |                    |                      |
+| 11   | 11/7  |    Multiple group models |             |                      |
+| 12   | 11/14   |  *Class canceled*     |                   |                      |
+| 13   | 11/21  |  Flexible SEM models (LCM, STATE-TRAIT; ALT-SR) |           |                      |
+| 14   | 11/28  |  *Tofurkey day*           |                          |                      |
+| 15   | 12/5  |  Mixture Models   |      |                |
+
+Other topics: Longitudinal mediation (and multilevel mediation), two wave data, experimental approaches 

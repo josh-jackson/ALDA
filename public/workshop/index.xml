@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Workshops | Applied Longitudinal Data Analysis</title>
+    <link>/workshop/</link>
+      <atom:link href="/workshop/index.xml" rel="self" type="application/rss+xml" />
+    <description>Workshops</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 14 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/icon-192.png</url>
+      <title>Workshops</title>
+      <link>/workshop/</link>
+    </image>
+    
+    <item>
+      <title>Workshop #2</title>
+      <link>/workshop/workshop-2/</link>
+      <pubDate>Wed, 14 Aug 2019 00:00:00 +0000</pubDate>
+      <guid>/workshop/workshop-2/</guid>
+      <description>
+
+
+&lt;p&gt;This is the second workshop&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
