@@ -24,7 +24,7 @@
   
     
   
-  <meta name="description" content="This is the first workshop">
+  <meta name="description" content="Data and workflow">
 
   
   <link rel="alternate" hreflang="en-us" href="/workshops/workshop-1/">
@@ -110,7 +110,7 @@
   <meta property="og:site_name" content="Applied Longitudinal Data Analysis">
   <meta property="og:url" content="/workshops/workshop-1/">
   <meta property="og:title" content="Workshop Week 1 | Applied Longitudinal Data Analysis">
-  <meta property="og:description" content="This is the first workshop"><meta property="og:image" content="/img/icon-192.png">
+  <meta property="og:description" content="Data and workflow"><meta property="og:image" content="/img/icon-192.png">
   <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
   
     
@@ -305,7 +305,7 @@
   <h1 itemprop="name">Workshop Week 1</h1>
 
   
-  <p class="page-subtitle">Data workflow &amp; plotting</p>
+  <p class="page-subtitle">Data and workflow</p>
   
 
   
@@ -380,8 +380,638 @@
     <div class="article-style" itemprop="articleBody">
       
 
+<div id="TOC">
+<ul>
+<li><a href="#what-are-data">What Are Data?</a></li>
+<li><a href="#workspace">Workspace</a><ul>
+<li><a href="#packages">Packages</a></li>
+<li><a href="#codebook">Codebook</a></li>
+<li><a href="#data">Data</a></li>
+</ul></li>
+<li><a href="#clean-data">Clean Data</a><ul>
+<li><a href="#recode-variables">Recode Variables</a></li>
+<li><a href="#reverse-scoring">Reverse-Scoring</a></li>
+<li><a href="#create-composites">Create Composites</a><ul>
+<li><a href="#bfi-s">BFI-S</a></li>
+<li><a href="#life-events">Life Events</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#descriptives">Descriptives</a><ul>
+<li><a href="#scale-reliability">Scale Reliability</a></li>
+<li><a href="#zero-order-correlations">Zero-Order Correlations</a></li>
+</ul></li>
+</ul>
+</div>
 
-<p>This is the first workshop</p>
+<div id="what-are-data" class="section level1">
+<h1>What Are Data?</h1>
+<p>Data are the core of everything that we do in statistical analysis. Data come in many forms, and I don’t just mean <code>.csv</code>, <code>.xls</code>, <code>.sav</code>, etc. Data can be wide, long, documented, fragmented, messy, and about anything else that you can imagine.</p>
+<p>Although data could arguably be more means than end in psychology, the importance of understanding the structure and format of your data cannot overstated. Failure to understand your data could end in improper techniques and flagrantly wrong inferences at worst. This is especially important for longitudinal data.</p>
+<p>In this workshop, we are going to talk data management and basic data cleaning. Other tutorials will go more in depth into data cleaning and reshaping. This tutorial is meant to prepare you to think about those in more nuanced ways and to help you develop a functional workflow for conducting your own research.</p>
+<p>The workshop applies to ALL of your data/projects/analysis, not just longitudinal data. These are practices that will accomplish three goals: 1) efficiently load and leave your data in the right form to be analyzed, 2) have the organization so as to follow what you did and so others can understand you did, and 3. share the data/code/plots/analyses easily and effectively. None of the following are the absolute necessary way to accomplish your data analytic goals. However, we feel that people mostly don’t think through these steps. Hammstringing them later. In other words, if you know an alternative that means you already know what we are trying to convey.</p>
+</div>
+<div id="workspace" class="section level1">
+<h1>Workspace</h1>
+<p>When I create an <code>rmarkdown</code> document for my own research projects, I always start by setting up my my workspace. This involves 3 steps:</p>
+<ol style="list-style-type: decimal">
+<li>Packages<br />
+</li>
+<li>Codebook(s)<br />
+</li>
+<li>Data</li>
+</ol>
+<p>Below, we will step through each of these separately, setting ourselves up to (hopefully) flawlessly communicate with <code>R</code> and our data.</p>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<p>Packages seems like the most basic step, but it is actually very important. <strong>ALWAYS LOAD YOUR PACKAGES IN A VERY INTENTIONAL ORDER AT THE BEGINNING OF YOUR SCRIPT.</strong> Package conflicts suck, so it needs to be shouted. (Note: Josh will often reload or not follow this advice for didactic reasons, choosing to put library calls above the code. )</p>
+<p>For this tutorial, we are going to quite simple. We will load the <code>psych</code> package for data descriptives, some options for cleaning and reverse coding, and some evaluations of our scales. The <code>plyr</code> package is the predecessor of the <code>dplyr</code> package, which is a core package of the <code>tidyverse</code>, which you will become quite familiar with in these tutorials. I like the plyr package because it contains a couple of functions (e.g. <code>mapvalues()</code>) that I find quite useful. Finally, we load the <code>tidyverse</code> package, which is actually a complilation of 8 packages. Some of these we will use today and some we will use in later tutorials. All are very useful and are arguably some of the most powerful tools R offers.</p>
+<pre class="r"><code># load packages
+library(psych)
+library(plyr)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.2.1           ✔ purrr   0.3.2      
+## ✔ tibble  2.1.3           ✔ dplyr   0.8.3      
+## ✔ tidyr   0.8.99.9000     ✔ stringr 1.4.0      
+## ✔ readr   1.3.1           ✔ forcats 0.4.0</code></pre>
+<pre><code>## ── Conflicts ─────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ ggplot2::%+%()     masks psych::%+%()
+## ✖ ggplot2::alpha()   masks psych::alpha()
+## ✖ dplyr::arrange()   masks plyr::arrange()
+## ✖ purrr::compact()   masks plyr::compact()
+## ✖ dplyr::count()     masks plyr::count()
+## ✖ dplyr::failwith()  masks plyr::failwith()
+## ✖ dplyr::filter()    masks stats::filter()
+## ✖ dplyr::id()        masks plyr::id()
+## ✖ dplyr::lag()       masks stats::lag()
+## ✖ dplyr::mutate()    masks plyr::mutate()
+## ✖ dplyr::rename()    masks plyr::rename()
+## ✖ dplyr::summarise() masks plyr::summarise()
+## ✖ dplyr::summarize() masks plyr::summarize()</code></pre>
+</div>
+<div id="codebook" class="section level2">
+<h2>Codebook</h2>
+<p>The second step is a codebook. Arguably, this is the first step because you should <em>create</em> the codebook long before you open <code>R</code> and load your data.</p>
+<p>In this case, we are going to using some data from the <a href="https://www.diw.de/en/soep/">German Socioeconomic Panel Study (GSOEP)</a>, which is an ongoing Panel Study in Germany. Note that these data are for teaching purposes only, shared under the license for the Comprehensive SOEP teaching dataset, which I, as a contracted SOEP user, can use for teaching purposes. These data represent select cases from the full data set and should not be used for the purpose of publication. The full data are available for free at <a href="https://www.diw.de/en/diw_02.c.222829.en/access_and_ordering.html" class="uri">https://www.diw.de/en/diw_02.c.222829.en/access_and_ordering.html</a>.</p>
+<p>For this tutorial, I created the codebook for you, and included what I believe are the core columns you may need. Some of these columns will not be particularly helpful for this dataset. For example, many of you likely work with datasets that have only a single file while others work with datasetsspread across many files. As a result, the “dataset” column of the codebook may only have a single value whereas for others it may have multiple. With longitudinal data it is likely you will have multiple.</p>
+<p>Here are my core columns that are based on the original data:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>dataset</strong>: this column indexes the <strong>name</strong> of the dataset that you will be pulling the data from. This is important because we will use this info later on (see <code>purrr</code> tutorial) to load and clean specific data files. Even if you don’t have multiple data sets, I believe consistency is more important and suggest using this.</p></li>
+<li><p><strong>old_name</strong>: this column is the name of the variable in the data you are pulling it from. This should be exact. The goal of this column is that it will allow us to <code>select()</code> variables from the original data file and rename them something that is more useful to us. If you have worked with qualtrics (really any data) you know why this is important.</p></li>
+<li><p><strong>item_text</strong>: this column is the original text that participants saw or a description of the item.</p></li>
+<li><p><strong>scale</strong>: this column tells you what the scale of the variable is. Is it a numeric variable, a text variable, etc. This is helpful for knowing the plausible range.</p></li>
+<li><p><strong>reverse</strong>: this column tells you whether items in a scale need to be reverse coded. I recommend coding this as 1 (leave alone) and -1 (reverse) for reasons that will become clear later.</p></li>
+<li><p><strong>mini</strong>: this column represents the minimum value of scales that are numeric. Leave blank otherwise.</p></li>
+<li><p><strong>maxi</strong>: this column represents the maximumv alue of scales that are numeric. Leave blank otherwise.</p></li>
+<li><p><strong>recode</strong>: sometimes, we want to recode variables for analyses (e.g. for categorical variables with many levels where sample sizes for some levels are too small to actually do anything with it). I use this column to note the kind of recoding I’ll do to a variable for transparency.</p></li>
+</ol>
+<p>Here are additional columns that will make our lives easier or are applicable to some but not all data sets:</p>
+<ol start="9" style="list-style-type: decimal">
+<li><p><strong>category</strong>: broad categories that different variables can be put into. I’m a fan of naming them things like “outcome”, “predictor”, “moderator”, “demographic”, “procedural”, etc. but sometimes use more descriptive labels like “Big 5” to indicate the model from which the measures are derived.</p></li>
+<li><p><strong>label</strong>: label is basically one level lower than category. So if the category is Big 5, the label would be, or example, “A” for Agreeableness, “SWB” for subjective well-being, etc. This column is most important and useful when you have multiple items in a scales, so I’ll typically leave this blank when something is a standalone variable (e.g. sex, single-item scales, etc.).</p></li>
+<li><p><strong>item_name</strong>: This is the lowest level and most descriptive variable. It indicates which item in scale something is. So it may be “kind” for Agreebleness or “sex” for the demographic biological sex variable.</p></li>
+<li><p><strong>year</strong>: for longitudinal data, we have several waves of data and the name of the same item across waves is often different, so it’s important to note to which wave an item belongs. You can do this by noting the wave (e.g. 1, 2, 3), but I prefer the actual year the data were collected (e.g. 2005, 2009, etc.) if that is appropriate. See Lecture #1 on discussion of meaningful time metrics. Note that this differs from that discussion in codebook describes how you collected the data, not necessarily how you want to analyze the data.</p></li>
+<li><p><strong>new_name</strong>: This is a column that brings together much of the information we’ve already collected. It’s purpose is to be the new name that we will give to the variable that is more useful and descriptive to us. This is a constructed variable that brings together others. I like to make it a combination of “category”, “label”, “item_name”, and year using varying combos of "_" and “.” that we can use later with tidyverse functions. I typically construct this variable in Excel using the <code>CONCATENATE()</code> function, but it could also be done in <code>R</code>. The reason I do it in Excel is that it makes it easier for someone who may be reviewing my codebook.</p></li>
+</ol>
+<p>There is a seperate discussion to be had on naming conventions for your variables, but the important idea to remember is that names convey important information and we want to use this information later on to make our life easier. By coding these variables using this information AND systematically using different seperators we can accomplish this goal.</p>
+<ol start="14" style="list-style-type: decimal">
+<li><strong>meta</strong>: Some datasets have a meta name, which essentially means a name that variable has across all waves to make it clear which variables are the same. They are not always useful as some data sets have meta names but no great way of extracting variables using them. But they’re still typically useful to include in your codebook regardless.</li>
+</ol>
+<p>Below, I’ll load in the codebook we will use for this study, which will include all of the above columns.</p>
+<pre class="r"><code># set the path
+wd &lt;- &quot;https://github.com/emoriebeck/R-tutorials/blob/master/ALDA/week_1_descriptives&quot;
+
+# load the codebook
+(codebook &lt;- url(sprintf(&quot;%s/codebook.csv?raw=true&quot;, wd)) %&gt;% 
+    read_csv(.) %&gt;%
+    mutate(old_name = str_to_lower(old_name)))</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   dataset = col_character(),
+##   old_name = col_character(),
+##   item_text = col_character(),
+##   scale = col_character(),
+##   category = col_character(),
+##   label = col_character(),
+##   item_name = col_character(),
+##   year = col_double(),
+##   new_name = col_character(),
+##   reverse = col_double(),
+##   mini = col_double(),
+##   maxi = col_double(),
+##   recode = col_character()
+## )</code></pre>
+<pre><code>## # A tibble: 153 x 13
+##    dataset old_name item_text scale category label item_name  year new_name
+##    &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;   
+##  1 &lt;NA&gt;    persnr   Never Ch… &lt;NA&gt;  Procedu… &lt;NA&gt;  SID           0 Procedu…
+##  2 &lt;NA&gt;    hhnr     househol… &lt;NA&gt;  Procedu… &lt;NA&gt;  household     0 Procedu…
+##  3 ppfad   gebjahr  Year of … nume… Demogra… &lt;NA&gt;  DOB           0 Demogra…
+##  4 ppfad   sex      Sex       &quot;\n1… Demogra… &lt;NA&gt;  Sex           0 Demogra…
+##  5 vp      vp12501  Thorough… &lt;NA&gt;  Big 5    C     thorough   2005 Big 5__…
+##  6 zp      zp12001  Thorough… &lt;NA&gt;  Big 5    C     thorough   2009 Big 5__…
+##  7 bdp     bdp15101 Thorough… &lt;NA&gt;  Big 5    C     thorough   2013 Big 5__…
+##  8 vp      vp12502  Am commu… &lt;NA&gt;  Big 5    E     communic   2005 Big 5__…
+##  9 zp      zp12002  Am commu… &lt;NA&gt;  Big 5    E     communic   2009 Big 5__…
+## 10 bdp     bdp15102 Am commu… &lt;NA&gt;  Big 5    E     communic   2013 Big 5__…
+## # … with 143 more rows, and 4 more variables: reverse &lt;dbl&gt;, mini &lt;dbl&gt;,
+## #   maxi &lt;dbl&gt;, recode &lt;chr&gt;</code></pre>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>First, we need to load in the data. We’re going to use three waves of data from the German Socioeconomic Panel Study, which is a longitudinal study of German households that has been conducted since 1984. We’re going to use more recent data from three waves of personality data collected between 2005 and 2013.</p>
+<p><em>Note</em>: we will be using the teaching set of the GSOEP data set. I will not be pulling from the raw files as a result of this. I will also not be mirroring the format that you would usually load the GSOEP from because that is slightly more complicated and somethng we will return to in a later tutorial after we have more skills. I’ve left that code for now, but it won’t make a lot of sense right now.</p>
+<pre class="r"><code>path &lt;- &quot;~/Box/network/other projects/PCLE Replication/data/sav_files&quot;
+ref &lt;- sprintf(&quot;%s/cirdef.sav&quot;, path) %&gt;% haven::read_sav(.) %&gt;% select(hhnr, rgroup20)
+read_fun &lt;- function(Year){
+  vars &lt;- (codebook %&gt;% filter(year == Year | year == 0))$old_name
+  set &lt;- (codebook %&gt;% filter(year == Year))$dataset[1]
+  sprintf(&quot;%s/%s.sav&quot;, path, set) %&gt;% haven::read_sav(.) %&gt;%
+    full_join(ref) %&gt;%
+    filter(rgroup20 &gt; 10) %&gt;%
+    select(one_of(vars)) %&gt;%
+    gather(key = item, value = value, -persnr, -hhnr, na.rm = T)
+}
+
+vars &lt;- (codebook %&gt;% filter(year == 0))$old_name
+dem &lt;- sprintf(&quot;%s/ppfad.sav&quot;, path) %&gt;% 
+  haven::read_sav(.) %&gt;%
+  select(vars)
+  
+tibble(year = c(2005:2015)) %&gt;%
+  mutate(data = map(year, read_fun)) %&gt;%
+  select(-year) %&gt;% 
+  unnest(data) %&gt;%
+  distinct() %&gt;% 
+  filter(!is.na(value)) %&gt;%
+  spread(key = item, value = value) %&gt;%
+  left_join(dem) %&gt;%
+  write.csv(., file = &quot;~/Documents/Github/R-tutorials/ALDA/week_1_descriptives/data/wdeek_1_data.csv&quot;, row.names = F)</code></pre>
+<p>This code below shows how I would read in and rename a wide-format data set using the codebook I created.</p>
+<pre class="r"><code>old.names &lt;- codebook$old_name # get old column names
+new.names &lt;- codebook$new_name # get new column names
+
+(soep &lt;- url(sprintf(&quot;%s/data/week_1_data.csv?raw=true&quot;, wd)) %&gt;% # path to data
+  read_csv(.) %&gt;% # read in data
+  select(old.names) %&gt;% # select the columns from our codebook
+  setNames(new.names)) # rename columns with our new names</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre><code>## # A tibble: 28,290 x 153
+##    Procedural__SID Procedural__hou… Demographic__DOB Demographic__Sex
+##              &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+##  1             901               94             1951                2
+##  2            1202              124             1913                2
+##  3            2301              230             1946                1
+##  4            2302              230             1946                2
+##  5            2304              230             1978                1
+##  6            2305              230             1946                2
+##  7            4601              469             1933                2
+##  8            4701              477             1919                2
+##  9            4901              493             1925                2
+## 10            5201              523             1955                1
+## # … with 28,280 more rows, and 149 more variables: `Big
+## #   5__C_thorough.2005` &lt;dbl&gt;, `Big 5__C_thorough.2009` &lt;dbl&gt;, `Big
+## #   5__C_thorough.2013` &lt;dbl&gt;, `Big 5__E_communic.2005` &lt;dbl&gt;, `Big
+## #   5__E_communic.2009` &lt;dbl&gt;, `Big 5__E_communic.2013` &lt;dbl&gt;, `Big
+## #   5__A_coarse.2005` &lt;dbl&gt;, `Big 5__A_coarse.2009` &lt;dbl&gt;, `Big
+## #   5__A_coarse.2013` &lt;dbl&gt;, `Big 5__O_original.2005` &lt;dbl&gt;, `Big
+## #   5__O_original.2009` &lt;dbl&gt;, `Big 5__O_original.2013` &lt;dbl&gt;, `Big
+## #   5__N_worry.2005` &lt;dbl&gt;, `Big 5__N_worry.2009` &lt;dbl&gt;, `Big
+## #   5__N_worry.2013` &lt;dbl&gt;, `Big 5__A_forgive.2005` &lt;dbl&gt;, `Big
+## #   5__A_forgive.2009` &lt;dbl&gt;, `Big 5__A_forgive.2013` &lt;dbl&gt;, `Big
+## #   5__C_lazy.2005` &lt;dbl&gt;, `Big 5__C_lazy.2009` &lt;dbl&gt;, `Big
+## #   5__C_lazy.2013` &lt;dbl&gt;, `Big 5__E_sociable.2005` &lt;dbl&gt;, `Big
+## #   5__E_sociable.2009` &lt;dbl&gt;, `Big 5__E_sociable.2013` &lt;dbl&gt;, `Big
+## #   5__O_artistic.2005` &lt;dbl&gt;, `Big 5__O_artistic.2009` &lt;dbl&gt;, `Big
+## #   5__O_artistic.2013` &lt;dbl&gt;, `Big 5__N_nervous.2005` &lt;dbl&gt;, `Big
+## #   5__N_nervous.2009` &lt;dbl&gt;, `Big 5__N_nervous.2013` &lt;dbl&gt;, `Big
+## #   5__C_efficient.2005` &lt;dbl&gt;, `Big 5__C_efficient.2009` &lt;dbl&gt;, `Big
+## #   5__C_efficient.2013` &lt;dbl&gt;, `Big 5__E_reserved.2005` &lt;dbl&gt;, `Big
+## #   5__E_reserved.2009` &lt;dbl&gt;, `Big 5__E_reserved.2013` &lt;dbl&gt;, `Big
+## #   5__A_friendly.2005` &lt;dbl&gt;, `Big 5__A_friendly.2009` &lt;dbl&gt;, `Big
+## #   5__A_friendly.2013` &lt;dbl&gt;, `Big 5__O_imagin.2005` &lt;dbl&gt;, `Big
+## #   5__O_imagin.2009` &lt;dbl&gt;, `Big 5__O_imagin.2013` &lt;dbl&gt;, `Big
+## #   5__N_dealStress.2005` &lt;dbl&gt;, `Big 5__N_dealStress.2009` &lt;dbl&gt;, `Big
+## #   5__N_dealStress.2013` &lt;dbl&gt;, `Life Event__ChldBrth.2005` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2006` &lt;dbl&gt;, `Life Event__ChldBrth.2007` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2008` &lt;dbl&gt;, `Life Event__ChldBrth.2009` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2010` &lt;dbl&gt;, `Life Event__ChldBrth.2011` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2012` &lt;dbl&gt;, `Life Event__ChldBrth.2013` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2014` &lt;dbl&gt;, `Life Event__ChldBrth.2015` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2005` &lt;dbl&gt;, `Life Event__ChldMvOut.2006` &lt;dbl&gt;,
+## #   `Life Event__ChldMvOut.2007` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2008` &lt;dbl&gt;, `Life Event__ChldMvOut.2009` &lt;dbl&gt;,
+## #   `Life Event__ChldMvOut.2010` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2011` &lt;dbl&gt;, `Life Event__ChldMvOut.2012` &lt;dbl&gt;,
+## #   `Life Event__ChldMvOut.2013` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2014` &lt;dbl&gt;, `Life Event__ChldMvOut.2015` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2005` &lt;dbl&gt;, `Life Event__Divorce.2006` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2007` &lt;dbl&gt;, `Life Event__Divorce.2008` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2009` &lt;dbl&gt;, `Life Event__Divorce.2010` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2011` &lt;dbl&gt;, `Life Event__Divorce.2012` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2013` &lt;dbl&gt;, `Life Event__Divorce.2014` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2015` &lt;dbl&gt;, `Life Event__DadDied.2005` &lt;dbl&gt;,
+## #   `Life Event__DadDied.2006` &lt;dbl&gt;, `Life Event__DadDied.2007` &lt;dbl&gt;,
+## #   `Life Event__DadDied.2008` &lt;dbl&gt;, `Life Event__DadDied.2009` &lt;dbl&gt;,
+## #   `Life Event__DadDied.2010` &lt;dbl&gt;, `Life Event__DadDied.2011` &lt;dbl&gt;,
+## #   `Life Event__DadDied.2012` &lt;dbl&gt;, `Life Event__DadDied.2013` &lt;dbl&gt;,
+## #   `Life Event__DadDied.2014` &lt;dbl&gt;, `Life Event__DadDied.2015` &lt;dbl&gt;,
+## #   `Life Event__NewPart.2011` &lt;dbl&gt;, `Life Event__NewPart.2012` &lt;dbl&gt;,
+## #   `Life Event__NewPart.2013` &lt;dbl&gt;, `Life Event__NewPart.2014` &lt;dbl&gt;,
+## #   `Life Event__NewPart.2015` &lt;dbl&gt;, `Life Event__Married.2005` &lt;dbl&gt;,
+## #   `Life Event__Married.2006` &lt;dbl&gt;, `Life Event__Married.2007` &lt;dbl&gt;,
+## #   `Life Event__Married.2008` &lt;dbl&gt;, `Life Event__Married.2009` &lt;dbl&gt;,
+## #   `Life Event__Married.2010` &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<div id="clean-data" class="section level1">
+<h1>Clean Data</h1>
+<div id="recode-variables" class="section level2">
+<h2>Recode Variables</h2>
+<p>Many of the data we work with have observations that are missing for a variety of reasons. In <code>R</code>, we treat missing values as <code>NA</code>, but many other programs from which you may be importing your data may use other codes (e.g. 999, -999, etc.). Large panel studies tend to use small negative values to indicate different types of missingness. This is why it is important to note down the scale in your codebook. That way you can check which values may need to be recoded to explicit <code>NA</code> values.</p>
+<p>In the GSOEP, <code>-1</code> to <code>-7</code> indicate various types of missing values, so we will recode these to <code>NA</code>. To do this, we will use one of my favorite functions, <code>mapvalues()</code>, from the <code>plyr</code> package. In later tutorials where we read in and manipulate more complex data sets, we will use <code>mapvalues()</code> a lot. Basically, mapvalues takes 4 key arguments: (1) the variable you are recoding, (2) a vector of initial values <code>from</code> which you want to (3) recode your variable <code>to</code> using a vector of new values in the same order as the old values, and (4) a way to turn off warnings if some levels are not in your data (<code>warn_missing = F</code>).</p>
+<pre class="r"><code>(soep &lt;- soep %&gt;%
+  mutate_all(~as.numeric(mapvalues(., from = seq(-1,-7, -1), # recode negative 
+                to = rep(NA, 7), warn_missing = F)))) # values to NA</code></pre>
+<pre><code>## # A tibble: 28,290 x 153
+##    Procedural__SID Procedural__hou… Demographic__DOB Demographic__Sex
+##              &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+##  1             901               94             1951                2
+##  2            1202              124             1913                2
+##  3            2301              230             1946                1
+##  4            2302              230             1946                2
+##  5            2304              230             1978                1
+##  6            2305              230             1946                2
+##  7            4601              469             1933                2
+##  8            4701              477             1919                2
+##  9            4901              493             1925                2
+## 10            5201              523             1955                1
+## # … with 28,280 more rows, and 149 more variables: `Big
+## #   5__C_thorough.2005` &lt;dbl&gt;, `Big 5__C_thorough.2009` &lt;dbl&gt;, `Big
+## #   5__C_thorough.2013` &lt;dbl&gt;, `Big 5__E_communic.2005` &lt;dbl&gt;, `Big
+## #   5__E_communic.2009` &lt;dbl&gt;, `Big 5__E_communic.2013` &lt;dbl&gt;, `Big
+## #   5__A_coarse.2005` &lt;dbl&gt;, `Big 5__A_coarse.2009` &lt;dbl&gt;, `Big
+## #   5__A_coarse.2013` &lt;dbl&gt;, `Big 5__O_original.2005` &lt;dbl&gt;, `Big
+## #   5__O_original.2009` &lt;dbl&gt;, `Big 5__O_original.2013` &lt;dbl&gt;, `Big
+## #   5__N_worry.2005` &lt;dbl&gt;, `Big 5__N_worry.2009` &lt;dbl&gt;, `Big
+## #   5__N_worry.2013` &lt;dbl&gt;, `Big 5__A_forgive.2005` &lt;dbl&gt;, `Big
+## #   5__A_forgive.2009` &lt;dbl&gt;, `Big 5__A_forgive.2013` &lt;dbl&gt;, `Big
+## #   5__C_lazy.2005` &lt;dbl&gt;, `Big 5__C_lazy.2009` &lt;dbl&gt;, `Big
+## #   5__C_lazy.2013` &lt;dbl&gt;, `Big 5__E_sociable.2005` &lt;dbl&gt;, `Big
+## #   5__E_sociable.2009` &lt;dbl&gt;, `Big 5__E_sociable.2013` &lt;dbl&gt;, `Big
+## #   5__O_artistic.2005` &lt;dbl&gt;, `Big 5__O_artistic.2009` &lt;dbl&gt;, `Big
+## #   5__O_artistic.2013` &lt;dbl&gt;, `Big 5__N_nervous.2005` &lt;dbl&gt;, `Big
+## #   5__N_nervous.2009` &lt;dbl&gt;, `Big 5__N_nervous.2013` &lt;dbl&gt;, `Big
+## #   5__C_efficient.2005` &lt;dbl&gt;, `Big 5__C_efficient.2009` &lt;dbl&gt;, `Big
+## #   5__C_efficient.2013` &lt;dbl&gt;, `Big 5__E_reserved.2005` &lt;dbl&gt;, `Big
+## #   5__E_reserved.2009` &lt;dbl&gt;, `Big 5__E_reserved.2013` &lt;dbl&gt;, `Big
+## #   5__A_friendly.2005` &lt;dbl&gt;, `Big 5__A_friendly.2009` &lt;dbl&gt;, `Big
+## #   5__A_friendly.2013` &lt;dbl&gt;, `Big 5__O_imagin.2005` &lt;dbl&gt;, `Big
+## #   5__O_imagin.2009` &lt;dbl&gt;, `Big 5__O_imagin.2013` &lt;dbl&gt;, `Big
+## #   5__N_dealStress.2005` &lt;dbl&gt;, `Big 5__N_dealStress.2009` &lt;dbl&gt;, `Big
+## #   5__N_dealStress.2013` &lt;dbl&gt;, `Life Event__ChldBrth.2005` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2006` &lt;dbl&gt;, `Life Event__ChldBrth.2007` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2008` &lt;dbl&gt;, `Life Event__ChldBrth.2009` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2010` &lt;dbl&gt;, `Life Event__ChldBrth.2011` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2012` &lt;dbl&gt;, `Life Event__ChldBrth.2013` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2014` &lt;dbl&gt;, `Life Event__ChldBrth.2015` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2005` &lt;dbl&gt;, `Life Event__ChldMvOut.2006` &lt;dbl&gt;,
+## #   `Life Event__ChldMvOut.2007` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2008` &lt;dbl&gt;, `Life Event__ChldMvOut.2009` &lt;dbl&gt;,
+## #   `Life Event__ChldMvOut.2010` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2011` &lt;dbl&gt;, `Life Event__ChldMvOut.2012` &lt;dbl&gt;,
+## #   `Life Event__ChldMvOut.2013` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2014` &lt;dbl&gt;, `Life Event__ChldMvOut.2015` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2005` &lt;dbl&gt;, `Life Event__Divorce.2006` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2007` &lt;dbl&gt;, `Life Event__Divorce.2008` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2009` &lt;dbl&gt;, `Life Event__Divorce.2010` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2011` &lt;dbl&gt;, `Life Event__Divorce.2012` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2013` &lt;dbl&gt;, `Life Event__Divorce.2014` &lt;dbl&gt;,
+## #   `Life Event__Divorce.2015` &lt;dbl&gt;, `Life Event__DadDied.2005` &lt;dbl&gt;,
+## #   `Life Event__DadDied.2006` &lt;dbl&gt;, `Life Event__DadDied.2007` &lt;dbl&gt;,
+## #   `Life Event__DadDied.2008` &lt;dbl&gt;, `Life Event__DadDied.2009` &lt;dbl&gt;,
+## #   `Life Event__DadDied.2010` &lt;dbl&gt;, `Life Event__DadDied.2011` &lt;dbl&gt;,
+## #   `Life Event__DadDied.2012` &lt;dbl&gt;, `Life Event__DadDied.2013` &lt;dbl&gt;,
+## #   `Life Event__DadDied.2014` &lt;dbl&gt;, `Life Event__DadDied.2015` &lt;dbl&gt;,
+## #   `Life Event__NewPart.2011` &lt;dbl&gt;, `Life Event__NewPart.2012` &lt;dbl&gt;,
+## #   `Life Event__NewPart.2013` &lt;dbl&gt;, `Life Event__NewPart.2014` &lt;dbl&gt;,
+## #   `Life Event__NewPart.2015` &lt;dbl&gt;, `Life Event__Married.2005` &lt;dbl&gt;,
+## #   `Life Event__Married.2006` &lt;dbl&gt;, `Life Event__Married.2007` &lt;dbl&gt;,
+## #   `Life Event__Married.2008` &lt;dbl&gt;, `Life Event__Married.2009` &lt;dbl&gt;,
+## #   `Life Event__Married.2010` &lt;dbl&gt;, …</code></pre>
+</div>
+<div id="reverse-scoring" class="section level2">
+<h2>Reverse-Scoring</h2>
+<p>Many scales we use have items that are positively or negatively keyed. High ratings on positively keyed items are indicative of being high on a construct. In contrast, high ratings on negatively keyed items are indicative of being low on a construct. Thus, to create the composite scores of constructs we often use, we must first “reverse” the negatively keyed items so that high scores indicate being higher on the construct.</p>
+<p>There are a few ways to do this in <code>R</code>. Below, I’ll demonstrate how to do so using the <code>reverse.code()</code> function in the <code>psych</code> package in <code>R</code>. This function was built to make reverse coding more efficient (i.e. please don’t run every item that needs to be recoded with separate lines of code!!).</p>
+<p>Before we can do that, though, we need to restructure the data a bit in order to bring in the reverse coding information from our codebook. We will talk more about what’s happening here in later tutorials on <code>tidyr</code>, so for now, just bear with me.</p>
+<pre class="r"><code>(soep_long &lt;- soep %&gt;%
+  gather(key = item, value = value, -contains(&quot;Procedural&quot;), # change to long format
+         -contains(&quot;Demographic&quot;), na.rm = T) %&gt;%
+  left_join(codebook %&gt;% select(item = new_name, reverse, mini, maxi)) %&gt;% # bring in codebook
+  separate(item, c(&quot;type&quot;, &quot;item&quot;), sep = &quot;__&quot;) %&gt;% # separate category
+  separate(item, c(&quot;item&quot;, &quot;year&quot;), sep = &quot;[.]&quot;) %&gt;% # seprate year
+  separate(item, c(&quot;item&quot;, &quot;scrap&quot;), sep = &quot;_&quot;) %&gt;% # separate scale and item
+  mutate(value = as.numeric(value), # change to numeric
+         value = ifelse(reverse == -1, 
+            reverse.code(-1, value, mini = mini, maxi = maxi), value)))</code></pre>
+<pre><code>## Joining, by = &quot;item&quot;</code></pre>
+<pre><code>## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 19618 rows
+## [452105, 452106, 452107, 452108, 452109, 452110, 452111, 452112, 452113,
+## 452114, 452115, 452116, 452117, 452118, 452119, 452120, 452121, 452122,
+## 452123, 452124, ...].</code></pre>
+<pre><code>## # A tibble: 471,722 x 12
+##    Procedural__SID Procedural__hou… Demographic__DOB Demographic__Sex type 
+##              &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;
+##  1             901               94             1951                2 Big 5
+##  2            1202              124             1913                2 Big 5
+##  3            2301              230             1946                1 Big 5
+##  4            2302              230             1946                2 Big 5
+##  5            2304              230             1978                1 Big 5
+##  6            4601              469             1933                2 Big 5
+##  7            4701              477             1919                2 Big 5
+##  8            4901              493             1925                2 Big 5
+##  9            5201              523             1955                1 Big 5
+## 10            5202              523             1956                2 Big 5
+## # … with 471,712 more rows, and 7 more variables: item &lt;chr&gt;, scrap &lt;chr&gt;,
+## #   year &lt;chr&gt;, value &lt;dbl&gt;, reverse &lt;dbl&gt;, mini &lt;dbl&gt;, maxi &lt;dbl&gt;</code></pre>
+</div>
+<div id="create-composites" class="section level2">
+<h2>Create Composites</h2>
+<p>Now that we have reverse coded our items, we can create composites.</p>
+<div id="bfi-s" class="section level3">
+<h3>BFI-S</h3>
+<p>We’ll start with our scale – in this case, the Big 5 from the German translation of the BFI-S.</p>
+<p>Here’s the simplest way, which is also the long way because you’d have to do it for each scale in each year, which I don’t recommend.</p>
+<pre class="r"><code>soep$C.2005 &lt;- with(soep, rowMeans(cbind(`Big 5__C_thorough.2005`, `Big 5__C_lazy.2005`, `Big 5__C_efficient.2005`), na.rm = T)) </code></pre>
+<p>But personally, I don’t have a desire to do that 15 times (5 traits times 3 waves), so we can use our codebook and <code>dplyr</code> to make our lives a whole lot easier. In general, trying to run everything simultanously saves from copy-paste errors, makes your code more readable, and reduces the total amount of code. So while the below code may not make intuiative sense immediately, it is nonetheless what we are working towards.</p>
+<pre class="r"><code>soep &lt;- soep %&gt;% select(-C.2005) # get rid of added column
+
+(b5_soep_long &lt;- soep_long %&gt;%
+  filter(type == &quot;Big 5&quot;) %&gt;% # keep Big 5 variables
+  group_by(Procedural__SID, item, year) %&gt;% # group by person, construct, &amp; year
+  summarize(value = mean(value, na.rm = T)) %&gt;% # calculate means
+  ungroup() %&gt;% # ungroup
+  left_join(soep_long %&gt;% # bring demographic info back in 
+    select(Procedural__SID, DOB = Demographic__DOB, Sex = Demographic__Sex) %&gt;%
+    distinct()))</code></pre>
+<pre><code>## Joining, by = &quot;Procedural__SID&quot;</code></pre>
+<pre><code>## # A tibble: 151,186 x 6
+##    Procedural__SID item  year  value   DOB   Sex
+##              &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1             901 A     2005   5     1951     2
+##  2             901 A     2009   5.33  1951     2
+##  3             901 A     2013   5     1951     2
+##  4             901 C     2005   5.33  1951     2
+##  5             901 C     2009   5.5   1951     2
+##  6             901 C     2013   6     1951     2
+##  7             901 E     2005   4     1951     2
+##  8             901 E     2009   4     1951     2
+##  9             901 E     2013   4     1951     2
+## 10             901 N     2005   4     1951     2
+## # … with 151,176 more rows</code></pre>
+</div>
+<div id="life-events" class="section level3">
+<h3>Life Events</h3>
+<p>We also want to create a variable that indexes whether our participants experienced any of the life events during the years of interest (2005-2015).</p>
+<pre class="r"><code>(events_long &lt;- soep_long %&gt;%
+  filter(type == &quot;Life Event&quot;) %&gt;% # keep only life events
+  group_by(Procedural__SID, item) %&gt;% # group by person and event
+  summarize(value = sum(value, na.rm = T), # sum up whether they experiened the event at all
+            value = ifelse(value &gt; 1, 1, 0))) # if more than once 1, otherwise 0</code></pre>
+<pre><code>## # A tibble: 15,061 x 3
+## # Groups:   Procedural__SID [10,019]
+##    Procedural__SID item      value
+##              &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
+##  1             901 MomDied       1
+##  2            2301 MoveIn        0
+##  3            2301 PartDied      1
+##  4            2305 MoveIn        0
+##  5            4601 PartDied      0
+##  6            5201 ChldMvOut     1
+##  7            5201 DadDied       0
+##  8            5202 ChldMvOut     1
+##  9            5203 MoveIn        1
+## 10            5303 MomDied       0
+## # … with 15,051 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="descriptives" class="section level1">
+<h1>Descriptives</h1>
+<p>Descriptives of your data are incredibly important. They are your first line of defense against things that could go wrong later on when you run inferential stats. They help you check the distribution of your variables (e.g. non-normally distributed), look for implausible values made through coding or participant error, and allow you to anticipate what your findings will look like.</p>
+<p>There are lots of ways to create great tables of descriptives. My favorite way is using <code>dplyr</code>, but we will save that for a later lesson on creating great APA style tables in <code>R</code>. For now, we’ll use a wonderfully helpful function from the <code>psych</code> package called <code>describe()</code> in conjunction with a small amount of <code>tidyr</code> to reshape the data.</p>
+<pre class="r"><code>b5_soep_long  %&gt;%
+  unite(tmp, item, year, sep = &quot;_&quot;) %&gt;% # make new column that joins item and year
+  spread(tmp, value) %&gt;% # make wide because that helps describe
+  describe(.) # call describe</code></pre>
+<pre><code>##                 vars     n       mean          sd     median    trimmed
+## Procedural__SID    1 16719 8321022.91 10677731.19 3105002.00 6487615.30
+## DOB                2 16719    1960.03       18.48    1960.00    1960.22
+## Sex                3 16719       1.52        0.50       2.00       1.53
+## A_2005             4 10419       5.79        0.98       6.00       5.83
+## A_2009             5 10294       5.68        0.99       5.67       5.72
+## A_2013             6  9535       5.74        0.96       5.67       5.78
+## C_2005             7 10412       6.23        0.96       6.33       6.34
+## C_2009             8 10290       6.16        0.95       6.33       6.25
+## C_2013             9  9530       6.17        0.91       6.33       6.25
+## E_2005            10 10416       5.15        1.15       5.33       5.18
+## E_2009            11 10291       5.11        1.15       5.00       5.13
+## E_2013            12  9533       5.20        1.11       5.33       5.24
+## N_2005            13 10413       4.71        1.23       4.67       4.72
+## N_2009            14 10294       4.84        1.22       5.00       4.87
+## N_2013            15  9534       4.92        1.21       5.00       4.93
+## O_2005            16 10408       4.51        1.22       4.67       4.53
+## O_2009            17 10287       4.40        1.22       4.33       4.41
+## O_2013            18  9530       4.60        1.18       4.67       4.62
+##                        mad     min        max       range  skew kurtosis
+## Procedural__SID 3735541.17  901.00 3.5022e+07 35021101.00  1.50     0.56
+## DOB                  20.76 1909.00 1.9950e+03       86.00 -0.08    -0.84
+## Sex                   0.00    1.00 2.0000e+00        1.00 -0.10    -1.99
+## A_2005                0.99    1.00 7.5000e+00        6.50 -0.40    -0.14
+## A_2009                0.99    1.33 8.0000e+00        6.67 -0.36    -0.19
+## A_2013                0.99    1.33 8.0000e+00        6.67 -0.43     0.05
+## C_2005                0.99    1.00 8.0000e+00        7.00 -0.95     0.84
+## C_2009                0.99    1.00 8.0000e+00        7.00 -0.82     0.49
+## C_2013                0.99    1.33 8.0000e+00        6.67 -0.72     0.17
+## E_2005                0.99    1.00 7.5000e+00        6.50 -0.27    -0.16
+## E_2009                0.99    1.00 7.3300e+00        6.33 -0.23    -0.18
+## E_2013                0.99    1.33 7.3300e+00        6.00 -0.29    -0.18
+## N_2005                1.48    1.50 8.0000e+00        6.50 -0.07    -0.32
+## N_2009                0.99    1.50 7.6700e+00        6.17 -0.17    -0.30
+## N_2013                1.48    1.50 8.0000e+00        6.50 -0.15    -0.30
+## O_2005                1.48    1.00 7.0000e+00        6.00 -0.23    -0.18
+## O_2009                1.48    1.00 7.0000e+00        6.00 -0.10    -0.30
+## O_2013                0.99    1.00 7.0000e+00        6.00 -0.21    -0.20
+##                       se
+## Procedural__SID 82579.80
+## DOB                 0.14
+## Sex                 0.00
+## A_2005              0.01
+## A_2009              0.01
+## A_2013              0.01
+## C_2005              0.01
+## C_2009              0.01
+## C_2013              0.01
+## E_2005              0.01
+## E_2009              0.01
+## E_2013              0.01
+## N_2005              0.01
+## N_2009              0.01
+## N_2013              0.01
+## O_2005              0.01
+## O_2009              0.01
+## O_2013              0.01</code></pre>
+<p>For count variables, like life events, we need to use something slightly different. We’re typically more interested in counts – in this case, how many people experienced each life event in the 10 years we’re considering?</p>
+<p>To do this, we’ll use a little bit of <code>dplyr</code> rather than the base <code>R</code> function <code>table()</code> that is often used for count data. Instead, we’ll use a combination of <code>group_by()</code> and <code>n()</code> to get the counts by group. In the end, we’re left with a nice little table of counts.</p>
+<pre class="r"><code>events_long %&gt;%
+  group_by(item, value) %&gt;% 
+  summarize(N = n()) %&gt;%
+  ungroup() %&gt;%
+  spread(value, N)</code></pre>
+<pre><code>## # A tibble: 10 x 3
+##    item        `0`   `1`
+##    &lt;chr&gt;     &lt;int&gt; &lt;int&gt;
+##  1 ChldBrth   1600   735
+##  2 ChldMvOut  1555   830
+##  3 DadDied     953   213
+##  4 Divorce     414   122
+##  5 Married    1646   331
+##  6 MomDied     929   219
+##  7 MoveIn     1403   419
+##  8 NewPart    1207   420
+##  9 PartDied    402    76
+## 10 SepPart    1172   415</code></pre>
+<div id="scale-reliability" class="section level2">
+<h2>Scale Reliability</h2>
+<p>When we work with scales, it’s often a good idea to check the internal consistency of your scale. If the scale isn’t performing how it should be, that could critically impact the inferences you make from your data.</p>
+<p>To check the internal consistency of our Big 5 scales, we will use the <code>alpha()</code> function from the <code>psych</code> package, which will give us Cronbach’s as well as a number of other indicators of internal consistency.</p>
+<p>Here’s the way you may have seen / done this in the past.</p>
+<pre class="r"><code>alpha.C.2005 &lt;- with(soep, psych::alpha(x = cbind(`Big 5__C_thorough.2005`, 
+                                  `Big 5__C_lazy.2005`, `Big 5__C_efficient.2005`)))</code></pre>
+<pre><code>## Warning in psych::alpha(x = cbind(`Big 5__C_thorough.2005`, `Big 5__C_lazy.2005`, : Some items were negatively correlated with the total scale and probably 
+## should be reversed.  
+## To do this, run the function again with the &#39;check.keys=TRUE&#39; option</code></pre>
+<pre><code>## Some items ( Big 5__C_lazy.2005 ) were negatively correlated with the total scale and 
+## probably should be reversed.  
+## To do this, run the function again with the &#39;check.keys=TRUE&#39; option</code></pre>
+<p>But again, doing this 15 times would be quite a pain and would open you up to the possibility of a lot of copy and paste errors.</p>
+<p>So instead, to do this, I’m going to use a mix of the tidyverse. At first glance, it may seem complex but as you move through other tutorials (particularly the <code>purrr</code> tutorial), it will begin to make much more sense.</p>
+<pre class="r"><code># short function to reshape data and run alpha
+alpha_fun &lt;- function(df){
+  df %&gt;% spread(scrap,value) %&gt;% psych::alpha(.)
+}
+
+(alphas &lt;- soep_long %&gt;%
+  filter(type == &quot;Big 5&quot;) %&gt;% # filter out Big 5
+  select(Procedural__SID, item:value) %&gt;% # get rid of extra columns
+  group_by(item, year) %&gt;% # group by construct and year
+  nest() %&gt;% # nest the data
+  mutate(alpha_res = map(data, alpha_fun), # run alpha
+         alpha = map(alpha_res, ~.$total[2])) %&gt;% # get the alpha value
+  unnest(alpha)) # pull it out of the list column</code></pre>
+<pre><code>## # A tibble: 15 x 5
+## # Groups:   item, year [15]
+##    item  year            data alpha_res std.alpha
+##    &lt;chr&gt; &lt;chr&gt; &lt;list&lt;df[,3]&gt;&gt; &lt;list&gt;        &lt;dbl&gt;
+##  1 C     2005    [31,117 × 3] &lt;psych&gt;       0.515
+##  2 C     2009    [30,728 × 3] &lt;psych&gt;       0.494
+##  3 C     2013    [28,496 × 3] &lt;psych&gt;       0.482
+##  4 E     2005    [31,188 × 3] &lt;psych&gt;       0.540
+##  5 E     2009    [30,770 × 3] &lt;psych&gt;       0.530
+##  6 E     2013    [28,532 × 3] &lt;psych&gt;       0.544
+##  7 A     2005    [31,184 × 3] &lt;psych&gt;       0.418
+##  8 A     2009    [30,796 × 3] &lt;psych&gt;       0.410
+##  9 A     2013    [28,529 × 3] &lt;psych&gt;       0.401
+## 10 O     2005    [31,091 × 3] &lt;psych&gt;       0.527
+## 11 O     2009    [30,722 × 3] &lt;psych&gt;       0.510
+## 12 O     2013    [28,451 × 3] &lt;psych&gt;       0.497
+## 13 N     2005    [31,162 × 3] &lt;psych&gt;       0.473
+## 14 N     2009    [30,802 × 3] &lt;psych&gt;       0.490
+## 15 N     2013    [28,536 × 3] &lt;psych&gt;       0.480</code></pre>
+</div>
+<div id="zero-order-correlations" class="section level2">
+<h2>Zero-Order Correlations</h2>
+<p>Finally, we often want to look at the zero-order correlation among study variables to make sure they are performing as we think they should.</p>
+<p>To run the correlations, we will need to have our data in wide format, so we’re going to do a little bit of reshaping before we do.</p>
+<pre class="r"><code>b5_soep_long %&gt;%
+  unite(tmp, item, year, sep = &quot;_&quot;) %&gt;%
+  spread(key = tmp, value = value) %&gt;% 
+  select(-Procedural__SID) %&gt;%
+  cor(., use = &quot;pairwise&quot;) %&gt;%
+  round(., 2)</code></pre>
+<pre><code>##          DOB   Sex A_2005 A_2009 A_2013 C_2005 C_2009 C_2013 E_2005 E_2009
+## DOB     1.00  0.00  -0.08  -0.07  -0.06  -0.13  -0.12  -0.14   0.10   0.12
+## Sex     0.00  1.00   0.18   0.17   0.18   0.05   0.07   0.09   0.08   0.08
+## A_2005 -0.08  0.18   1.00   0.50   0.50   0.32   0.20   0.19   0.10   0.06
+## A_2009 -0.07  0.17   0.50   1.00   0.55   0.19   0.28   0.18   0.05   0.08
+## A_2013 -0.06  0.18   0.50   0.55   1.00   0.18   0.19   0.29   0.04   0.06
+## C_2005 -0.13  0.05   0.32   0.19   0.18   1.00   0.52   0.48   0.19   0.10
+## C_2009 -0.12  0.07   0.20   0.28   0.19   0.52   1.00   0.55   0.12   0.16
+## C_2013 -0.14  0.09   0.19   0.18   0.29   0.48   0.55   1.00   0.13   0.14
+## E_2005  0.10  0.08   0.10   0.05   0.04   0.19   0.12   0.13   1.00   0.61
+## E_2009  0.12  0.08   0.06   0.08   0.06   0.10   0.16   0.14   0.61   1.00
+## E_2013  0.10  0.11   0.04   0.04   0.07   0.10   0.10   0.18   0.59   0.65
+## N_2005  0.06 -0.18   0.10   0.06   0.02   0.09   0.06   0.03   0.18   0.10
+## N_2009  0.03 -0.22   0.07   0.09   0.03   0.06   0.08   0.05   0.13   0.16
+## N_2013  0.02 -0.21   0.06   0.06   0.10   0.04   0.06   0.08   0.10   0.10
+## O_2005  0.11  0.06   0.12   0.09   0.07   0.17   0.12   0.08   0.40   0.29
+## O_2009  0.10  0.05   0.05   0.11   0.07   0.06   0.13   0.08   0.26   0.36
+## O_2013  0.05  0.07   0.08   0.09   0.13   0.07   0.08   0.15   0.24   0.28
+##        E_2013 N_2005 N_2009 N_2013 O_2005 O_2009 O_2013
+## DOB      0.10   0.06   0.03   0.02   0.11   0.10   0.05
+## Sex      0.11  -0.18  -0.22  -0.21   0.06   0.05   0.07
+## A_2005   0.04   0.10   0.07   0.06   0.12   0.05   0.08
+## A_2009   0.04   0.06   0.09   0.06   0.09   0.11   0.09
+## A_2013   0.07   0.02   0.03   0.10   0.07   0.07   0.13
+## C_2005   0.10   0.09   0.06   0.04   0.17   0.06   0.07
+## C_2009   0.10   0.06   0.08   0.06   0.12   0.13   0.08
+## C_2013   0.18   0.03   0.05   0.08   0.08   0.08   0.15
+## E_2005   0.59   0.18   0.13   0.10   0.40   0.26   0.24
+## E_2009   0.65   0.10   0.16   0.10   0.29   0.36   0.28
+## E_2013   1.00   0.11   0.13   0.15   0.26   0.28   0.35
+## N_2005   0.11   1.00   0.55   0.53   0.09   0.08   0.06
+## N_2009   0.13   0.55   1.00   0.60   0.06   0.07   0.07
+## N_2013   0.15   0.53   0.60   1.00   0.05   0.05   0.05
+## O_2005   0.26   0.09   0.06   0.05   1.00   0.58   0.55
+## O_2009   0.28   0.08   0.07   0.05   0.58   1.00   0.61
+## O_2013   0.35   0.06   0.07   0.05   0.55   0.61   1.00</code></pre>
+<p>This is a lot of values and a little hard to make sense of, so as a bonus, I’m going to give you a little bit of more complex code that makes this more readable (and publishable ).</p>
+<pre class="r"><code>r &lt;- b5_soep_long %&gt;%
+  unite(tmp, item, year, sep = &quot;_&quot;) %&gt;%
+  spread(key = tmp, value = value) %&gt;% 
+  select(-Procedural__SID, -DOB, -Sex) %&gt;%
+  cor(., use = &quot;pairwise&quot;) 
+
+r[upper.tri(r, diag = T)] &lt;- NA
+diag(r) &lt;- (alphas %&gt;% arrange(item, year))$std.alpha
+
+r %&gt;% data.frame %&gt;%
+  rownames_to_column(&quot;V1&quot;) %&gt;%
+  gather(key = V2, value = r, na.rm = T, -V1) %&gt;%
+  separate(V1, c(&quot;T1&quot;, &quot;Year1&quot;), sep = &quot;_&quot;) %&gt;%
+  separate(V2, c(&quot;T2&quot;, &quot;Year2&quot;), sep = &quot;_&quot;) %&gt;%
+  mutate_at(vars(Year1), ~factor(., levels = c(2013, 2009, 2005))) %&gt;%
+  ggplot(aes(x = Year2, y = Year1, fill = r)) +
+    geom_raster() + 
+  scale_fill_gradient2(low = &quot;blue&quot;, high = &quot;red&quot;, mid = &quot;white&quot;, 
+   midpoint = 0, limit = c(-1,1), space = &quot;Lab&quot;, 
+   name=&quot;Correlations&quot;) +  
+  geom_text(aes(label = round(r,2))) +
+    facet_grid(T1 ~ T2) +
+    theme_classic()</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-5"></span>
+<img src="/Workshops/2019-08-14-workshop-1_files/figure-html/unnamed-chunk-5-1.png" alt="Correlations among Personality Indicators. Values on the diagonal represent Chronbach's alpha for each scale in each year. Within-trait correlations represent test-retest correlations." width="672" />
+<p class="caption">
+Figure 1: Correlations among Personality Indicators. Values on the diagonal represent Chronbach’s alpha for each scale in each year. Within-trait correlations represent test-retest correlations.
+</p>
+</div>
+</div>
+</div>
 
     </div>
 

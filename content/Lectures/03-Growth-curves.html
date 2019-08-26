@@ -20,6 +20,7 @@ output:
 <li><a href="#random-effects">Random effects</a></li>
 <li><a href="#empty-model-equation">Empty model equation</a></li>
 <li><a href="#putting-it-together">Putting it together</a></li>
+<li><a href="#visualize-what-you-are-doing">Visualize what you are doing</a></li>
 <li><a href="#icc">ICC</a></li>
 </ul></li>
 <li><a href="#adding-time">Adding time</a><ul>
@@ -86,14 +87,14 @@ output:
 <pre class="r"><code>library(readr)
 example &lt;- read_csv(&quot;~/Box/5165 Applied Longitudinal Data Analysis/Longitudinal/example.csv&quot;)
 example$ID &lt;- as.factor(example$ID)</code></pre>
-<p>Lets look at some data</p>
+<p>Lets look at some data. These data examine older adults who came into a study up to six times over a six year period. Multiple cognitive, psychiatric and imaging assessments were done. Let’s look at functional connectivity network called SMN7.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1           ✔ dplyr   0.8.3      
 ## ✔ tibble  2.1.3           ✔ stringr 1.4.0      
 ## ✔ tidyr   0.8.99.9000     ✔ forcats 0.4.0      
 ## ✔ purrr   0.3.2</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ─────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(ggplot2)
@@ -126,7 +127,7 @@ summary(regression)</code></pre>
 </div>
 <div id="within-person-models-e.g.-2-level-models" class="section level2">
 <h2>Within person models e.g., 2-level models</h2>
-<p>We saw this last time where we can think of everyone being a seperate regression model. Here the lines connect the dots of the same people across time.</p>
+<p>We saw this last time where we can think of everyone being run in a seperate regression model. Here the lines connect the dots of the same people across time.</p>
 <pre class="r"><code>library(tidyverse)
 gg2 &lt;- ggplot(example,
    aes(x = week, y = SMN7, group = ID)) + geom_point() + stat_smooth(method = &quot;lm&quot;, se = FALSE)   
@@ -136,7 +137,7 @@ print(gg3)</code></pre>
 <p><img src="/Lectures/03-Growth-curves_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Each person has multiple assessments, so we need to distinguish between people and their assessments. In normal regression we wouldn’t think about this as everyone datapoint is assumed to be independent. However, this is not the case here. Failing to distinguish would lead to violation of independence, an important assumption of the standard regression model.</p>
 <p>As seen in the graph above, what we have now is both individual level slopes as well as an average level slope. The average level slope is going to be the average of the individual level slopes, which will look like our average slope ignoring all dependencies. Same for the intercept.</p>
-<p>One way to do this is to run seperate regressions for each person. Then we could just pool together where people start and how much they change to get the average intercept (starting value) and trajectory (how much people change).</p>
+<p>One way to do this is to run seperate regressions for each person. Then we could just pool (or average) together where people start and how much they change to get the average intercept (starting value) and trajectory (how much people change). We will see later that this is a somewhat poor approach.</p>
 <pre><code>## Joining, by = &quot;ID&quot;</code></pre>
 <pre class="r"><code>regressions &lt;- example2 %&gt;% 
   group_by(ID) %&gt;% 
@@ -153,9 +154,10 @@ head(regressions)</code></pre>
 ## 4 75    week         0.00771 NaN          NaN    NaN     
 ## 5 87    (Intercept)  0.0787  NaN          NaN    NaN     
 ## 6 87    week        -0.0227  NaN          NaN    NaN</code></pre>
-<p>In addition to the intercept and the trajectory there is also the amount of variation around each of these estimates. Do people tend to change the same? Are there individual differences in the initial assessment?</p>
+<p>In addition to the average intercept and the average trajectory there is also the amount of variation around each of these estimates. Do people tend to change the same? Are there individual differences in the initial assessment?</p>
 <p>This type of meaningful variation is lost when we have a between subjects only model that ignores the individual level. This variation will be called Random Effects (or variance estimates in SEM).</p>
-<p>Note, there is another important sournce of variation different from standard regression models. The within-subjects error that can be seen in the below graph. If we did not take people into account and just collapsed across people to get a between subjects assessment of change, this error would be confounded with individual differences in change. We will discuss this error more in depth later.</p>
+<p>[Side note: note how some people do not have se estimates for their regression coefficients. The reason for this will impact our ability to fit longitudinal models later on.]</p>
+<p>There is another important source of variation different from standard regression models. The within-subjects error that can be seen in the below graph. If we did not take people into account and just collapsed across people to get a between subjects assessment of change, this error would be confounded with individual differences in change. We will discuss this error more in depth later, but one way to think about our goal is to utilize our repeated assessments to make better predictions. A way to do that is to create additional buckets of explained variance, resulting in a smaller bucket of unexplained variance.</p>
 <pre class="r"><code>example3 &lt;- example2 %&gt;% 
   filter(ID == &quot;67&quot;) </code></pre>
 <pre class="r"><code>gg4 &lt;-  ggplot(example3, aes(x = week, y = SMN7, group = ID)) +  geom_point() + stat_smooth(method = &quot;lm&quot;)
@@ -167,13 +169,13 @@ gg4</code></pre>
 </div>
 <div id="random-effects" class="section level3">
 <h3>Random effects</h3>
-<p>Within subjects variability in either staring value or slope/trajectory is referenced in terms of random effects. How do we represent this in our equation? Easy, we just say that the typical regression parameters we have are not the same for everyone – that they are random (in contrast to fixed).</p>
+<p>Within subjects variability in either starting value or slope/trajectory is referenced in terms of random effects. How do we represent this in our equation? Easy, we just say that the typical regression parameters we have are not the same for everyone – that they are random (in contrast to fixed).</p>
 <p>In general, when would we want to use random effects? If there is some sort of selection (random or not) of many possible values of the predictor (e.g., stimuli are 3 random depression drugs, three semi random chosen levels of a drug). With longitudinal data this is (random) people.</p>
 <p>Side bar: Even in situations where these levels are not random (eg working with states) it is still useful to use MLM and we still call them random effects. To be consistent with language, random here can refer to as random from the population average, not randomly selected. When talking about “random effects” you can mean either of these defintions (and a few more). Luckily we can mostly ignore these semantic issues.</p>
-<p>What is necessary for modeling random effects? For longitudinal models, there needs to be multiple assessments per your grouping category (people, schools, neighborhoods).</p>
+<p>What is necessary for modeling random effects? For longitudinal models, there needs to be multiple assessments per your grouping category (people, schools, neighborhoods, trials).</p>
 <p>We are assuming these random effects are sampled from some population and thus vary from group to group (or person to person). This means that your coeffients (like traditional regression coefficients) are estimates of some population parameter and thus have error associated with them. This error is not like like a standard residual, which represents error for your overall model. Nor is it like the standard error for a point estimate. Random effects can best be thought of as deviation of individual regression lines from the group regression line (though it technically is not this).</p>
 <p>To facilitate the multiple assessments per person we will now use both i and j subscripts. We will see that the random effects are part of the overall error term in the model. Counterintutitively, the main focus of these types of models will be the fixed effects, with less attention paid to the random effects. That said, the random effects are necessary to account for dependency in the data. One can think about these models as normal fixed effects regressions, with the random effects there to account for the longitudinal nature of the data. They are made up of a number of standard regression equations, each for a single individual. Doing so side steps the trouble of having correlated errors, and thus allows us to interpret our findings without concern.</p>
-<p>To faciliate adding random effects to our model it is helpful to think about two “levels” to our regression equation. The first level will be the within-person model, in that it described how people differ across time. The second level will be the between person level. Note that these do not correspond to fixed or random effects. Instead they can be thought to model either within person differences or between person differences. Mastering thinking at these two levels will help make sense of these MLM models.</p>
+<p>To faciliate adding random effects to our model it is helpful to think about two “levels” to our regression equation. We are going to put a regression equation within our requestion equation. (Que Xzhibit joke). The first level will be the within-person model, in that it described how people differ across time. The second level will be the between person level. Note that these do not correspond to fixed or random effects. Instead they can be thought to model either within person differences or between person differences. Mastering thinking at these two levels will help make sense of these MLM models.</p>
 </div>
 <div id="empty-model-equation" class="section level3">
 <h3>Empty model equation</h3>
@@ -189,8 +191,8 @@ gg4</code></pre>
 <p>And two variance components:
 1. a random effect of the intercept
 <span class="math display">\[ {U}_{0j} \sim \mathcal{N}(0, \tau_{00}^{2})  \]</span>
-The subscript of the <span class="math inline">\(U_{0j}\)</span> refers to the number of the parameter where 0 is the intercept, 1 is the first regression coefficient, and so on. The second refers to the individual, j.</p>
-<p>This random effect is normally distributed with a mean of zero and a variance of <span class="math inline">\(\tau\)</span></p>
+The subscript of the <span class="math inline">\(U_{0j}\)</span> refers to the number of the parameter where 0 is the intercept, 1 is the first regression coefficient, and so on. The second refers to the individual, j. So <span class="math inline">\(U_{0j}\)</span> refers to the intercept whereas <span class="math inline">\(U_{1j}\)</span> would refer to the random effect of the first regression coefficient.</p>
+<p>The <span class="math inline">\(U_{0j}\)</span> random effect is said to be normally distributed with a mean of zero and a variance of <span class="math inline">\(\tau\)</span></p>
 <ol start="2" style="list-style-type: decimal">
 <li>the residual error term
 <span class="math display">\[ {R}_{ij} \sim \mathcal{N}(0, \sigma^{2})  \]</span>
@@ -202,13 +204,17 @@ Much like in normal regression there is an error term for all of the variation w
 <h3>Putting it together</h3>
 <p><span class="math display">\[ {Y}_{ij} = \gamma_{00} + U_{0j}  + \varepsilon_{ij} \]</span></p>
 </div>
+<div id="visualize-what-you-are-doing" class="section level3">
+<h3>Visualize what you are doing</h3>
+<p>Imagine the raw data plotted without knowing person j, how would <span class="math inline">\(\varepsilon_{i}\)</span> be calculated?</p>
+<p>Now think about the data plotted again but with knowing each person has their own intercept. How would <span class="math inline">\(\varepsilon_{ij}\)</span> be calculated?</p>
+<p>Finally, how is U_{0j} calculated?</p>
+</div>
 <div id="icc" class="section level3">
 <h3>ICC</h3>
 <p>ICC:</p>
 <p><span class="math display">\[\frac{U_{0j}}{U_{0j}+ \varepsilon_{ij}}\]</span></p>
-<ul>
-<li>% variation between vs within person variance.</li>
-</ul>
+<p>Is defined as % variation between vs within person variance.</p>
 </div>
 </div>
 <div id="adding-time" class="section level2">

@@ -377,30 +377,30 @@
 <div id="TOC">
 <ul>
 <li><a href="#lda-basics">LDA basics</a><ul>
+<li><a href="#procedural">Procedural</a></li>
 <li><a href="#goals">Goals</a></li>
 <li><a href="#motivation-terms-concepts">Motivation, terms, concepts</a><ul>
-<li><a href="#why-longitudinal">Why longitudinal?</a></li>
+<li><a href="#why-longitudinal-what-can-we-ask">Why longitudinal? What can we ask?</a></li>
 <li><a href="#types-of-change-most-common">Types of change (most common)</a></li>
-<li><a href="#between-person-versus-within-person">Between person versus within person</a></li>
-<li><a href="#trajectories-curves-change-growth-oh-my">Trajectories, curves, change, growth… oh my</a></li>
+<li><a href="#between-person-versus-within-person-variables">Between person versus within person variables</a></li>
 <li><a href="#modeling-frameworks-mlm-sem">Modeling frameworks: MLM &amp; SEM</a></li>
-<li><a href="#graphing">Graphing</a></li>
 </ul></li>
-<li><a href="#putting-it-together-example">Putting it together example</a><ul>
+<li><a href="#meaningful-time-metric">Meaningful time metric</a></li>
+<li><a href="#thinking-through-longitudinal-data-example">Thinking through longitudinal data example</a><ul>
 <li><a href="#person-level">Person level</a></li>
-<li><a href="#doing-this-with-mlm">Doing this with MLM</a></li>
+<li><a href="#doing-this-with-mlm-and-sem">Doing this with MLM (and SEM)</a></li>
 </ul></li>
 <li><a href="#design-considerations">Design considerations</a><ul>
-<li><a href="#number-of-assessment-waves">Number of assessment waves</a></li>
-<li><a href="#measurement">Measurement</a></li>
+<li><a href="#number-of-assessment-waves">1. Number of assessment waves</a></li>
+<li><a href="#measurement">2. Measurement</a></li>
 </ul></li>
 <li><a href="#threats-to-validity">Threats to validity</a><ul>
-<li><a href="#missing-data">Missing data</a></li>
-<li><a href="#attritionmortality">Attrition/Mortality</a></li>
-<li><a href="#historycohort">History/cohort</a></li>
-<li><a href="#maturation">Maturation</a></li>
-<li><a href="#testing">Testing</a></li>
-<li><a href="#selection">Selection</a></li>
+<li><a href="#missing-data">1. Missing data</a></li>
+<li><a href="#attritionmortality">2. Attrition/Mortality</a></li>
+<li><a href="#historycohort">3. History/cohort</a></li>
+<li><a href="#maturation">4. Maturation</a></li>
+<li><a href="#testing">5. Testing</a></li>
+<li><a href="#selection">6. Selection</a></li>
 </ul></li>
 <li><a href="#why-not-rm-anova">Why not RM ANOVA?</a></li>
 </ul></li>
@@ -409,66 +409,71 @@
 
 <div id="lda-basics" class="section level1">
 <h1>LDA basics</h1>
+<div id="procedural" class="section level2">
+<h2>Procedural</h2>
+<p>By virtue of being on this page, you know the class website. You may access all of the code and datasets and everything that is used to create the lectures through my github: <a href="https://github.com/josh-jackson/ALDA" class="uri">https://github.com/josh-jackson/ALDA</a>. The provided code should be enough but if you want to search farther go for it.</p>
+</div>
 <div id="goals" class="section level2">
 <h2>Goals</h2>
 <p>This first class is set to orientate you to the world of longitudinal data and MLM models.</p>
 </div>
 <div id="motivation-terms-concepts" class="section level2">
 <h2>Motivation, terms, concepts</h2>
-<div id="why-longitudinal" class="section level3">
-<h3>Why longitudinal?</h3>
+<div id="why-longitudinal-what-can-we-ask" class="section level3">
+<h3>Why longitudinal? What can we ask?</h3>
 <p>At least 7 reasons:</p>
 <ol style="list-style-type: decimal">
-<li><p>Identification of intraindividual change (and stability). Do you increase or decrease with time or age. Is this pattern monotonic? Should this best be conceptualized as a stable process or something that is more dynamic? On average how do people change?</p></li>
-<li><p>Inter-individual differences in intraindividual change. Does everyone change the same? Do some people start higher but change less? Do some increase while some decrease?</p></li>
-<li><p>Examine joint relationship among intraindividual change for two or more constructs. If variable X goes up does variable Y also go up across time? Does this always happen or only during certain times? Is this association due to a third variable or does it mean that change occurs for similar reasons?</p></li>
-<li><p>Determinants of intraindividual change. What are the repeated experiences that can push construct X around. Do these have similar effects at all times?</p></li>
-<li><p>Determinants of interindividual differences in intraindividual change. Do events, background characteristics, interventions or other between person characteristic shape why certain people change while others don’t?</p></li>
-<li><p>Inter-individual differences in intraindividual fluctuation and determinants of intraindividual fluctuation. Does everyone vary the same? Why are some more variable than others?</p></li>
-<li><p>Are there different classes/populations/mixtures of intraindividual change?</p></li>
+<li><p>Identification of intraindividual change (and stability). Do people increase or decrease with time or age. Is this pattern monotonic? Should this best be conceptualized as a stable process or something that is more dynamic? On average how do people change? Ex: people decline in cognitive ability across time.</p></li>
+<li><p>Inter-individual differences in intraindividual change. Does everyone change the same? Do some people start higher but change less? Do some increase while some decrease? Ex: not all people people decline in cognitive ability across time, but some do.</p></li>
+<li><p>Examine joint relationship among intraindividual change for two or more constructs. If variable X goes up does variable Y also go up across time? Does this always happen or only during certain times? Is this association due to a third variable or does it mean that change occurs for similar reasons? Ex: changes in cognitive ability are associated with changes in health across time.</p></li>
+<li><p>Determinants of intraindividual change. What are the repeated experiences that can push construct X around. Do these have similar effects at all times? Ex: people declinein cognitive ability across time. Ex: I have better memory compared to other times when I engage in cognitive activities vs times that I do not.</p></li>
+<li><p>Determinants of interindividual differences in intraindividual change. Do events, background characteristics, interventions or other between person characteristic shape why certain people change while others don’t? Ex: people decline less in cognitive ability across time if tend to do cognitively engaging activities.</p></li>
+<li><p>Inter-individual differences in intraindividual fluctuation and determinants of intraindividual fluctuation. Does everyone vary the same? Why are some more variable than others? Ex: Someone who is depressed fluctuates more in happiness than someone who is not depressed</p></li>
+<li><p>Are there different classes/populations/mixtures of intraindividual change? Ex: do people who decrease vs don’t in cognitive ability across time exist as different groups? (Vs construing differences as on a continuum).</p></li>
 </ol>
 </div>
 <div id="types-of-change-most-common" class="section level3">
 <h3>Types of change (most common)</h3>
-<p>There are many ways to think of change and stability. We will only have time to go into a few of these types, but it is helpful to think about what type you are interested in when you plan a project or sit down to analyze data.</p>
+<p>There are many ways to think of change and stability. We will only have time to go into a few of these types, but it is helpful to think about what type you are interested in when you plan a project or sit down to analyze data. “Change” can mean different things. The above questions you can ask mostly map onto #3 definition of change below.</p>
 <ol style="list-style-type: decimal">
-<li>Differential / rank order consistency/ rank order stability. Goes by many names but in the end it is just a correlation. This is a group/sample/population level variable and indexes the relative standing of a person with regard to the rest o f the members in the sample. Does not take into account mean structure. Best used with heterotypic continuity where the construct may be the same but the measurement of the construct changes e.g., childhood IQ or acting out in school versus when you are an adult.</li>
+<li>Differential / rank order consistency/ rank order stability. Goes by many names but in the end it is just a correlation. This is a group/sample/population level variable and indexes the relative standing of a person with regard to the rest of the members in the sample. Does not take into account mean structure. Best used with heterotypic continuity where the construct may be the same but the measurement of the construct changes e.g., childhood IQ or acting out in school versus when you are an adult.</li>
 </ol>
-<p>A specialized case of this is ipsative change, which looks at the rank order of constructs within a person. This is not done on a single variable (depression) but on a broad number of them (all PD symptoms).</p>
+<p>A specialized case of this is ipsative change, which looks at the rank order of constructs within a person. This is not done on a single variable (depression) but on a broad number of them (all PD symptoms). Often uses profiles.</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Mean level/ absolute change. Takes into account mean structure and indexes absolute levels of a construct. A strong assumption is that the construct means (not a pun) the same thing across time. That is, my measure of depression is interpreted the same for a 40 year old and a 90 year old if I want to look at absolute differences between the two ages.</li>
 </ol>
 <p>Mean level change is not dependent at all on rank order consistency. Can have no mean level change and high rank order consistency and vice versa.</p>
 <ol start="3" style="list-style-type: decimal">
-<li>Individual differences in change. Rank order and mean level provide an index of change and or stability for the sample. Here this provides an assessment of change for an individual. For example, if it is typical to decline in cognitive ability do some people buck the trend and stay at their past level? Individual differences in change get at both mean level changes as well as the tendency of the sample to show stability. It is the type of change that we will focus on the most.</li>
+<li><p>Individual differences in change. Rank order and mean level provide an index of change and or stability for the sample. Here this provides an assessment of change for an individual. For example, if it is typical to decline in cognitive ability do some people buck the trend and stay at their past level? Individual differences in change get at both mean level changes as well as the tendency of the sample to show stability. It is the type of change that we will focus on the most.</p></li>
+<li><p>Structural. Does the construct (or measure) change across time? The assumption for mean level change assumes that the measurement properties stays the same. But maybe it is theoretically interesting to ask whether what you are measuring changes. Examples include practice effects, age effects (cog ability in kids vs adults), differences due to health and life events.</p></li>
+<li><p>Variance. Does your experiment lead to an increas in variability in response? You may show no mean levels (which is what is looked at in typical t-tests and ANOVAs) but you could see people increase or decrease in their expected range of response.</p></li>
 </ol>
+<p>So how do we refer to ‘change’? Usually it is easier to refer to pictorially or in terms of an equation. Putting a word onto it usually causes some confusion, which is why there are a lot of redundant terms in the literature. All of these might refer to the same thing when used within a model. However, the names of some models use these terms differently and thus can refer to different models or conditions that you are working with. In this class I will try to point out the important differences but you will be fine if you supplement your terms with graphs or equations. Math is the great equalizer.</p>
 </div>
-<div id="between-person-versus-within-person" class="section level3">
-<h3>Between person versus within person</h3>
-<p>Or in other words these are the shortened version of interindividaul differences in change versus intraindividaul differences in change. Refers to across people versus within a particular person. Often we are interested in both simultaneously. Related to Level 1 and Level 2 (for those of you familiar with this terminology).</p>
-<p>We may be interested in understanding only between person variability, within person variability or both. When trying to understand within person variability it is typically the case that predictors of between person effects are constant (between person) variables (e.g., gender) that does not change from assessment to assessment. In contrast, within person variability is best understood by time varying predictors (within person variables e.g., daily mood). We will incorporate both time invariant (between person) and time varying (within person) predictors into our eventual model.</p>
-</div>
-<div id="trajectories-curves-change-growth-oh-my" class="section level3">
-<h3>Trajectories, curves, change, growth… oh my</h3>
-<p>How do we refer to ‘change’? Usually it is easier to refer to pictorially or in terms of an equation. Putting a word onto it usually causes some confusion, which is why there are a lot of redundant terms in the literature. All of these might refer to the same thing when used within a model. However, the names of some models use these terms differently and thus can refer to different models or conditions that you are working with. In this class I will try to point out the important differences but you will be fine if you supplement your terms with graphs or equations. Math is the great equalizer.</p>
+<div id="between-person-versus-within-person-variables" class="section level3">
+<h3>Between person versus within person variables</h3>
+<p>Between-person versus within-person are the shortened version of interindividaul differences in change versus intraindividaul differences in change. Refers to across people versus within a particular person. Do you care about how people differ from their previous and future self or do you care about how people differ from other people? (See examples in the 7 types of questions we can ask)</p>
+<p>Often we are interested in modeling both between person and within person variables simultaneously. This is related to Level 1 and Level 2 (for those of you familiar with this terminology). It is helpful to start thinking about what variables you are working with and whether they are within or between person variables. For predictors, it is typically the case that between person effects are constant (between person) variables (e.g., gender) that do not change from assessment to assessment or are only assessed once. In contrast, within person questions are best understood by time varying predictors (within person variables e.g., daily mood) that are assessed more than once.</p>
+<p>We will incorporate both time invariant (between person) and time varying (within person) predictors into our eventual model. In addition to thinking about the types of questions you want to ask it is important to think about what “type” or variables you are working with. Your choice of questions you can ask depends on how often you assess variables or how you conceptualize them.</p>
 </div>
 <div id="modeling-frameworks-mlm-sem" class="section level3">
 <h3>Modeling frameworks: MLM &amp; SEM</h3>
 <p>In this class (and in the field) two primary techniques are used with longitudinal models: MLM and SEM. At some levels they are completely equivalent. At others, one is better than the other and vice versa.</p>
-<p>MLM/HLM is a simple extension of standard regression models. As a result it is easy to interpret and implement. In terms of longitudinal data it is easier to run models when the time of measurement differs from person to person. For this class we will use lme4 and brms as our MLM program but there are many others we could use e.g., nlme.</p>
+<p>MLM/HLM is a simple extension of standard regression models. As a result it is easy to interpret and implement. In terms of longitudinal data it is best suited to run models when the time of measurement differs from person to person (compared to equal intervals). For this class we will use lme4 and brms as our MLM program but there are many others we could use e.g., nlme.</p>
 <p>SEM is related to regression in that regression is a subset of SEM techniques. In other words, an SEM program could run a simple regression analysis.</p>
 <p>The primary advantage of MLM is that you may have assessment waves that vary in length between participants. An assumption of SEM models is that everyone has the same amount of time between assessment waves (though this assumption can be relaxed). MLM is also better suited for complex error structures and complex nesting above and beyond assessments within person. It is also easier to model interactions. Currently, it is easier to do MLM within a Bayesian framework too.</p>
 <p>SEM primary advantage is the ability to account for measurement error via latent assessment of the repeated measures. Other advantages include the ability to model multiple DVs at once, and do so in a flexible manner to look at, for example, the associations between change in one construct and change in the another (though these are also possible with MLMs). Another major advantage is the ability to look at latent groups via latent class or mixture models.</p>
 <p>Bottom line: MLM is probably best suited for “basic” or “standard” growth models. More complex analyses of change with multiple variables would benefit from an SEM approach. This is also an oversimplification.</p>
-<div id="meaningful-time-metric" class="section level4">
-<h4>Meaningful time metric</h4>
-<p>Time is the most important part of longitudinal analyses. Without some sort of explicit operationalization of time or thought into how you handle time in your analyses you are not conducting longitudinal analyses. The key to interpreting your output is to know how you handled your time variable. What units is it in? Does everyone have the same differences between assessments? Is time something you are explicitly interested in or merely there as a means to collect repeated measures? We will discuss more of these as the semester progresses. Right now however an important distinction is what should the scale of our x-axis variable, time, be in?</p>
-<p>At one level, the distinction is relevant to what is the process that is changing someone? Is it a naturally occurring developmental process? Then maybe age is the best metric. What about tracking child’s cognitive ability, something that might be influenced by level of schooling? Here grade may be more important than age. Another common metric is time in study. This may be useful if you are running an intervention or if you want to put everyone on the same starting metric and then control for nuisance variables like age or schooling level. Similarly, year of study as a prime time candidate may be useful if you are working from panel studies and interested in historical events and or cohort effects. As seen above, a wave variable (ie study measurement occasion) may be good enough to use as a time metric (though this makes some assumptions about the regularity of assessments both within and across people).</p>
-<p>Depending on your choice of time metric you may see different rates of change and variability in change. For psychological applications the most common would be age and time in study (followed by grades for assessments of kids). Age is nice because it captures a number of developmental processes thought to drive change (maturation, history, time-in-study) but does not identify a single reason. Time in study is the opposite in that it does not index any other type of change but that simplicity aides in testing different reasons for change (e.g, age moderation). Thus choosing one type of time metric will naturally guide the types of questions you are able to address.</p>
 </div>
 </div>
-<div id="graphing" class="section level3">
-<h3>Graphing</h3>
+<div id="meaningful-time-metric" class="section level2">
+<h2>Meaningful time metric</h2>
+<p>Time is the most important part of a longitudinal analyses. Without some sort of explicit operationalization of time or thought into how you handle time in your analyses you are not conducting longitudinal analyses. The key to interpreting your output is to know how you handled your time variable. What units is it in? Does everyone have the same differences between assessments? Is time something you are explicitly interested in or merely there as a means to collect repeated measures? We will discuss more of these as the semester progresses. Right now however an important distinction is what should the scale of our x-axis variable, time, be in?</p>
+<p>At one level, the distinction is relevant to what is the process that is changing someone? Is it a naturally occurring developmental process? Then maybe age is the best metric. What about tracking child’s cognitive ability, something that might be influenced by level of schooling? Here grade may be more important than age. Another common metric is time in study. This may be useful if you are running an intervention or if you want to put everyone on the same starting metric and then control for nuisance variables like age or schooling level. Similarly, year of study as a prime time candidate may be useful if you are working from panel studies and interested in historical events and or cohort effects. A wave variable (ie study measurement occasion) may be good enough to use as a time metric (though this makes some assumptions about the regularity of assessments both within and across people).</p>
+<p>Depending on your choice of time metric you may see different rates of change and variability in change. For psychological applications the most common would be age and time in study (followed by grades for assessments of kids). Age is nice because it captures a number of developmental processes thought to drive change (maturation, history, time-in-study) but does not identify a single reason. Time in study is the opposite in that it does not index any other type of change but that simplicity aides in testing different reasons for change (e.g, age moderation). Thus choosing one type of time metric will naturally guide the types of questions you are able to address. E.g. if you use age as your time metric you won’t be able to control for age or examine the effects of age as simply as if you used time in study.</p>
+</div>
+<div id="thinking-through-longitudinal-data-example" class="section level2">
+<h2>Thinking through longitudinal data example</h2>
 <pre class="r"><code>library(ggplot2)
 library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
@@ -479,40 +484,41 @@ library(tidyverse)</code></pre>
 <pre><code>## ── Conflicts ─────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
-</div>
-</div>
-<div id="putting-it-together-example" class="section level2">
-<h2>Putting it together example</h2>
-<p>Using some resting state imaging data</p>
+<p>Using some resting state imaging data, lets think about how we can model and think about this data using our current skills (ie standard regression and plotting)</p>
+<p>We defined time as year in study. How would this look if we used age?</p>
 <pre class="r"><code>gg1 &lt;- ggplot(example,
-   aes(x = week, y = SMN7, group = ID)) + geom_point()  
+   aes(x = year, y = SMN7, group = ID)) + geom_point()  
 print(gg1)</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>The above graph just plots datapoints. Do we have repeated assessments per person? Lets find out.</p>
 <div id="person-level" class="section level3">
 <h3>Person level</h3>
 <pre class="r"><code>gg2 &lt;- ggplot(example,
-   aes(x = week, y = SMN7, group = ID)) + geom_line()  
+   aes(x = year, y = SMN7, group = ID)) + geom_line()  
 gg2</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_path).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>faceting</p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+Note that some people start at different levels. Some people have more data in terms of assessment points and years. Note that the shape of change isn’t necessarily a straight line.</p>
+<p>We often want to look at this at a per person level to get more info.</p>
 <pre class="r"><code>gg3 &lt;- ggplot(example,
-   aes(x = week, y = SMN7, group = ID)) + geom_line() +  geom_point() + facet_wrap( ~ ID)
+   aes(x = year, y = SMN7, group = ID)) + geom_line() +  geom_point() + facet_wrap( ~ ID)
 gg3</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_path).</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+As part of our dataset we have different groups. A question we may have is if they change differently across time. Lets take a look at this.</p>
 <pre class="r"><code>gg4 &lt;- ggplot(example,
-   aes(x = week, y = SMN7, group = ID)) + geom_line() + facet_grid(. ~ group)
+   aes(x = year, y = SMN7, group = ID)) + geom_line() + facet_grid(. ~ group)
 gg4</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_path).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>We’re not in Kansas anymore - look at the technocolor.</p>
 <pre class="r"><code>gg5 &lt;-  gg2 + aes(colour = factor(ID)) + guides(colour=FALSE) 
 gg5</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_path).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p>Subsample that has linear model estimates</p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Okay, beside the occular technique, we’re going to need to do something more to address our theoretical questions. Lets look at some random people in the sample and run some regressions.</p>
 <pre class="r"><code>set.seed(11)
 ex.random &lt;- example %&gt;% 
   dplyr::select(ID) %&gt;% 
@@ -536,8 +542,8 @@ gg6</code></pre>
 ## Warning in qt((1 - level)/2, df): NaNs produced
 
 ## Warning in qt((1 - level)/2, df): NaNs produced</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>lets look at individual level regressions</p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Lets look at individual level regressions</p>
 <pre class="r"><code>library(tidyverse)
 library(broom)
 
@@ -570,7 +576,8 @@ regressions</code></pre>
 ## 18   149 week         0.00497 NaN         NaN     NaN     
 ## 19   152 (Intercept)  0.0921  NaN         NaN     NaN     
 ## 20   152 week        -0.0172  NaN         NaN     NaN</code></pre>
-<p>This gives us the average starting value and change per week</p>
+<p>What can we see? Estimates give us an intercept and regression coefficient for each person. Some people increase across time, some decrease. Some we cannot do statistical tests on – why?</p>
+<p>Well that is per person. Lets get the average starting value and change per week</p>
 <pre class="r"><code>regressions %&gt;% 
   group_by(term) %&gt;% 
   summarise(avg.reg = mean(estimate))</code></pre>
@@ -579,22 +586,24 @@ regressions</code></pre>
 ##   &lt;chr&gt;         &lt;dbl&gt;
 ## 1 (Intercept) 0.102  
 ## 2 week        0.00244</code></pre>
-<p>average trend</p>
-<pre class="r"><code>gg7 &lt;-  gg1 &lt;- ggplot(example, aes(x = week, y = SMN7)) + geom_point() + stat_smooth() 
+<p>Lets plot the average trend across everyone. Start with a best fit line not taking into account that people have repeated measures.</p>
+<pre class="r"><code>gg7 &lt;-  gg1 &lt;- ggplot(example, aes(x = year, y = SMN7)) + geom_point() + stat_smooth() 
 gg7</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
 <pre><code>## Warning: Removed 9 rows containing non-finite values (stat_smooth).</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Split up my group</p>
-<pre class="r"><code>gg8 &lt;-  ggplot(example, aes(x = week, y = SMN7)) + geom_point() + stat_smooth(method = &quot;lm&quot;) + facet_grid(. ~ group)
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>That lowess line is a little strange. How about a linear estimate.</p>
+<p>Split up by group</p>
+<pre class="r"><code>gg8 &lt;-  ggplot(example, aes(x = year, y = SMN7)) + geom_point() + stat_smooth(method = &quot;lm&quot;) + facet_grid(. ~ group)
 gg8</code></pre>
 <pre><code>## Warning: Removed 9 rows containing non-finite values (stat_smooth).</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<pre class="r"><code>gg9 &lt;- ggplot(example, aes(x = week, y = SMN7, group = ID)) + geom_point(alpha = 0.05) + stat_smooth(method = &quot;lm&quot;, se = FALSE)   
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>But I also want to see the individual slopes, not just the average.</p>
+<pre class="r"><code>gg9 &lt;- ggplot(example, aes(x = year, y = SMN7, group = ID)) + geom_point(alpha = 0.05) + stat_smooth(method = &quot;lm&quot;, se = FALSE)   
 
-gg10 &lt;- gg9 +  stat_smooth(data = example, aes(x = week, y = SMN7, group=1, color = &quot;black&quot;), method = &quot;lm&quot;, size = 2) + guides(fill=FALSE)
+gg10 &lt;- gg9 +  stat_smooth(data = example, aes(x = year, y = SMN7, group=1, color = &quot;black&quot;), method = &quot;lm&quot;, size = 2) + guides(fill=FALSE)
 
 
 gg11 &lt;- gg10 + facet_grid(.~ group) + theme(legend.position=&quot;none&quot;)
@@ -604,59 +613,62 @@ gg11</code></pre>
 
 ## Warning: Removed 9 rows containing non-finite values (stat_smooth).</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
-<div id="doing-this-with-mlm" class="section level3">
-<h3>Doing this with MLM</h3>
-<p>These regressions are how you should begin to think about longitudinal data analysis. These growth models (the simplest form of longitudinal data analysis) are just a bunch of regressions for each person plus a little extra stuff. MLM is just a fancy regression equation. That is it. Seriously.</p>
+<div id="doing-this-with-mlm-and-sem" class="section level3">
+<h3>Doing this with MLM (and SEM)</h3>
+<p>These regressions and plots are how you should begin to think about longitudinal data analysis. These growth models (the simplest form of longitudinal data analysis) are just a bunch of regressions for each person plus a little extra stuff. MLM is just a fancy regression equation. We want to create a line for everyone. Does someone go up? Does someone go down? On average, do people’s lines indciate that this construct increases or decreases? That is it. Seriously.</p>
 <p>What is different from normal regression? Extra error terms, mostly. For regression, we think of error as existing in one big bucket. For MLMs (and other longitudinal models) we will be breaking up unexplained variance (error) into multiple buckets.</p>
-<p>This is where fixed effects and random effects come into play. We will discuss this more next class, but the gist is that fixed effects are the regression coefficients you are used to. Fixed effects index group level change. Random effects vary among individuals (in the longitudinal models we are talking about) and index variation from the group. For our purposes this is most easily seen thinking about an average group trajectory (fixed effect) and the random effect indexes how much variability there is around that group level effect.</p>
+<p>This is where fixed effects and random effects come into play. We will discuss this more next class, but the gist is that fixed effects are the regression coefficients you are used to. Fixed effects index group level change. Do people decline in memory across time, on average? Random effects vary among individuals (in the longitudinal models we are talking about) and index variation from the group. While most people decline in their memory, does everyone? In other words, an average trajectory will be termed a fixed effect and the random effect indexes how much variability there is around that group level effect. This extra variability we measure through random effects means that we are explaining more variance and thus there is less unexplained variance.</p>
 </div>
 </div>
 <div id="design-considerations" class="section level2">
 <h2>Design considerations</h2>
 <div id="number-of-assessment-waves" class="section level3">
-<h3>Number of assessment waves</h3>
+<h3>1. Number of assessment waves</h3>
 <p>Remember high school algebra: two points define a line. But, that assumes we can measure constructs without error. Three assessment points will better define changes in psychological variables. As a default, you need three waves of data to use MLM models. However, some simplifications can be made with MLM. Two wave assessments are mostly better with SEM approaches.</p>
 </div>
 <div id="measurement" class="section level3">
-<h3>Measurement</h3>
+<h3>2. Measurement</h3>
 <div id="scale-of-measurement" class="section level4">
 <h4>Scale of measurement</h4>
 <p>Measurement is always the basis for good quantiative analysis. Without good measurement you are just spitting into the wind. Standard measurement concerns remain (reliability, dimensionality) but extra concerns exist with longitudinal data.</p>
 <p>What does it mean for categorical variables to change over time? Can you imagine a trajectory for what this is measuring? How would dichotomous responses impact ability to measure change?</p>
 <p>What about ranks, such as in preference for school subjects? What if the class composition changes – what is this assessing? Given that ranks are related such that if I increase someone has to decrease, how does that impact change assessments?</p>
-<p>Can I analyze childhood and adult variables simultaneously if assess the same construct, even though they may be measured differently? How can you measure change in the same construct but with different measures?</p>
-<p>Often the answer to these is to use a different form of longitudinal model. In general, the better measured the construct (continuous, not dependent on others, using the same scale) the more complex/sophisticated analysis you can run. Worse measurment leads to simplification both in terms of the models and the types of conclusions you can make.</p>
+<p>Can I analyze childhood and adult variables simultaneously if assess the same construct, even though they may be measured differently? How can you measure change in the same construct but with different measures? To assess math ability in 5 year olds you can ask them about addition, can you do that in a sample of 20 year olds? Does that measure continue to assess math ability?</p>
+<p>Often the answer to these is to use a different form of the longitudinal model. In general, the better measured the construct (continuous, not dependent on others, using the same scale) the more complex/sophisticated analysis you can run. Worse measurment leads to simplification both in terms of the models and the types of conclusions you can make.</p>
+<p>As with all of science, everything rests on measurement. Poor measurement results in poor conclusions.</p>
 </div>
 <div id="standardizing" class="section level4">
 <h4>Standardizing</h4>
 <p>It is standard practice to z-score to get standardized responses. However, it is not straight forward to do so when using longitudinal data. Why would z-scoring your variables be problematic?</p>
-<p>If you scale for age, for example, this takes out a potential explanatory variable. Or, more worriesome, it also can add error if not everyone is standardized consistently (say if standardization is across age groups and someone just misses a cut).</p>
-<p>The best reason though is that you take away the mean such that the expected change across time is zero. While helpful for cross sectional analyses, z-scoring adds in layers of computational and interpretational problems.</p>
+<p>First, if you scale for age, for example, this takes out a potential explanatory variable.</p>
+<p>Second, more worriesome, it also can add error if not everyone is standardized consistently (say if standardization is across age groups and someone just misses a cut). Or if the sample changes due to attrition.</p>
+<p>Third, is that you take away the mean for each assessment such that the expected change across time is zero. We will talk more about solutions to this problem as the semester progresses but the short answer is to avoid or to use SEM.</p>
+<p>While helpful for cross sectional analyses, z-scoring adds in layers of computational and interpretational problems.</p>
 </div>
 <div id="reliability" class="section level4">
 <h4>Reliability</h4>
 <p>The goal of longitudinal analyses is to understand why some construct changes or stays the same across time. A major difficulty in addressing this goal is whether you are able to accurately assess the construct of interest. One of the key characteristics (but not the only characteristic) is whether or not your assessment would be consistent if you gave an alternative measure or if you retook it immediately after your first assessment. This is known as reliability of measurement. To the extent that your measure is reliable it assesses true score variance as opposed to error variance. The amount of error score variance assessed is important given that error variance will masquerade as change across time given that error can correlate with anything else. The more error in your measurement the more change you will find. Of course this is unreliable change – change that is not true change, just stochastic noise.</p>
-<p>We can think of reliability two ways. First, reliability of the change estimate. This, depend on how much error there is in the assessment and the number of waves. These two components are similar to inter item correlation and number of items being the two main components that effect reliability in cross sectional analyses.</p>
+<p>We can think of reliability two ways. First, reliability of the change estimate. This depends on how much error there is in the assessment and the number of waves. These two components are similar to inter item correlation and number of items being the two main components that effect reliability in cross sectional analyses. Increase the number of items (waves) you increase your alpha. Increase the average correlation among items, you increase your alpha. The parallel to average correlation among items is our ability to accurately assess the construct. When comparing a construct across time we examine this with measurement invariance.</p>
 </div>
 <div id="measurement-invariance" class="section level4">
 <h4>Measurement invariance</h4>
-<p>The second way to think of reliability is in terms of how consistently the measure is assessed across time. Or do you assess the same construct at each time? What would happen if we looked at change in IQ from 1st grade to 12 grade and used the first grade IQ test at each time? The construct that you assessed at the first wave is likely not the same assessed later.
-To test this formally is called measurement invariance and is typically done through SEM. We will talk more about this later in the semester.</p>
+<p>The second way to think of reliability is in terms of how consistently the measure is assessed across time. Or, do you assess the same construct at each time? What would happen if we looked at change in IQ from 1st grade to 12 grade and used the first grade IQ test at each time? The construct that you assessed at the first wave is likely not the same assessed later.
+To test this formally is called measurement invariance and is typically done through SEM. We will talk more about this later in the semester. Until we get there we make a large assumption that what we are measuring now is the same at each wave of assessment.</p>
 </div>
 </div>
 </div>
 <div id="threats-to-validity" class="section level2">
 <h2>Threats to validity</h2>
 <div id="missing-data" class="section level3">
-<h3>Missing data</h3>
+<h3>1. Missing data</h3>
 <div id="types-of-missing-data" class="section level4">
 <h4>Types of missing data</h4>
 <p>On a scale from 1 to you’re completely screwed, how confident are you that the missingness is not related to your study variables?</p>
 <p>Missing completely at random (MCAR) means that the missingness pattern is due entirely to randomness</p>
 <p>Missing at random (MAR) means that there is conditional randomness. Missingness may be due to other variables in the dataset. Pretty standard for longitudinal data.</p>
-<p>Not missing at random (NMAR) means that the missingness is systematic based on the missing values and not associated with measures variables. For example, in a study of reading ability, kids with low reading ability drop out, due to not liking to take tests on reading ability. However, if reading ability is associated with other variables in the model, then this missingness becomes closer in kind of MAR, and thus somewhat less problematic.</p>
+<p>Not missing at random (NMAR) means that the missingness is systematic based on the missing values and not associated with measured variables. For example, in a study of reading ability, kids with low reading ability drop out, due to not liking to take tests on reading ability. However, if reading ability is associated with other variables in the model, then this missingness becomes closer in kind to MAR, and thus somewhat less problematic.</p>
 <p>Typically, we make the assumption we are working under MAR and thus we will have unbiased estimates when predictors of missingness are incorporated into the model.</p>
 <p>There are tests to distinguish MAR from NMAR but you cannot distinguish MCAR from MAR because it is based entirely on knowing something that you dont have.</p>
 </div>
@@ -668,23 +680,23 @@ Multiple imputation? Cannot hurt. More on these approaches later.</p>
 </div>
 </div>
 <div id="attritionmortality" class="section level3">
-<h3>Attrition/Mortality</h3>
+<h3>2. Attrition/Mortality</h3>
 <p>Major contributor to missing data</p>
 </div>
 <div id="historycohort" class="section level3">
-<h3>History/cohort</h3>
+<h3>3. History/cohort</h3>
 <p>Know that the processes driving change can be due to a specific event or cohort.</p>
 </div>
 <div id="maturation" class="section level3">
-<h3>Maturation</h3>
+<h3>4. Maturation</h3>
 <p>Change may occur because of natural processes. Thus if you just follow someone across time they will likely change irregardless of say, if they are in the control group.</p>
 </div>
 <div id="testing" class="section level3">
-<h3>Testing</h3>
+<h3>5. Testing</h3>
 <p>Having people take the same survey, test or interview multiple times may lead them to respond differently. Does that change result from development or does it result from them being familiar with the test?</p>
 </div>
 <div id="selection" class="section level3">
-<h3>Selection</h3>
+<h3>6. Selection</h3>
 <p>If you are looking at life events, know that life events are not distributed randomly. Moreover, people who stay in studies and even sign up for studies are different from those that do not. As a result, it is often hard to make internally valid inferences with longitudinal data.</p>
 </div>
 </div>

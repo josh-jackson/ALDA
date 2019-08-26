@@ -35,30 +35,30 @@
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#lda-basics&#34;&gt;LDA basics&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#procedural&#34;&gt;Procedural&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#goals&#34;&gt;Goals&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#motivation-terms-concepts&#34;&gt;Motivation, terms, concepts&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#why-longitudinal&#34;&gt;Why longitudinal?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#why-longitudinal-what-can-we-ask&#34;&gt;Why longitudinal? What can we ask?&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#types-of-change-most-common&#34;&gt;Types of change (most common)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#between-person-versus-within-person&#34;&gt;Between person versus within person&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#trajectories-curves-change-growth-oh-my&#34;&gt;Trajectories, curves, change, growth… oh my&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#between-person-versus-within-person-variables&#34;&gt;Between person versus within person variables&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#modeling-frameworks-mlm-sem&#34;&gt;Modeling frameworks: MLM &amp;amp; SEM&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#graphing&#34;&gt;Graphing&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#putting-it-together-example&#34;&gt;Putting it together example&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#meaningful-time-metric&#34;&gt;Meaningful time metric&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#thinking-through-longitudinal-data-example&#34;&gt;Thinking through longitudinal data example&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#person-level&#34;&gt;Person level&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#doing-this-with-mlm&#34;&gt;Doing this with MLM&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#doing-this-with-mlm-and-sem&#34;&gt;Doing this with MLM (and SEM)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#design-considerations&#34;&gt;Design considerations&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#number-of-assessment-waves&#34;&gt;Number of assessment waves&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#measurement&#34;&gt;Measurement&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#number-of-assessment-waves&#34;&gt;1. Number of assessment waves&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#measurement&#34;&gt;2. Measurement&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#threats-to-validity&#34;&gt;Threats to validity&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#missing-data&#34;&gt;Missing data&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#attritionmortality&#34;&gt;Attrition/Mortality&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#historycohort&#34;&gt;History/cohort&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#maturation&#34;&gt;Maturation&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#testing&#34;&gt;Testing&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#selection&#34;&gt;Selection&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#missing-data&#34;&gt;1. Missing data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#attritionmortality&#34;&gt;2. Attrition/Mortality&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#historycohort&#34;&gt;3. History/cohort&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#maturation&#34;&gt;4. Maturation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#testing&#34;&gt;5. Testing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#selection&#34;&gt;6. Selection&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#why-not-rm-anova&#34;&gt;Why not RM ANOVA?&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
@@ -67,66 +67,71 @@
 
 &lt;div id=&#34;lda-basics&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;LDA basics&lt;/h1&gt;
+&lt;div id=&#34;procedural&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Procedural&lt;/h2&gt;
+&lt;p&gt;By virtue of being on this page, you know the class website. You may access all of the code and datasets and everything that is used to create the lectures through my github: &lt;a href=&#34;https://github.com/josh-jackson/ALDA&#34; class=&#34;uri&#34;&gt;https://github.com/josh-jackson/ALDA&lt;/a&gt;. The provided code should be enough but if you want to search farther go for it.&lt;/p&gt;
+&lt;/div&gt;
 &lt;div id=&#34;goals&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Goals&lt;/h2&gt;
 &lt;p&gt;This first class is set to orientate you to the world of longitudinal data and MLM models.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;motivation-terms-concepts&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Motivation, terms, concepts&lt;/h2&gt;
-&lt;div id=&#34;why-longitudinal&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Why longitudinal?&lt;/h3&gt;
+&lt;div id=&#34;why-longitudinal-what-can-we-ask&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Why longitudinal? What can we ask?&lt;/h3&gt;
 &lt;p&gt;At least 7 reasons:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Identification of intraindividual change (and stability). Do you increase or decrease with time or age. Is this pattern monotonic? Should this best be conceptualized as a stable process or something that is more dynamic? On average how do people change?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Inter-individual differences in intraindividual change. Does everyone change the same? Do some people start higher but change less? Do some increase while some decrease?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Examine joint relationship among intraindividual change for two or more constructs. If variable X goes up does variable Y also go up across time? Does this always happen or only during certain times? Is this association due to a third variable or does it mean that change occurs for similar reasons?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Determinants of intraindividual change. What are the repeated experiences that can push construct X around. Do these have similar effects at all times?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Determinants of interindividual differences in intraindividual change. Do events, background characteristics, interventions or other between person characteristic shape why certain people change while others don’t?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Inter-individual differences in intraindividual fluctuation and determinants of intraindividual fluctuation. Does everyone vary the same? Why are some more variable than others?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Are there different classes/populations/mixtures of intraindividual change?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Identification of intraindividual change (and stability). Do people increase or decrease with time or age. Is this pattern monotonic? Should this best be conceptualized as a stable process or something that is more dynamic? On average how do people change? Ex: people decline in cognitive ability across time.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Inter-individual differences in intraindividual change. Does everyone change the same? Do some people start higher but change less? Do some increase while some decrease? Ex: not all people people decline in cognitive ability across time, but some do.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Examine joint relationship among intraindividual change for two or more constructs. If variable X goes up does variable Y also go up across time? Does this always happen or only during certain times? Is this association due to a third variable or does it mean that change occurs for similar reasons? Ex: changes in cognitive ability are associated with changes in health across time.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Determinants of intraindividual change. What are the repeated experiences that can push construct X around. Do these have similar effects at all times? Ex: people declinein cognitive ability across time. Ex: I have better memory compared to other times when I engage in cognitive activities vs times that I do not.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Determinants of interindividual differences in intraindividual change. Do events, background characteristics, interventions or other between person characteristic shape why certain people change while others don’t? Ex: people decline less in cognitive ability across time if tend to do cognitively engaging activities.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Inter-individual differences in intraindividual fluctuation and determinants of intraindividual fluctuation. Does everyone vary the same? Why are some more variable than others? Ex: Someone who is depressed fluctuates more in happiness than someone who is not depressed&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Are there different classes/populations/mixtures of intraindividual change? Ex: do people who decrease vs don’t in cognitive ability across time exist as different groups? (Vs construing differences as on a continuum).&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 &lt;div id=&#34;types-of-change-most-common&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Types of change (most common)&lt;/h3&gt;
-&lt;p&gt;There are many ways to think of change and stability. We will only have time to go into a few of these types, but it is helpful to think about what type you are interested in when you plan a project or sit down to analyze data.&lt;/p&gt;
+&lt;p&gt;There are many ways to think of change and stability. We will only have time to go into a few of these types, but it is helpful to think about what type you are interested in when you plan a project or sit down to analyze data. “Change” can mean different things. The above questions you can ask mostly map onto #3 definition of change below.&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;Differential / rank order consistency/ rank order stability. Goes by many names but in the end it is just a correlation. This is a group/sample/population level variable and indexes the relative standing of a person with regard to the rest o f the members in the sample. Does not take into account mean structure. Best used with heterotypic continuity where the construct may be the same but the measurement of the construct changes e.g., childhood IQ or acting out in school versus when you are an adult.&lt;/li&gt;
+&lt;li&gt;Differential / rank order consistency/ rank order stability. Goes by many names but in the end it is just a correlation. This is a group/sample/population level variable and indexes the relative standing of a person with regard to the rest of the members in the sample. Does not take into account mean structure. Best used with heterotypic continuity where the construct may be the same but the measurement of the construct changes e.g., childhood IQ or acting out in school versus when you are an adult.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;A specialized case of this is ipsative change, which looks at the rank order of constructs within a person. This is not done on a single variable (depression) but on a broad number of them (all PD symptoms).&lt;/p&gt;
+&lt;p&gt;A specialized case of this is ipsative change, which looks at the rank order of constructs within a person. This is not done on a single variable (depression) but on a broad number of them (all PD symptoms). Often uses profiles.&lt;/p&gt;
 &lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;Mean level/ absolute change. Takes into account mean structure and indexes absolute levels of a construct. A strong assumption is that the construct means (not a pun) the same thing across time. That is, my measure of depression is interpreted the same for a 40 year old and a 90 year old if I want to look at absolute differences between the two ages.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Mean level change is not dependent at all on rank order consistency. Can have no mean level change and high rank order consistency and vice versa.&lt;/p&gt;
 &lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;Individual differences in change. Rank order and mean level provide an index of change and or stability for the sample. Here this provides an assessment of change for an individual. For example, if it is typical to decline in cognitive ability do some people buck the trend and stay at their past level? Individual differences in change get at both mean level changes as well as the tendency of the sample to show stability. It is the type of change that we will focus on the most.&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Individual differences in change. Rank order and mean level provide an index of change and or stability for the sample. Here this provides an assessment of change for an individual. For example, if it is typical to decline in cognitive ability do some people buck the trend and stay at their past level? Individual differences in change get at both mean level changes as well as the tendency of the sample to show stability. It is the type of change that we will focus on the most.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Structural. Does the construct (or measure) change across time? The assumption for mean level change assumes that the measurement properties stays the same. But maybe it is theoretically interesting to ask whether what you are measuring changes. Examples include practice effects, age effects (cog ability in kids vs adults), differences due to health and life events.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Variance. Does your experiment lead to an increas in variability in response? You may show no mean levels (which is what is looked at in typical t-tests and ANOVAs) but you could see people increase or decrease in their expected range of response.&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;So how do we refer to ‘change’? Usually it is easier to refer to pictorially or in terms of an equation. Putting a word onto it usually causes some confusion, which is why there are a lot of redundant terms in the literature. All of these might refer to the same thing when used within a model. However, the names of some models use these terms differently and thus can refer to different models or conditions that you are working with. In this class I will try to point out the important differences but you will be fine if you supplement your terms with graphs or equations. Math is the great equalizer.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;between-person-versus-within-person&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Between person versus within person&lt;/h3&gt;
-&lt;p&gt;Or in other words these are the shortened version of interindividaul differences in change versus intraindividaul differences in change. Refers to across people versus within a particular person. Often we are interested in both simultaneously. Related to Level 1 and Level 2 (for those of you familiar with this terminology).&lt;/p&gt;
-&lt;p&gt;We may be interested in understanding only between person variability, within person variability or both. When trying to understand within person variability it is typically the case that predictors of between person effects are constant (between person) variables (e.g., gender) that does not change from assessment to assessment. In contrast, within person variability is best understood by time varying predictors (within person variables e.g., daily mood). We will incorporate both time invariant (between person) and time varying (within person) predictors into our eventual model.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;trajectories-curves-change-growth-oh-my&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Trajectories, curves, change, growth… oh my&lt;/h3&gt;
-&lt;p&gt;How do we refer to ‘change’? Usually it is easier to refer to pictorially or in terms of an equation. Putting a word onto it usually causes some confusion, which is why there are a lot of redundant terms in the literature. All of these might refer to the same thing when used within a model. However, the names of some models use these terms differently and thus can refer to different models or conditions that you are working with. In this class I will try to point out the important differences but you will be fine if you supplement your terms with graphs or equations. Math is the great equalizer.&lt;/p&gt;
+&lt;div id=&#34;between-person-versus-within-person-variables&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Between person versus within person variables&lt;/h3&gt;
+&lt;p&gt;Between-person versus within-person are the shortened version of interindividaul differences in change versus intraindividaul differences in change. Refers to across people versus within a particular person. Do you care about how people differ from their previous and future self or do you care about how people differ from other people? (See examples in the 7 types of questions we can ask)&lt;/p&gt;
+&lt;p&gt;Often we are interested in modeling both between person and within person variables simultaneously. This is related to Level 1 and Level 2 (for those of you familiar with this terminology). It is helpful to start thinking about what variables you are working with and whether they are within or between person variables. For predictors, it is typically the case that between person effects are constant (between person) variables (e.g., gender) that do not change from assessment to assessment or are only assessed once. In contrast, within person questions are best understood by time varying predictors (within person variables e.g., daily mood) that are assessed more than once.&lt;/p&gt;
+&lt;p&gt;We will incorporate both time invariant (between person) and time varying (within person) predictors into our eventual model. In addition to thinking about the types of questions you want to ask it is important to think about what “type” or variables you are working with. Your choice of questions you can ask depends on how often you assess variables or how you conceptualize them.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;modeling-frameworks-mlm-sem&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Modeling frameworks: MLM &amp;amp; SEM&lt;/h3&gt;
 &lt;p&gt;In this class (and in the field) two primary techniques are used with longitudinal models: MLM and SEM. At some levels they are completely equivalent. At others, one is better than the other and vice versa.&lt;/p&gt;
-&lt;p&gt;MLM/HLM is a simple extension of standard regression models. As a result it is easy to interpret and implement. In terms of longitudinal data it is easier to run models when the time of measurement differs from person to person. For this class we will use lme4 and brms as our MLM program but there are many others we could use e.g., nlme.&lt;/p&gt;
+&lt;p&gt;MLM/HLM is a simple extension of standard regression models. As a result it is easy to interpret and implement. In terms of longitudinal data it is best suited to run models when the time of measurement differs from person to person (compared to equal intervals). For this class we will use lme4 and brms as our MLM program but there are many others we could use e.g., nlme.&lt;/p&gt;
 &lt;p&gt;SEM is related to regression in that regression is a subset of SEM techniques. In other words, an SEM program could run a simple regression analysis.&lt;/p&gt;
 &lt;p&gt;The primary advantage of MLM is that you may have assessment waves that vary in length between participants. An assumption of SEM models is that everyone has the same amount of time between assessment waves (though this assumption can be relaxed). MLM is also better suited for complex error structures and complex nesting above and beyond assessments within person. It is also easier to model interactions. Currently, it is easier to do MLM within a Bayesian framework too.&lt;/p&gt;
 &lt;p&gt;SEM primary advantage is the ability to account for measurement error via latent assessment of the repeated measures. Other advantages include the ability to model multiple DVs at once, and do so in a flexible manner to look at, for example, the associations between change in one construct and change in the another (though these are also possible with MLMs). Another major advantage is the ability to look at latent groups via latent class or mixture models.&lt;/p&gt;
 &lt;p&gt;Bottom line: MLM is probably best suited for “basic” or “standard” growth models. More complex analyses of change with multiple variables would benefit from an SEM approach. This is also an oversimplification.&lt;/p&gt;
-&lt;div id=&#34;meaningful-time-metric&#34; class=&#34;section level4&#34;&gt;
-&lt;h4&gt;Meaningful time metric&lt;/h4&gt;
-&lt;p&gt;Time is the most important part of longitudinal analyses. Without some sort of explicit operationalization of time or thought into how you handle time in your analyses you are not conducting longitudinal analyses. The key to interpreting your output is to know how you handled your time variable. What units is it in? Does everyone have the same differences between assessments? Is time something you are explicitly interested in or merely there as a means to collect repeated measures? We will discuss more of these as the semester progresses. Right now however an important distinction is what should the scale of our x-axis variable, time, be in?&lt;/p&gt;
-&lt;p&gt;At one level, the distinction is relevant to what is the process that is changing someone? Is it a naturally occurring developmental process? Then maybe age is the best metric. What about tracking child’s cognitive ability, something that might be influenced by level of schooling? Here grade may be more important than age. Another common metric is time in study. This may be useful if you are running an intervention or if you want to put everyone on the same starting metric and then control for nuisance variables like age or schooling level. Similarly, year of study as a prime time candidate may be useful if you are working from panel studies and interested in historical events and or cohort effects. As seen above, a wave variable (ie study measurement occasion) may be good enough to use as a time metric (though this makes some assumptions about the regularity of assessments both within and across people).&lt;/p&gt;
-&lt;p&gt;Depending on your choice of time metric you may see different rates of change and variability in change. For psychological applications the most common would be age and time in study (followed by grades for assessments of kids). Age is nice because it captures a number of developmental processes thought to drive change (maturation, history, time-in-study) but does not identify a single reason. Time in study is the opposite in that it does not index any other type of change but that simplicity aides in testing different reasons for change (e.g, age moderation). Thus choosing one type of time metric will naturally guide the types of questions you are able to address.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;graphing&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Graphing&lt;/h3&gt;
+&lt;div id=&#34;meaningful-time-metric&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Meaningful time metric&lt;/h2&gt;
+&lt;p&gt;Time is the most important part of a longitudinal analyses. Without some sort of explicit operationalization of time or thought into how you handle time in your analyses you are not conducting longitudinal analyses. The key to interpreting your output is to know how you handled your time variable. What units is it in? Does everyone have the same differences between assessments? Is time something you are explicitly interested in or merely there as a means to collect repeated measures? We will discuss more of these as the semester progresses. Right now however an important distinction is what should the scale of our x-axis variable, time, be in?&lt;/p&gt;
+&lt;p&gt;At one level, the distinction is relevant to what is the process that is changing someone? Is it a naturally occurring developmental process? Then maybe age is the best metric. What about tracking child’s cognitive ability, something that might be influenced by level of schooling? Here grade may be more important than age. Another common metric is time in study. This may be useful if you are running an intervention or if you want to put everyone on the same starting metric and then control for nuisance variables like age or schooling level. Similarly, year of study as a prime time candidate may be useful if you are working from panel studies and interested in historical events and or cohort effects. A wave variable (ie study measurement occasion) may be good enough to use as a time metric (though this makes some assumptions about the regularity of assessments both within and across people).&lt;/p&gt;
+&lt;p&gt;Depending on your choice of time metric you may see different rates of change and variability in change. For psychological applications the most common would be age and time in study (followed by grades for assessments of kids). Age is nice because it captures a number of developmental processes thought to drive change (maturation, history, time-in-study) but does not identify a single reason. Time in study is the opposite in that it does not index any other type of change but that simplicity aides in testing different reasons for change (e.g, age moderation). Thus choosing one type of time metric will naturally guide the types of questions you are able to address. E.g. if you use age as your time metric you won’t be able to control for age or examine the effects of age as simply as if you used time in study.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;thinking-through-longitudinal-data-example&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Thinking through longitudinal data example&lt;/h2&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
 library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## ── Attaching packages ─────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
@@ -137,40 +142,41 @@ library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## ── Conflicts ─────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;putting-it-together-example&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Putting it together example&lt;/h2&gt;
-&lt;p&gt;Using some resting state imaging data&lt;/p&gt;
+&lt;p&gt;Using some resting state imaging data, lets think about how we can model and think about this data using our current skills (ie standard regression and plotting)&lt;/p&gt;
+&lt;p&gt;We defined time as year in study. How would this look if we used age?&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg1 &amp;lt;- ggplot(example,
-   aes(x = week, y = SMN7, group = ID)) + geom_point()  
+   aes(x = year, y = SMN7, group = ID)) + geom_point()  
 print(gg1)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The above graph just plots datapoints. Do we have repeated assessments per person? Lets find out.&lt;/p&gt;
 &lt;div id=&#34;person-level&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Person level&lt;/h3&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg2 &amp;lt;- ggplot(example,
-   aes(x = week, y = SMN7, group = ID)) + geom_line()  
+   aes(x = year, y = SMN7, group = ID)) + geom_line()  
 gg2&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_path).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;faceting&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;
+Note that some people start at different levels. Some people have more data in terms of assessment points and years. Note that the shape of change isn’t necessarily a straight line.&lt;/p&gt;
+&lt;p&gt;We often want to look at this at a per person level to get more info.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg3 &amp;lt;- ggplot(example,
-   aes(x = week, y = SMN7, group = ID)) + geom_line() +  geom_point() + facet_wrap( ~ ID)
+   aes(x = year, y = SMN7, group = ID)) + geom_line() +  geom_point() + facet_wrap( ~ ID)
 gg3&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_path).&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;
+As part of our dataset we have different groups. A question we may have is if they change differently across time. Lets take a look at this.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg4 &amp;lt;- ggplot(example,
-   aes(x = week, y = SMN7, group = ID)) + geom_line() + facet_grid(. ~ group)
+   aes(x = year, y = SMN7, group = ID)) + geom_line() + facet_grid(. ~ group)
 gg4&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_path).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We’re not in Kansas anymore - look at the technocolor.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg5 &amp;lt;-  gg2 + aes(colour = factor(ID)) + guides(colour=FALSE) 
 gg5&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_path).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Subsample that has linear model estimates&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Okay, beside the occular technique, we’re going to need to do something more to address our theoretical questions. Lets look at some random people in the sample and run some regressions.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(11)
 ex.random &amp;lt;- example %&amp;gt;% 
   dplyr::select(ID) %&amp;gt;% 
@@ -194,8 +200,8 @@ gg6&lt;/code&gt;&lt;/pre&gt;
 ## Warning in qt((1 - level)/2, df): NaNs produced
 
 ## Warning in qt((1 - level)/2, df): NaNs produced&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;lets look at individual level regressions&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Lets look at individual level regressions&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
 library(broom)
 
@@ -228,7 +234,8 @@ regressions&lt;/code&gt;&lt;/pre&gt;
 ## 18   149 week         0.00497 NaN         NaN     NaN     
 ## 19   152 (Intercept)  0.0921  NaN         NaN     NaN     
 ## 20   152 week        -0.0172  NaN         NaN     NaN&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This gives us the average starting value and change per week&lt;/p&gt;
+&lt;p&gt;What can we see? Estimates give us an intercept and regression coefficient for each person. Some people increase across time, some decrease. Some we cannot do statistical tests on – why?&lt;/p&gt;
+&lt;p&gt;Well that is per person. Lets get the average starting value and change per week&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;regressions %&amp;gt;% 
   group_by(term) %&amp;gt;% 
   summarise(avg.reg = mean(estimate))&lt;/code&gt;&lt;/pre&gt;
@@ -237,22 +244,24 @@ regressions&lt;/code&gt;&lt;/pre&gt;
 ##   &amp;lt;chr&amp;gt;         &amp;lt;dbl&amp;gt;
 ## 1 (Intercept) 0.102  
 ## 2 week        0.00244&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;average trend&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg7 &amp;lt;-  gg1 &amp;lt;- ggplot(example, aes(x = week, y = SMN7)) + geom_point() + stat_smooth() 
+&lt;p&gt;Lets plot the average trend across everyone. Start with a best fit line not taking into account that people have repeated measures.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg7 &amp;lt;-  gg1 &amp;lt;- ggplot(example, aes(x = year, y = SMN7)) + geom_point() + stat_smooth() 
 gg7&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using method = &amp;#39;loess&amp;#39; and formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing non-finite values (stat_smooth).&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Split up my group&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg8 &amp;lt;-  ggplot(example, aes(x = week, y = SMN7)) + geom_point() + stat_smooth(method = &amp;quot;lm&amp;quot;) + facet_grid(. ~ group)
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That lowess line is a little strange. How about a linear estimate.&lt;/p&gt;
+&lt;p&gt;Split up by group&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg8 &amp;lt;-  ggplot(example, aes(x = year, y = SMN7)) + geom_point() + stat_smooth(method = &amp;quot;lm&amp;quot;) + facet_grid(. ~ group)
 gg8&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing non-finite values (stat_smooth).&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg9 &amp;lt;- ggplot(example, aes(x = week, y = SMN7, group = ID)) + geom_point(alpha = 0.05) + stat_smooth(method = &amp;quot;lm&amp;quot;, se = FALSE)   
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;But I also want to see the individual slopes, not just the average.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg9 &amp;lt;- ggplot(example, aes(x = year, y = SMN7, group = ID)) + geom_point(alpha = 0.05) + stat_smooth(method = &amp;quot;lm&amp;quot;, se = FALSE)   
 
-gg10 &amp;lt;- gg9 +  stat_smooth(data = example, aes(x = week, y = SMN7, group=1, color = &amp;quot;black&amp;quot;), method = &amp;quot;lm&amp;quot;, size = 2) + guides(fill=FALSE)
+gg10 &amp;lt;- gg9 +  stat_smooth(data = example, aes(x = year, y = SMN7, group=1, color = &amp;quot;black&amp;quot;), method = &amp;quot;lm&amp;quot;, size = 2) + guides(fill=FALSE)
 
 
 gg11 &amp;lt;- gg10 + facet_grid(.~ group) + theme(legend.position=&amp;quot;none&amp;quot;)
@@ -262,59 +271,62 @@ gg11&lt;/code&gt;&lt;/pre&gt;
 
 ## Warning: Removed 9 rows containing non-finite values (stat_smooth).&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;doing-this-with-mlm&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Doing this with MLM&lt;/h3&gt;
-&lt;p&gt;These regressions are how you should begin to think about longitudinal data analysis. These growth models (the simplest form of longitudinal data analysis) are just a bunch of regressions for each person plus a little extra stuff. MLM is just a fancy regression equation. That is it. Seriously.&lt;/p&gt;
+&lt;div id=&#34;doing-this-with-mlm-and-sem&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Doing this with MLM (and SEM)&lt;/h3&gt;
+&lt;p&gt;These regressions and plots are how you should begin to think about longitudinal data analysis. These growth models (the simplest form of longitudinal data analysis) are just a bunch of regressions for each person plus a little extra stuff. MLM is just a fancy regression equation. We want to create a line for everyone. Does someone go up? Does someone go down? On average, do people’s lines indciate that this construct increases or decreases? That is it. Seriously.&lt;/p&gt;
 &lt;p&gt;What is different from normal regression? Extra error terms, mostly. For regression, we think of error as existing in one big bucket. For MLMs (and other longitudinal models) we will be breaking up unexplained variance (error) into multiple buckets.&lt;/p&gt;
-&lt;p&gt;This is where fixed effects and random effects come into play. We will discuss this more next class, but the gist is that fixed effects are the regression coefficients you are used to. Fixed effects index group level change. Random effects vary among individuals (in the longitudinal models we are talking about) and index variation from the group. For our purposes this is most easily seen thinking about an average group trajectory (fixed effect) and the random effect indexes how much variability there is around that group level effect.&lt;/p&gt;
+&lt;p&gt;This is where fixed effects and random effects come into play. We will discuss this more next class, but the gist is that fixed effects are the regression coefficients you are used to. Fixed effects index group level change. Do people decline in memory across time, on average? Random effects vary among individuals (in the longitudinal models we are talking about) and index variation from the group. While most people decline in their memory, does everyone? In other words, an average trajectory will be termed a fixed effect and the random effect indexes how much variability there is around that group level effect. This extra variability we measure through random effects means that we are explaining more variance and thus there is less unexplained variance.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;design-considerations&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Design considerations&lt;/h2&gt;
 &lt;div id=&#34;number-of-assessment-waves&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Number of assessment waves&lt;/h3&gt;
+&lt;h3&gt;1. Number of assessment waves&lt;/h3&gt;
 &lt;p&gt;Remember high school algebra: two points define a line. But, that assumes we can measure constructs without error. Three assessment points will better define changes in psychological variables. As a default, you need three waves of data to use MLM models. However, some simplifications can be made with MLM. Two wave assessments are mostly better with SEM approaches.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;measurement&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Measurement&lt;/h3&gt;
+&lt;h3&gt;2. Measurement&lt;/h3&gt;
 &lt;div id=&#34;scale-of-measurement&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;Scale of measurement&lt;/h4&gt;
 &lt;p&gt;Measurement is always the basis for good quantiative analysis. Without good measurement you are just spitting into the wind. Standard measurement concerns remain (reliability, dimensionality) but extra concerns exist with longitudinal data.&lt;/p&gt;
 &lt;p&gt;What does it mean for categorical variables to change over time? Can you imagine a trajectory for what this is measuring? How would dichotomous responses impact ability to measure change?&lt;/p&gt;
 &lt;p&gt;What about ranks, such as in preference for school subjects? What if the class composition changes – what is this assessing? Given that ranks are related such that if I increase someone has to decrease, how does that impact change assessments?&lt;/p&gt;
-&lt;p&gt;Can I analyze childhood and adult variables simultaneously if assess the same construct, even though they may be measured differently? How can you measure change in the same construct but with different measures?&lt;/p&gt;
-&lt;p&gt;Often the answer to these is to use a different form of longitudinal model. In general, the better measured the construct (continuous, not dependent on others, using the same scale) the more complex/sophisticated analysis you can run. Worse measurment leads to simplification both in terms of the models and the types of conclusions you can make.&lt;/p&gt;
+&lt;p&gt;Can I analyze childhood and adult variables simultaneously if assess the same construct, even though they may be measured differently? How can you measure change in the same construct but with different measures? To assess math ability in 5 year olds you can ask them about addition, can you do that in a sample of 20 year olds? Does that measure continue to assess math ability?&lt;/p&gt;
+&lt;p&gt;Often the answer to these is to use a different form of the longitudinal model. In general, the better measured the construct (continuous, not dependent on others, using the same scale) the more complex/sophisticated analysis you can run. Worse measurment leads to simplification both in terms of the models and the types of conclusions you can make.&lt;/p&gt;
+&lt;p&gt;As with all of science, everything rests on measurement. Poor measurement results in poor conclusions.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;standardizing&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;Standardizing&lt;/h4&gt;
 &lt;p&gt;It is standard practice to z-score to get standardized responses. However, it is not straight forward to do so when using longitudinal data. Why would z-scoring your variables be problematic?&lt;/p&gt;
-&lt;p&gt;If you scale for age, for example, this takes out a potential explanatory variable. Or, more worriesome, it also can add error if not everyone is standardized consistently (say if standardization is across age groups and someone just misses a cut).&lt;/p&gt;
-&lt;p&gt;The best reason though is that you take away the mean such that the expected change across time is zero. While helpful for cross sectional analyses, z-scoring adds in layers of computational and interpretational problems.&lt;/p&gt;
+&lt;p&gt;First, if you scale for age, for example, this takes out a potential explanatory variable.&lt;/p&gt;
+&lt;p&gt;Second, more worriesome, it also can add error if not everyone is standardized consistently (say if standardization is across age groups and someone just misses a cut). Or if the sample changes due to attrition.&lt;/p&gt;
+&lt;p&gt;Third, is that you take away the mean for each assessment such that the expected change across time is zero. We will talk more about solutions to this problem as the semester progresses but the short answer is to avoid or to use SEM.&lt;/p&gt;
+&lt;p&gt;While helpful for cross sectional analyses, z-scoring adds in layers of computational and interpretational problems.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;reliability&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;Reliability&lt;/h4&gt;
 &lt;p&gt;The goal of longitudinal analyses is to understand why some construct changes or stays the same across time. A major difficulty in addressing this goal is whether you are able to accurately assess the construct of interest. One of the key characteristics (but not the only characteristic) is whether or not your assessment would be consistent if you gave an alternative measure or if you retook it immediately after your first assessment. This is known as reliability of measurement. To the extent that your measure is reliable it assesses true score variance as opposed to error variance. The amount of error score variance assessed is important given that error variance will masquerade as change across time given that error can correlate with anything else. The more error in your measurement the more change you will find. Of course this is unreliable change – change that is not true change, just stochastic noise.&lt;/p&gt;
-&lt;p&gt;We can think of reliability two ways. First, reliability of the change estimate. This, depend on how much error there is in the assessment and the number of waves. These two components are similar to inter item correlation and number of items being the two main components that effect reliability in cross sectional analyses.&lt;/p&gt;
+&lt;p&gt;We can think of reliability two ways. First, reliability of the change estimate. This depends on how much error there is in the assessment and the number of waves. These two components are similar to inter item correlation and number of items being the two main components that effect reliability in cross sectional analyses. Increase the number of items (waves) you increase your alpha. Increase the average correlation among items, you increase your alpha. The parallel to average correlation among items is our ability to accurately assess the construct. When comparing a construct across time we examine this with measurement invariance.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;measurement-invariance&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;Measurement invariance&lt;/h4&gt;
-&lt;p&gt;The second way to think of reliability is in terms of how consistently the measure is assessed across time. Or do you assess the same construct at each time? What would happen if we looked at change in IQ from 1st grade to 12 grade and used the first grade IQ test at each time? The construct that you assessed at the first wave is likely not the same assessed later.
-To test this formally is called measurement invariance and is typically done through SEM. We will talk more about this later in the semester.&lt;/p&gt;
+&lt;p&gt;The second way to think of reliability is in terms of how consistently the measure is assessed across time. Or, do you assess the same construct at each time? What would happen if we looked at change in IQ from 1st grade to 12 grade and used the first grade IQ test at each time? The construct that you assessed at the first wave is likely not the same assessed later.
+To test this formally is called measurement invariance and is typically done through SEM. We will talk more about this later in the semester. Until we get there we make a large assumption that what we are measuring now is the same at each wave of assessment.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;threats-to-validity&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Threats to validity&lt;/h2&gt;
 &lt;div id=&#34;missing-data&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Missing data&lt;/h3&gt;
+&lt;h3&gt;1. Missing data&lt;/h3&gt;
 &lt;div id=&#34;types-of-missing-data&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;Types of missing data&lt;/h4&gt;
 &lt;p&gt;On a scale from 1 to you’re completely screwed, how confident are you that the missingness is not related to your study variables?&lt;/p&gt;
 &lt;p&gt;Missing completely at random (MCAR) means that the missingness pattern is due entirely to randomness&lt;/p&gt;
 &lt;p&gt;Missing at random (MAR) means that there is conditional randomness. Missingness may be due to other variables in the dataset. Pretty standard for longitudinal data.&lt;/p&gt;
-&lt;p&gt;Not missing at random (NMAR) means that the missingness is systematic based on the missing values and not associated with measures variables. For example, in a study of reading ability, kids with low reading ability drop out, due to not liking to take tests on reading ability. However, if reading ability is associated with other variables in the model, then this missingness becomes closer in kind of MAR, and thus somewhat less problematic.&lt;/p&gt;
+&lt;p&gt;Not missing at random (NMAR) means that the missingness is systematic based on the missing values and not associated with measured variables. For example, in a study of reading ability, kids with low reading ability drop out, due to not liking to take tests on reading ability. However, if reading ability is associated with other variables in the model, then this missingness becomes closer in kind to MAR, and thus somewhat less problematic.&lt;/p&gt;
 &lt;p&gt;Typically, we make the assumption we are working under MAR and thus we will have unbiased estimates when predictors of missingness are incorporated into the model.&lt;/p&gt;
 &lt;p&gt;There are tests to distinguish MAR from NMAR but you cannot distinguish MCAR from MAR because it is based entirely on knowing something that you dont have.&lt;/p&gt;
 &lt;/div&gt;
@@ -326,23 +338,23 @@ Multiple imputation? Cannot hurt. More on these approaches later.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;attritionmortality&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Attrition/Mortality&lt;/h3&gt;
+&lt;h3&gt;2. Attrition/Mortality&lt;/h3&gt;
 &lt;p&gt;Major contributor to missing data&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;historycohort&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;History/cohort&lt;/h3&gt;
+&lt;h3&gt;3. History/cohort&lt;/h3&gt;
 &lt;p&gt;Know that the processes driving change can be due to a specific event or cohort.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;maturation&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Maturation&lt;/h3&gt;
+&lt;h3&gt;4. Maturation&lt;/h3&gt;
 &lt;p&gt;Change may occur because of natural processes. Thus if you just follow someone across time they will likely change irregardless of say, if they are in the control group.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;testing&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Testing&lt;/h3&gt;
+&lt;h3&gt;5. Testing&lt;/h3&gt;
 &lt;p&gt;Having people take the same survey, test or interview multiple times may lead them to respond differently. Does that change result from development or does it result from them being familiar with the test?&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;selection&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Selection&lt;/h3&gt;
+&lt;h3&gt;6. Selection&lt;/h3&gt;
 &lt;p&gt;If you are looking at life events, know that life events are not distributed randomly. Moreover, people who stay in studies and even sign up for studies are different from those that do not. As a result, it is often hard to make internally valid inferences with longitudinal data.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -378,6 +390,7 @@ Multiple imputation? Cannot hurt. More on these approaches later.&lt;/p&gt;
 &lt;li&gt;&lt;a href=&#34;#random-effects&#34;&gt;Random effects&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#empty-model-equation&#34;&gt;Empty model equation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#putting-it-together&#34;&gt;Putting it together&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#visualize-what-you-are-doing&#34;&gt;Visualize what you are doing&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#icc&#34;&gt;ICC&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#adding-time&#34;&gt;Adding time&lt;/a&gt;&lt;ul&gt;
@@ -444,14 +457,14 @@ Multiple imputation? Cannot hurt. More on these approaches later.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(readr)
 example &amp;lt;- read_csv(&amp;quot;~/Box/5165 Applied Longitudinal Data Analysis/Longitudinal/example.csv&amp;quot;)
 example$ID &amp;lt;- as.factor(example$ID)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Lets look at some data&lt;/p&gt;
+&lt;p&gt;Lets look at some data. These data examine older adults who came into a study up to six times over a six year period. Multiple cognitive, psychiatric and imaging assessments were done. Let’s look at functional connectivity network called SMN7.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Attaching packages ─────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ─────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.2.1           ✔ dplyr   0.8.3      
 ## ✔ tibble  2.1.3           ✔ stringr 1.4.0      
 ## ✔ tidyr   0.8.99.9000     ✔ forcats 0.4.0      
 ## ✔ purrr   0.3.2&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ─────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
@@ -484,7 +497,7 @@ summary(regression)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;within-person-models-e.g.-2-level-models&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Within person models e.g., 2-level models&lt;/h2&gt;
-&lt;p&gt;We saw this last time where we can think of everyone being a seperate regression model. Here the lines connect the dots of the same people across time.&lt;/p&gt;
+&lt;p&gt;We saw this last time where we can think of everyone being run in a seperate regression model. Here the lines connect the dots of the same people across time.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
 gg2 &amp;lt;- ggplot(example,
    aes(x = week, y = SMN7, group = ID)) + geom_point() + stat_smooth(method = &amp;quot;lm&amp;quot;, se = FALSE)   
@@ -494,7 +507,7 @@ print(gg3)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/Lectures/03-Growth-curves_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Each person has multiple assessments, so we need to distinguish between people and their assessments. In normal regression we wouldn’t think about this as everyone datapoint is assumed to be independent. However, this is not the case here. Failing to distinguish would lead to violation of independence, an important assumption of the standard regression model.&lt;/p&gt;
 &lt;p&gt;As seen in the graph above, what we have now is both individual level slopes as well as an average level slope. The average level slope is going to be the average of the individual level slopes, which will look like our average slope ignoring all dependencies. Same for the intercept.&lt;/p&gt;
-&lt;p&gt;One way to do this is to run seperate regressions for each person. Then we could just pool together where people start and how much they change to get the average intercept (starting value) and trajectory (how much people change).&lt;/p&gt;
+&lt;p&gt;One way to do this is to run seperate regressions for each person. Then we could just pool (or average) together where people start and how much they change to get the average intercept (starting value) and trajectory (how much people change). We will see later that this is a somewhat poor approach.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Joining, by = &amp;quot;ID&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;regressions &amp;lt;- example2 %&amp;gt;% 
   group_by(ID) %&amp;gt;% 
@@ -511,9 +524,10 @@ head(regressions)&lt;/code&gt;&lt;/pre&gt;
 ## 4 75    week         0.00771 NaN          NaN    NaN     
 ## 5 87    (Intercept)  0.0787  NaN          NaN    NaN     
 ## 6 87    week        -0.0227  NaN          NaN    NaN&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In addition to the intercept and the trajectory there is also the amount of variation around each of these estimates. Do people tend to change the same? Are there individual differences in the initial assessment?&lt;/p&gt;
+&lt;p&gt;In addition to the average intercept and the average trajectory there is also the amount of variation around each of these estimates. Do people tend to change the same? Are there individual differences in the initial assessment?&lt;/p&gt;
 &lt;p&gt;This type of meaningful variation is lost when we have a between subjects only model that ignores the individual level. This variation will be called Random Effects (or variance estimates in SEM).&lt;/p&gt;
-&lt;p&gt;Note, there is another important sournce of variation different from standard regression models. The within-subjects error that can be seen in the below graph. If we did not take people into account and just collapsed across people to get a between subjects assessment of change, this error would be confounded with individual differences in change. We will discuss this error more in depth later.&lt;/p&gt;
+&lt;p&gt;[Side note: note how some people do not have se estimates for their regression coefficients. The reason for this will impact our ability to fit longitudinal models later on.]&lt;/p&gt;
+&lt;p&gt;There is another important source of variation different from standard regression models. The within-subjects error that can be seen in the below graph. If we did not take people into account and just collapsed across people to get a between subjects assessment of change, this error would be confounded with individual differences in change. We will discuss this error more in depth later, but one way to think about our goal is to utilize our repeated assessments to make better predictions. A way to do that is to create additional buckets of explained variance, resulting in a smaller bucket of unexplained variance.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;example3 &amp;lt;- example2 %&amp;gt;% 
   filter(ID == &amp;quot;67&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg4 &amp;lt;-  ggplot(example3, aes(x = week, y = SMN7, group = ID)) +  geom_point() + stat_smooth(method = &amp;quot;lm&amp;quot;)
@@ -525,13 +539,13 @@ gg4&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;random-effects&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Random effects&lt;/h3&gt;
-&lt;p&gt;Within subjects variability in either staring value or slope/trajectory is referenced in terms of random effects. How do we represent this in our equation? Easy, we just say that the typical regression parameters we have are not the same for everyone – that they are random (in contrast to fixed).&lt;/p&gt;
+&lt;p&gt;Within subjects variability in either starting value or slope/trajectory is referenced in terms of random effects. How do we represent this in our equation? Easy, we just say that the typical regression parameters we have are not the same for everyone – that they are random (in contrast to fixed).&lt;/p&gt;
 &lt;p&gt;In general, when would we want to use random effects? If there is some sort of selection (random or not) of many possible values of the predictor (e.g., stimuli are 3 random depression drugs, three semi random chosen levels of a drug). With longitudinal data this is (random) people.&lt;/p&gt;
 &lt;p&gt;Side bar: Even in situations where these levels are not random (eg working with states) it is still useful to use MLM and we still call them random effects. To be consistent with language, random here can refer to as random from the population average, not randomly selected. When talking about “random effects” you can mean either of these defintions (and a few more). Luckily we can mostly ignore these semantic issues.&lt;/p&gt;
-&lt;p&gt;What is necessary for modeling random effects? For longitudinal models, there needs to be multiple assessments per your grouping category (people, schools, neighborhoods).&lt;/p&gt;
+&lt;p&gt;What is necessary for modeling random effects? For longitudinal models, there needs to be multiple assessments per your grouping category (people, schools, neighborhoods, trials).&lt;/p&gt;
 &lt;p&gt;We are assuming these random effects are sampled from some population and thus vary from group to group (or person to person). This means that your coeffients (like traditional regression coefficients) are estimates of some population parameter and thus have error associated with them. This error is not like like a standard residual, which represents error for your overall model. Nor is it like the standard error for a point estimate. Random effects can best be thought of as deviation of individual regression lines from the group regression line (though it technically is not this).&lt;/p&gt;
 &lt;p&gt;To facilitate the multiple assessments per person we will now use both i and j subscripts. We will see that the random effects are part of the overall error term in the model. Counterintutitively, the main focus of these types of models will be the fixed effects, with less attention paid to the random effects. That said, the random effects are necessary to account for dependency in the data. One can think about these models as normal fixed effects regressions, with the random effects there to account for the longitudinal nature of the data. They are made up of a number of standard regression equations, each for a single individual. Doing so side steps the trouble of having correlated errors, and thus allows us to interpret our findings without concern.&lt;/p&gt;
-&lt;p&gt;To faciliate adding random effects to our model it is helpful to think about two “levels” to our regression equation. The first level will be the within-person model, in that it described how people differ across time. The second level will be the between person level. Note that these do not correspond to fixed or random effects. Instead they can be thought to model either within person differences or between person differences. Mastering thinking at these two levels will help make sense of these MLM models.&lt;/p&gt;
+&lt;p&gt;To faciliate adding random effects to our model it is helpful to think about two “levels” to our regression equation. We are going to put a regression equation within our requestion equation. (Que Xzhibit joke). The first level will be the within-person model, in that it described how people differ across time. The second level will be the between person level. Note that these do not correspond to fixed or random effects. Instead they can be thought to model either within person differences or between person differences. Mastering thinking at these two levels will help make sense of these MLM models.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;empty-model-equation&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Empty model equation&lt;/h3&gt;
@@ -547,8 +561,8 @@ gg4&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;And two variance components:
 1. a random effect of the intercept
 &lt;span class=&#34;math display&#34;&gt;\[ {U}_{0j} \sim \mathcal{N}(0, \tau_{00}^{2})  \]&lt;/span&gt;
-The subscript of the &lt;span class=&#34;math inline&#34;&gt;\(U_{0j}\)&lt;/span&gt; refers to the number of the parameter where 0 is the intercept, 1 is the first regression coefficient, and so on. The second refers to the individual, j.&lt;/p&gt;
-&lt;p&gt;This random effect is normally distributed with a mean of zero and a variance of &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt;&lt;/p&gt;
+The subscript of the &lt;span class=&#34;math inline&#34;&gt;\(U_{0j}\)&lt;/span&gt; refers to the number of the parameter where 0 is the intercept, 1 is the first regression coefficient, and so on. The second refers to the individual, j. So &lt;span class=&#34;math inline&#34;&gt;\(U_{0j}\)&lt;/span&gt; refers to the intercept whereas &lt;span class=&#34;math inline&#34;&gt;\(U_{1j}\)&lt;/span&gt; would refer to the random effect of the first regression coefficient.&lt;/p&gt;
+&lt;p&gt;The &lt;span class=&#34;math inline&#34;&gt;\(U_{0j}\)&lt;/span&gt; random effect is said to be normally distributed with a mean of zero and a variance of &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt;&lt;/p&gt;
 &lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;the residual error term
 &lt;span class=&#34;math display&#34;&gt;\[ {R}_{ij} \sim \mathcal{N}(0, \sigma^{2})  \]&lt;/span&gt;
@@ -560,13 +574,17 @@ Much like in normal regression there is an error term for all of the variation w
 &lt;h3&gt;Putting it together&lt;/h3&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {Y}_{ij} = \gamma_{00} + U_{0j}  + \varepsilon_{ij} \]&lt;/span&gt;&lt;/p&gt;
 &lt;/div&gt;
+&lt;div id=&#34;visualize-what-you-are-doing&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Visualize what you are doing&lt;/h3&gt;
+&lt;p&gt;Imagine the raw data plotted without knowing person j, how would &lt;span class=&#34;math inline&#34;&gt;\(\varepsilon_{i}\)&lt;/span&gt; be calculated?&lt;/p&gt;
+&lt;p&gt;Now think about the data plotted again but with knowing each person has their own intercept. How would &lt;span class=&#34;math inline&#34;&gt;\(\varepsilon_{ij}\)&lt;/span&gt; be calculated?&lt;/p&gt;
+&lt;p&gt;Finally, how is U_{0j} calculated?&lt;/p&gt;
+&lt;/div&gt;
 &lt;div id=&#34;icc&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;ICC&lt;/h3&gt;
 &lt;p&gt;ICC:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\frac{U_{0j}}{U_{0j}+ \varepsilon_{ij}}\]&lt;/span&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;% variation between vs within person variance.&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;Is defined as % variation between vs within person variance.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;adding-time&#34; class=&#34;section level2&#34;&gt;
@@ -2099,8 +2117,638 @@ head(sim.1)&lt;/code&gt;&lt;/pre&gt;
       <guid>/workshops/workshop-1/</guid>
       <description>
 
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#what-are-data&#34;&gt;What Are Data?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#workspace&#34;&gt;Workspace&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#packages&#34;&gt;Packages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#codebook&#34;&gt;Codebook&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data&#34;&gt;Data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#clean-data&#34;&gt;Clean Data&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#recode-variables&#34;&gt;Recode Variables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#reverse-scoring&#34;&gt;Reverse-Scoring&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#create-composites&#34;&gt;Create Composites&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#bfi-s&#34;&gt;BFI-S&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#life-events&#34;&gt;Life Events&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#descriptives&#34;&gt;Descriptives&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#scale-reliability&#34;&gt;Scale Reliability&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#zero-order-correlations&#34;&gt;Zero-Order Correlations&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
 
-&lt;p&gt;This is the first workshop&lt;/p&gt;
+&lt;div id=&#34;what-are-data&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;What Are Data?&lt;/h1&gt;
+&lt;p&gt;Data are the core of everything that we do in statistical analysis. Data come in many forms, and I don’t just mean &lt;code&gt;.csv&lt;/code&gt;, &lt;code&gt;.xls&lt;/code&gt;, &lt;code&gt;.sav&lt;/code&gt;, etc. Data can be wide, long, documented, fragmented, messy, and about anything else that you can imagine.&lt;/p&gt;
+&lt;p&gt;Although data could arguably be more means than end in psychology, the importance of understanding the structure and format of your data cannot overstated. Failure to understand your data could end in improper techniques and flagrantly wrong inferences at worst. This is especially important for longitudinal data.&lt;/p&gt;
+&lt;p&gt;In this workshop, we are going to talk data management and basic data cleaning. Other tutorials will go more in depth into data cleaning and reshaping. This tutorial is meant to prepare you to think about those in more nuanced ways and to help you develop a functional workflow for conducting your own research.&lt;/p&gt;
+&lt;p&gt;The workshop applies to ALL of your data/projects/analysis, not just longitudinal data. These are practices that will accomplish three goals: 1) efficiently load and leave your data in the right form to be analyzed, 2) have the organization so as to follow what you did and so others can understand you did, and 3. share the data/code/plots/analyses easily and effectively. None of the following are the absolute necessary way to accomplish your data analytic goals. However, we feel that people mostly don’t think through these steps. Hammstringing them later. In other words, if you know an alternative that means you already know what we are trying to convey.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;workspace&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Workspace&lt;/h1&gt;
+&lt;p&gt;When I create an &lt;code&gt;rmarkdown&lt;/code&gt; document for my own research projects, I always start by setting up my my workspace. This involves 3 steps:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Packages&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;Codebook(s)&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;Data&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Below, we will step through each of these separately, setting ourselves up to (hopefully) flawlessly communicate with &lt;code&gt;R&lt;/code&gt; and our data.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;Packages seems like the most basic step, but it is actually very important. &lt;strong&gt;ALWAYS LOAD YOUR PACKAGES IN A VERY INTENTIONAL ORDER AT THE BEGINNING OF YOUR SCRIPT.&lt;/strong&gt; Package conflicts suck, so it needs to be shouted. (Note: Josh will often reload or not follow this advice for didactic reasons, choosing to put library calls above the code. )&lt;/p&gt;
+&lt;p&gt;For this tutorial, we are going to quite simple. We will load the &lt;code&gt;psych&lt;/code&gt; package for data descriptives, some options for cleaning and reverse coding, and some evaluations of our scales. The &lt;code&gt;plyr&lt;/code&gt; package is the predecessor of the &lt;code&gt;dplyr&lt;/code&gt; package, which is a core package of the &lt;code&gt;tidyverse&lt;/code&gt;, which you will become quite familiar with in these tutorials. I like the plyr package because it contains a couple of functions (e.g. &lt;code&gt;mapvalues()&lt;/code&gt;) that I find quite useful. Finally, we load the &lt;code&gt;tidyverse&lt;/code&gt; package, which is actually a complilation of 8 packages. Some of these we will use today and some we will use in later tutorials. All are very useful and are arguably some of the most powerful tools R offers.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# load packages
+library(psych)
+library(plyr)
+library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.2.1           ✔ purrr   0.3.2      
+## ✔ tibble  2.1.3           ✔ dplyr   0.8.3      
+## ✔ tidyr   0.8.99.9000     ✔ stringr 1.4.0      
+## ✔ readr   1.3.1           ✔ forcats 0.4.0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ─────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ ggplot2::%+%()     masks psych::%+%()
+## ✖ ggplot2::alpha()   masks psych::alpha()
+## ✖ dplyr::arrange()   masks plyr::arrange()
+## ✖ purrr::compact()   masks plyr::compact()
+## ✖ dplyr::count()     masks plyr::count()
+## ✖ dplyr::failwith()  masks plyr::failwith()
+## ✖ dplyr::filter()    masks stats::filter()
+## ✖ dplyr::id()        masks plyr::id()
+## ✖ dplyr::lag()       masks stats::lag()
+## ✖ dplyr::mutate()    masks plyr::mutate()
+## ✖ dplyr::rename()    masks plyr::rename()
+## ✖ dplyr::summarise() masks plyr::summarise()
+## ✖ dplyr::summarize() masks plyr::summarize()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;codebook&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Codebook&lt;/h2&gt;
+&lt;p&gt;The second step is a codebook. Arguably, this is the first step because you should &lt;em&gt;create&lt;/em&gt; the codebook long before you open &lt;code&gt;R&lt;/code&gt; and load your data.&lt;/p&gt;
+&lt;p&gt;In this case, we are going to using some data from the &lt;a href=&#34;https://www.diw.de/en/soep/&#34;&gt;German Socioeconomic Panel Study (GSOEP)&lt;/a&gt;, which is an ongoing Panel Study in Germany. Note that these data are for teaching purposes only, shared under the license for the Comprehensive SOEP teaching dataset, which I, as a contracted SOEP user, can use for teaching purposes. These data represent select cases from the full data set and should not be used for the purpose of publication. The full data are available for free at &lt;a href=&#34;https://www.diw.de/en/diw_02.c.222829.en/access_and_ordering.html&#34; class=&#34;uri&#34;&gt;https://www.diw.de/en/diw_02.c.222829.en/access_and_ordering.html&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For this tutorial, I created the codebook for you, and included what I believe are the core columns you may need. Some of these columns will not be particularly helpful for this dataset. For example, many of you likely work with datasets that have only a single file while others work with datasetsspread across many files. As a result, the “dataset” column of the codebook may only have a single value whereas for others it may have multiple. With longitudinal data it is likely you will have multiple.&lt;/p&gt;
+&lt;p&gt;Here are my core columns that are based on the original data:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;dataset&lt;/strong&gt;: this column indexes the &lt;strong&gt;name&lt;/strong&gt; of the dataset that you will be pulling the data from. This is important because we will use this info later on (see &lt;code&gt;purrr&lt;/code&gt; tutorial) to load and clean specific data files. Even if you don’t have multiple data sets, I believe consistency is more important and suggest using this.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;old_name&lt;/strong&gt;: this column is the name of the variable in the data you are pulling it from. This should be exact. The goal of this column is that it will allow us to &lt;code&gt;select()&lt;/code&gt; variables from the original data file and rename them something that is more useful to us. If you have worked with qualtrics (really any data) you know why this is important.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;item_text&lt;/strong&gt;: this column is the original text that participants saw or a description of the item.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;scale&lt;/strong&gt;: this column tells you what the scale of the variable is. Is it a numeric variable, a text variable, etc. This is helpful for knowing the plausible range.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;reverse&lt;/strong&gt;: this column tells you whether items in a scale need to be reverse coded. I recommend coding this as 1 (leave alone) and -1 (reverse) for reasons that will become clear later.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;mini&lt;/strong&gt;: this column represents the minimum value of scales that are numeric. Leave blank otherwise.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;maxi&lt;/strong&gt;: this column represents the maximumv alue of scales that are numeric. Leave blank otherwise.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;recode&lt;/strong&gt;: sometimes, we want to recode variables for analyses (e.g. for categorical variables with many levels where sample sizes for some levels are too small to actually do anything with it). I use this column to note the kind of recoding I’ll do to a variable for transparency.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Here are additional columns that will make our lives easier or are applicable to some but not all data sets:&lt;/p&gt;
+&lt;ol start=&#34;9&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;category&lt;/strong&gt;: broad categories that different variables can be put into. I’m a fan of naming them things like “outcome”, “predictor”, “moderator”, “demographic”, “procedural”, etc. but sometimes use more descriptive labels like “Big 5” to indicate the model from which the measures are derived.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;label&lt;/strong&gt;: label is basically one level lower than category. So if the category is Big 5, the label would be, or example, “A” for Agreeableness, “SWB” for subjective well-being, etc. This column is most important and useful when you have multiple items in a scales, so I’ll typically leave this blank when something is a standalone variable (e.g. sex, single-item scales, etc.).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;item_name&lt;/strong&gt;: This is the lowest level and most descriptive variable. It indicates which item in scale something is. So it may be “kind” for Agreebleness or “sex” for the demographic biological sex variable.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;year&lt;/strong&gt;: for longitudinal data, we have several waves of data and the name of the same item across waves is often different, so it’s important to note to which wave an item belongs. You can do this by noting the wave (e.g. 1, 2, 3), but I prefer the actual year the data were collected (e.g. 2005, 2009, etc.) if that is appropriate. See Lecture #1 on discussion of meaningful time metrics. Note that this differs from that discussion in codebook describes how you collected the data, not necessarily how you want to analyze the data.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;new_name&lt;/strong&gt;: This is a column that brings together much of the information we’ve already collected. It’s purpose is to be the new name that we will give to the variable that is more useful and descriptive to us. This is a constructed variable that brings together others. I like to make it a combination of “category”, “label”, “item_name”, and year using varying combos of &#34;_&#34; and “.” that we can use later with tidyverse functions. I typically construct this variable in Excel using the &lt;code&gt;CONCATENATE()&lt;/code&gt; function, but it could also be done in &lt;code&gt;R&lt;/code&gt;. The reason I do it in Excel is that it makes it easier for someone who may be reviewing my codebook.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;There is a seperate discussion to be had on naming conventions for your variables, but the important idea to remember is that names convey important information and we want to use this information later on to make our life easier. By coding these variables using this information AND systematically using different seperators we can accomplish this goal.&lt;/p&gt;
+&lt;ol start=&#34;14&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;strong&gt;meta&lt;/strong&gt;: Some datasets have a meta name, which essentially means a name that variable has across all waves to make it clear which variables are the same. They are not always useful as some data sets have meta names but no great way of extracting variables using them. But they’re still typically useful to include in your codebook regardless.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Below, I’ll load in the codebook we will use for this study, which will include all of the above columns.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# set the path
+wd &amp;lt;- &amp;quot;https://github.com/emoriebeck/R-tutorials/blob/master/ALDA/week_1_descriptives&amp;quot;
+
+# load the codebook
+(codebook &amp;lt;- url(sprintf(&amp;quot;%s/codebook.csv?raw=true&amp;quot;, wd)) %&amp;gt;% 
+    read_csv(.) %&amp;gt;%
+    mutate(old_name = str_to_lower(old_name)))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   dataset = col_character(),
+##   old_name = col_character(),
+##   item_text = col_character(),
+##   scale = col_character(),
+##   category = col_character(),
+##   label = col_character(),
+##   item_name = col_character(),
+##   year = col_double(),
+##   new_name = col_character(),
+##   reverse = col_double(),
+##   mini = col_double(),
+##   maxi = col_double(),
+##   recode = col_character()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 153 x 13
+##    dataset old_name item_text scale category label item_name  year new_name
+##    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;   
+##  1 &amp;lt;NA&amp;gt;    persnr   Never Ch… &amp;lt;NA&amp;gt;  Procedu… &amp;lt;NA&amp;gt;  SID           0 Procedu…
+##  2 &amp;lt;NA&amp;gt;    hhnr     househol… &amp;lt;NA&amp;gt;  Procedu… &amp;lt;NA&amp;gt;  household     0 Procedu…
+##  3 ppfad   gebjahr  Year of … nume… Demogra… &amp;lt;NA&amp;gt;  DOB           0 Demogra…
+##  4 ppfad   sex      Sex       &amp;quot;\n1… Demogra… &amp;lt;NA&amp;gt;  Sex           0 Demogra…
+##  5 vp      vp12501  Thorough… &amp;lt;NA&amp;gt;  Big 5    C     thorough   2005 Big 5__…
+##  6 zp      zp12001  Thorough… &amp;lt;NA&amp;gt;  Big 5    C     thorough   2009 Big 5__…
+##  7 bdp     bdp15101 Thorough… &amp;lt;NA&amp;gt;  Big 5    C     thorough   2013 Big 5__…
+##  8 vp      vp12502  Am commu… &amp;lt;NA&amp;gt;  Big 5    E     communic   2005 Big 5__…
+##  9 zp      zp12002  Am commu… &amp;lt;NA&amp;gt;  Big 5    E     communic   2009 Big 5__…
+## 10 bdp     bdp15102 Am commu… &amp;lt;NA&amp;gt;  Big 5    E     communic   2013 Big 5__…
+## # … with 143 more rows, and 4 more variables: reverse &amp;lt;dbl&amp;gt;, mini &amp;lt;dbl&amp;gt;,
+## #   maxi &amp;lt;dbl&amp;gt;, recode &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;First, we need to load in the data. We’re going to use three waves of data from the German Socioeconomic Panel Study, which is a longitudinal study of German households that has been conducted since 1984. We’re going to use more recent data from three waves of personality data collected between 2005 and 2013.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note&lt;/em&gt;: we will be using the teaching set of the GSOEP data set. I will not be pulling from the raw files as a result of this. I will also not be mirroring the format that you would usually load the GSOEP from because that is slightly more complicated and somethng we will return to in a later tutorial after we have more skills. I’ve left that code for now, but it won’t make a lot of sense right now.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;~/Box/network/other projects/PCLE Replication/data/sav_files&amp;quot;
+ref &amp;lt;- sprintf(&amp;quot;%s/cirdef.sav&amp;quot;, path) %&amp;gt;% haven::read_sav(.) %&amp;gt;% select(hhnr, rgroup20)
+read_fun &amp;lt;- function(Year){
+  vars &amp;lt;- (codebook %&amp;gt;% filter(year == Year | year == 0))$old_name
+  set &amp;lt;- (codebook %&amp;gt;% filter(year == Year))$dataset[1]
+  sprintf(&amp;quot;%s/%s.sav&amp;quot;, path, set) %&amp;gt;% haven::read_sav(.) %&amp;gt;%
+    full_join(ref) %&amp;gt;%
+    filter(rgroup20 &amp;gt; 10) %&amp;gt;%
+    select(one_of(vars)) %&amp;gt;%
+    gather(key = item, value = value, -persnr, -hhnr, na.rm = T)
+}
+
+vars &amp;lt;- (codebook %&amp;gt;% filter(year == 0))$old_name
+dem &amp;lt;- sprintf(&amp;quot;%s/ppfad.sav&amp;quot;, path) %&amp;gt;% 
+  haven::read_sav(.) %&amp;gt;%
+  select(vars)
+  
+tibble(year = c(2005:2015)) %&amp;gt;%
+  mutate(data = map(year, read_fun)) %&amp;gt;%
+  select(-year) %&amp;gt;% 
+  unnest(data) %&amp;gt;%
+  distinct() %&amp;gt;% 
+  filter(!is.na(value)) %&amp;gt;%
+  spread(key = item, value = value) %&amp;gt;%
+  left_join(dem) %&amp;gt;%
+  write.csv(., file = &amp;quot;~/Documents/Github/R-tutorials/ALDA/week_1_descriptives/data/wdeek_1_data.csv&amp;quot;, row.names = F)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This code below shows how I would read in and rename a wide-format data set using the codebook I created.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;old.names &amp;lt;- codebook$old_name # get old column names
+new.names &amp;lt;- codebook$new_name # get new column names
+
+(soep &amp;lt;- url(sprintf(&amp;quot;%s/data/week_1_data.csv?raw=true&amp;quot;, wd)) %&amp;gt;% # path to data
+  read_csv(.) %&amp;gt;% # read in data
+  select(old.names) %&amp;gt;% # select the columns from our codebook
+  setNames(new.names)) # rename columns with our new names&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 28,290 x 153
+##    Procedural__SID Procedural__hou… Demographic__DOB Demographic__Sex
+##              &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;
+##  1             901               94             1951                2
+##  2            1202              124             1913                2
+##  3            2301              230             1946                1
+##  4            2302              230             1946                2
+##  5            2304              230             1978                1
+##  6            2305              230             1946                2
+##  7            4601              469             1933                2
+##  8            4701              477             1919                2
+##  9            4901              493             1925                2
+## 10            5201              523             1955                1
+## # … with 28,280 more rows, and 149 more variables: `Big
+## #   5__C_thorough.2005` &amp;lt;dbl&amp;gt;, `Big 5__C_thorough.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_thorough.2013` &amp;lt;dbl&amp;gt;, `Big 5__E_communic.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__E_communic.2009` &amp;lt;dbl&amp;gt;, `Big 5__E_communic.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_coarse.2005` &amp;lt;dbl&amp;gt;, `Big 5__A_coarse.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_coarse.2013` &amp;lt;dbl&amp;gt;, `Big 5__O_original.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_original.2009` &amp;lt;dbl&amp;gt;, `Big 5__O_original.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_worry.2005` &amp;lt;dbl&amp;gt;, `Big 5__N_worry.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_worry.2013` &amp;lt;dbl&amp;gt;, `Big 5__A_forgive.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_forgive.2009` &amp;lt;dbl&amp;gt;, `Big 5__A_forgive.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_lazy.2005` &amp;lt;dbl&amp;gt;, `Big 5__C_lazy.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_lazy.2013` &amp;lt;dbl&amp;gt;, `Big 5__E_sociable.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__E_sociable.2009` &amp;lt;dbl&amp;gt;, `Big 5__E_sociable.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_artistic.2005` &amp;lt;dbl&amp;gt;, `Big 5__O_artistic.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_artistic.2013` &amp;lt;dbl&amp;gt;, `Big 5__N_nervous.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_nervous.2009` &amp;lt;dbl&amp;gt;, `Big 5__N_nervous.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_efficient.2005` &amp;lt;dbl&amp;gt;, `Big 5__C_efficient.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_efficient.2013` &amp;lt;dbl&amp;gt;, `Big 5__E_reserved.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__E_reserved.2009` &amp;lt;dbl&amp;gt;, `Big 5__E_reserved.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_friendly.2005` &amp;lt;dbl&amp;gt;, `Big 5__A_friendly.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_friendly.2013` &amp;lt;dbl&amp;gt;, `Big 5__O_imagin.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_imagin.2009` &amp;lt;dbl&amp;gt;, `Big 5__O_imagin.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_dealStress.2005` &amp;lt;dbl&amp;gt;, `Big 5__N_dealStress.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_dealStress.2013` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2005` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2006` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2007` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2008` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2009` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2010` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2011` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2012` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2013` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2014` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2015` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2005` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2006` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__ChldMvOut.2007` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2008` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2009` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__ChldMvOut.2010` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2011` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2012` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__ChldMvOut.2013` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2014` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2015` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2005` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2006` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2007` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2008` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2009` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2010` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2011` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2012` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2013` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2014` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2015` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2005` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__DadDied.2006` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2007` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__DadDied.2008` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2009` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__DadDied.2010` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2011` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__DadDied.2012` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2013` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__DadDied.2014` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2015` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__NewPart.2011` &amp;lt;dbl&amp;gt;, `Life Event__NewPart.2012` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__NewPart.2013` &amp;lt;dbl&amp;gt;, `Life Event__NewPart.2014` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__NewPart.2015` &amp;lt;dbl&amp;gt;, `Life Event__Married.2005` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Married.2006` &amp;lt;dbl&amp;gt;, `Life Event__Married.2007` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Married.2008` &amp;lt;dbl&amp;gt;, `Life Event__Married.2009` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Married.2010` &amp;lt;dbl&amp;gt;, …&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;clean-data&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Clean Data&lt;/h1&gt;
+&lt;div id=&#34;recode-variables&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Recode Variables&lt;/h2&gt;
+&lt;p&gt;Many of the data we work with have observations that are missing for a variety of reasons. In &lt;code&gt;R&lt;/code&gt;, we treat missing values as &lt;code&gt;NA&lt;/code&gt;, but many other programs from which you may be importing your data may use other codes (e.g. 999, -999, etc.). Large panel studies tend to use small negative values to indicate different types of missingness. This is why it is important to note down the scale in your codebook. That way you can check which values may need to be recoded to explicit &lt;code&gt;NA&lt;/code&gt; values.&lt;/p&gt;
+&lt;p&gt;In the GSOEP, &lt;code&gt;-1&lt;/code&gt; to &lt;code&gt;-7&lt;/code&gt; indicate various types of missing values, so we will recode these to &lt;code&gt;NA&lt;/code&gt;. To do this, we will use one of my favorite functions, &lt;code&gt;mapvalues()&lt;/code&gt;, from the &lt;code&gt;plyr&lt;/code&gt; package. In later tutorials where we read in and manipulate more complex data sets, we will use &lt;code&gt;mapvalues()&lt;/code&gt; a lot. Basically, mapvalues takes 4 key arguments: (1) the variable you are recoding, (2) a vector of initial values &lt;code&gt;from&lt;/code&gt; which you want to (3) recode your variable &lt;code&gt;to&lt;/code&gt; using a vector of new values in the same order as the old values, and (4) a way to turn off warnings if some levels are not in your data (&lt;code&gt;warn_missing = F&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(soep &amp;lt;- soep %&amp;gt;%
+  mutate_all(~as.numeric(mapvalues(., from = seq(-1,-7, -1), # recode negative 
+                to = rep(NA, 7), warn_missing = F)))) # values to NA&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 28,290 x 153
+##    Procedural__SID Procedural__hou… Demographic__DOB Demographic__Sex
+##              &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;
+##  1             901               94             1951                2
+##  2            1202              124             1913                2
+##  3            2301              230             1946                1
+##  4            2302              230             1946                2
+##  5            2304              230             1978                1
+##  6            2305              230             1946                2
+##  7            4601              469             1933                2
+##  8            4701              477             1919                2
+##  9            4901              493             1925                2
+## 10            5201              523             1955                1
+## # … with 28,280 more rows, and 149 more variables: `Big
+## #   5__C_thorough.2005` &amp;lt;dbl&amp;gt;, `Big 5__C_thorough.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_thorough.2013` &amp;lt;dbl&amp;gt;, `Big 5__E_communic.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__E_communic.2009` &amp;lt;dbl&amp;gt;, `Big 5__E_communic.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_coarse.2005` &amp;lt;dbl&amp;gt;, `Big 5__A_coarse.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_coarse.2013` &amp;lt;dbl&amp;gt;, `Big 5__O_original.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_original.2009` &amp;lt;dbl&amp;gt;, `Big 5__O_original.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_worry.2005` &amp;lt;dbl&amp;gt;, `Big 5__N_worry.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_worry.2013` &amp;lt;dbl&amp;gt;, `Big 5__A_forgive.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_forgive.2009` &amp;lt;dbl&amp;gt;, `Big 5__A_forgive.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_lazy.2005` &amp;lt;dbl&amp;gt;, `Big 5__C_lazy.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_lazy.2013` &amp;lt;dbl&amp;gt;, `Big 5__E_sociable.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__E_sociable.2009` &amp;lt;dbl&amp;gt;, `Big 5__E_sociable.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_artistic.2005` &amp;lt;dbl&amp;gt;, `Big 5__O_artistic.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_artistic.2013` &amp;lt;dbl&amp;gt;, `Big 5__N_nervous.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_nervous.2009` &amp;lt;dbl&amp;gt;, `Big 5__N_nervous.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_efficient.2005` &amp;lt;dbl&amp;gt;, `Big 5__C_efficient.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_efficient.2013` &amp;lt;dbl&amp;gt;, `Big 5__E_reserved.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__E_reserved.2009` &amp;lt;dbl&amp;gt;, `Big 5__E_reserved.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_friendly.2005` &amp;lt;dbl&amp;gt;, `Big 5__A_friendly.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_friendly.2013` &amp;lt;dbl&amp;gt;, `Big 5__O_imagin.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_imagin.2009` &amp;lt;dbl&amp;gt;, `Big 5__O_imagin.2013` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_dealStress.2005` &amp;lt;dbl&amp;gt;, `Big 5__N_dealStress.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_dealStress.2013` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2005` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2006` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2007` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2008` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2009` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2010` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2011` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2012` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2013` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2014` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2015` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2005` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2006` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__ChldMvOut.2007` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2008` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2009` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__ChldMvOut.2010` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2011` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2012` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__ChldMvOut.2013` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2014` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2015` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2005` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2006` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2007` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2008` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2009` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2010` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2011` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2012` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2013` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2014` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Divorce.2015` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2005` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__DadDied.2006` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2007` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__DadDied.2008` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2009` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__DadDied.2010` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2011` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__DadDied.2012` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2013` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__DadDied.2014` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2015` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__NewPart.2011` &amp;lt;dbl&amp;gt;, `Life Event__NewPart.2012` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__NewPart.2013` &amp;lt;dbl&amp;gt;, `Life Event__NewPart.2014` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__NewPart.2015` &amp;lt;dbl&amp;gt;, `Life Event__Married.2005` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Married.2006` &amp;lt;dbl&amp;gt;, `Life Event__Married.2007` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Married.2008` &amp;lt;dbl&amp;gt;, `Life Event__Married.2009` &amp;lt;dbl&amp;gt;,
+## #   `Life Event__Married.2010` &amp;lt;dbl&amp;gt;, …&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;reverse-scoring&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Reverse-Scoring&lt;/h2&gt;
+&lt;p&gt;Many scales we use have items that are positively or negatively keyed. High ratings on positively keyed items are indicative of being high on a construct. In contrast, high ratings on negatively keyed items are indicative of being low on a construct. Thus, to create the composite scores of constructs we often use, we must first “reverse” the negatively keyed items so that high scores indicate being higher on the construct.&lt;/p&gt;
+&lt;p&gt;There are a few ways to do this in &lt;code&gt;R&lt;/code&gt;. Below, I’ll demonstrate how to do so using the &lt;code&gt;reverse.code()&lt;/code&gt; function in the &lt;code&gt;psych&lt;/code&gt; package in &lt;code&gt;R&lt;/code&gt;. This function was built to make reverse coding more efficient (i.e. please don’t run every item that needs to be recoded with separate lines of code!!).&lt;/p&gt;
+&lt;p&gt;Before we can do that, though, we need to restructure the data a bit in order to bring in the reverse coding information from our codebook. We will talk more about what’s happening here in later tutorials on &lt;code&gt;tidyr&lt;/code&gt;, so for now, just bear with me.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(soep_long &amp;lt;- soep %&amp;gt;%
+  gather(key = item, value = value, -contains(&amp;quot;Procedural&amp;quot;), # change to long format
+         -contains(&amp;quot;Demographic&amp;quot;), na.rm = T) %&amp;gt;%
+  left_join(codebook %&amp;gt;% select(item = new_name, reverse, mini, maxi)) %&amp;gt;% # bring in codebook
+  separate(item, c(&amp;quot;type&amp;quot;, &amp;quot;item&amp;quot;), sep = &amp;quot;__&amp;quot;) %&amp;gt;% # separate category
+  separate(item, c(&amp;quot;item&amp;quot;, &amp;quot;year&amp;quot;), sep = &amp;quot;[.]&amp;quot;) %&amp;gt;% # seprate year
+  separate(item, c(&amp;quot;item&amp;quot;, &amp;quot;scrap&amp;quot;), sep = &amp;quot;_&amp;quot;) %&amp;gt;% # separate scale and item
+  mutate(value = as.numeric(value), # change to numeric
+         value = ifelse(reverse == -1, 
+            reverse.code(-1, value, mini = mini, maxi = maxi), value)))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Joining, by = &amp;quot;item&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 19618 rows
+## [452105, 452106, 452107, 452108, 452109, 452110, 452111, 452112, 452113,
+## 452114, 452115, 452116, 452117, 452118, 452119, 452120, 452121, 452122,
+## 452123, 452124, ...].&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 471,722 x 12
+##    Procedural__SID Procedural__hou… Demographic__DOB Demographic__Sex type 
+##              &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;
+##  1             901               94             1951                2 Big 5
+##  2            1202              124             1913                2 Big 5
+##  3            2301              230             1946                1 Big 5
+##  4            2302              230             1946                2 Big 5
+##  5            2304              230             1978                1 Big 5
+##  6            4601              469             1933                2 Big 5
+##  7            4701              477             1919                2 Big 5
+##  8            4901              493             1925                2 Big 5
+##  9            5201              523             1955                1 Big 5
+## 10            5202              523             1956                2 Big 5
+## # … with 471,712 more rows, and 7 more variables: item &amp;lt;chr&amp;gt;, scrap &amp;lt;chr&amp;gt;,
+## #   year &amp;lt;chr&amp;gt;, value &amp;lt;dbl&amp;gt;, reverse &amp;lt;dbl&amp;gt;, mini &amp;lt;dbl&amp;gt;, maxi &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;create-composites&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Create Composites&lt;/h2&gt;
+&lt;p&gt;Now that we have reverse coded our items, we can create composites.&lt;/p&gt;
+&lt;div id=&#34;bfi-s&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;BFI-S&lt;/h3&gt;
+&lt;p&gt;We’ll start with our scale – in this case, the Big 5 from the German translation of the BFI-S.&lt;/p&gt;
+&lt;p&gt;Here’s the simplest way, which is also the long way because you’d have to do it for each scale in each year, which I don’t recommend.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;soep$C.2005 &amp;lt;- with(soep, rowMeans(cbind(`Big 5__C_thorough.2005`, `Big 5__C_lazy.2005`, `Big 5__C_efficient.2005`), na.rm = T)) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But personally, I don’t have a desire to do that 15 times (5 traits times 3 waves), so we can use our codebook and &lt;code&gt;dplyr&lt;/code&gt; to make our lives a whole lot easier. In general, trying to run everything simultanously saves from copy-paste errors, makes your code more readable, and reduces the total amount of code. So while the below code may not make intuiative sense immediately, it is nonetheless what we are working towards.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;soep &amp;lt;- soep %&amp;gt;% select(-C.2005) # get rid of added column
+
+(b5_soep_long &amp;lt;- soep_long %&amp;gt;%
+  filter(type == &amp;quot;Big 5&amp;quot;) %&amp;gt;% # keep Big 5 variables
+  group_by(Procedural__SID, item, year) %&amp;gt;% # group by person, construct, &amp;amp; year
+  summarize(value = mean(value, na.rm = T)) %&amp;gt;% # calculate means
+  ungroup() %&amp;gt;% # ungroup
+  left_join(soep_long %&amp;gt;% # bring demographic info back in 
+    select(Procedural__SID, DOB = Demographic__DOB, Sex = Demographic__Sex) %&amp;gt;%
+    distinct()))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Joining, by = &amp;quot;Procedural__SID&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 151,186 x 6
+##    Procedural__SID item  year  value   DOB   Sex
+##              &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1             901 A     2005   5     1951     2
+##  2             901 A     2009   5.33  1951     2
+##  3             901 A     2013   5     1951     2
+##  4             901 C     2005   5.33  1951     2
+##  5             901 C     2009   5.5   1951     2
+##  6             901 C     2013   6     1951     2
+##  7             901 E     2005   4     1951     2
+##  8             901 E     2009   4     1951     2
+##  9             901 E     2013   4     1951     2
+## 10             901 N     2005   4     1951     2
+## # … with 151,176 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;life-events&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Life Events&lt;/h3&gt;
+&lt;p&gt;We also want to create a variable that indexes whether our participants experienced any of the life events during the years of interest (2005-2015).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(events_long &amp;lt;- soep_long %&amp;gt;%
+  filter(type == &amp;quot;Life Event&amp;quot;) %&amp;gt;% # keep only life events
+  group_by(Procedural__SID, item) %&amp;gt;% # group by person and event
+  summarize(value = sum(value, na.rm = T), # sum up whether they experiened the event at all
+            value = ifelse(value &amp;gt; 1, 1, 0))) # if more than once 1, otherwise 0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 15,061 x 3
+## # Groups:   Procedural__SID [10,019]
+##    Procedural__SID item      value
+##              &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1             901 MomDied       1
+##  2            2301 MoveIn        0
+##  3            2301 PartDied      1
+##  4            2305 MoveIn        0
+##  5            4601 PartDied      0
+##  6            5201 ChldMvOut     1
+##  7            5201 DadDied       0
+##  8            5202 ChldMvOut     1
+##  9            5203 MoveIn        1
+## 10            5303 MomDied       0
+## # … with 15,051 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;descriptives&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Descriptives&lt;/h1&gt;
+&lt;p&gt;Descriptives of your data are incredibly important. They are your first line of defense against things that could go wrong later on when you run inferential stats. They help you check the distribution of your variables (e.g. non-normally distributed), look for implausible values made through coding or participant error, and allow you to anticipate what your findings will look like.&lt;/p&gt;
+&lt;p&gt;There are lots of ways to create great tables of descriptives. My favorite way is using &lt;code&gt;dplyr&lt;/code&gt;, but we will save that for a later lesson on creating great APA style tables in &lt;code&gt;R&lt;/code&gt;. For now, we’ll use a wonderfully helpful function from the &lt;code&gt;psych&lt;/code&gt; package called &lt;code&gt;describe()&lt;/code&gt; in conjunction with a small amount of &lt;code&gt;tidyr&lt;/code&gt; to reshape the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;b5_soep_long  %&amp;gt;%
+  unite(tmp, item, year, sep = &amp;quot;_&amp;quot;) %&amp;gt;% # make new column that joins item and year
+  spread(tmp, value) %&amp;gt;% # make wide because that helps describe
+  describe(.) # call describe&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                 vars     n       mean          sd     median    trimmed
+## Procedural__SID    1 16719 8321022.91 10677731.19 3105002.00 6487615.30
+## DOB                2 16719    1960.03       18.48    1960.00    1960.22
+## Sex                3 16719       1.52        0.50       2.00       1.53
+## A_2005             4 10419       5.79        0.98       6.00       5.83
+## A_2009             5 10294       5.68        0.99       5.67       5.72
+## A_2013             6  9535       5.74        0.96       5.67       5.78
+## C_2005             7 10412       6.23        0.96       6.33       6.34
+## C_2009             8 10290       6.16        0.95       6.33       6.25
+## C_2013             9  9530       6.17        0.91       6.33       6.25
+## E_2005            10 10416       5.15        1.15       5.33       5.18
+## E_2009            11 10291       5.11        1.15       5.00       5.13
+## E_2013            12  9533       5.20        1.11       5.33       5.24
+## N_2005            13 10413       4.71        1.23       4.67       4.72
+## N_2009            14 10294       4.84        1.22       5.00       4.87
+## N_2013            15  9534       4.92        1.21       5.00       4.93
+## O_2005            16 10408       4.51        1.22       4.67       4.53
+## O_2009            17 10287       4.40        1.22       4.33       4.41
+## O_2013            18  9530       4.60        1.18       4.67       4.62
+##                        mad     min        max       range  skew kurtosis
+## Procedural__SID 3735541.17  901.00 3.5022e+07 35021101.00  1.50     0.56
+## DOB                  20.76 1909.00 1.9950e+03       86.00 -0.08    -0.84
+## Sex                   0.00    1.00 2.0000e+00        1.00 -0.10    -1.99
+## A_2005                0.99    1.00 7.5000e+00        6.50 -0.40    -0.14
+## A_2009                0.99    1.33 8.0000e+00        6.67 -0.36    -0.19
+## A_2013                0.99    1.33 8.0000e+00        6.67 -0.43     0.05
+## C_2005                0.99    1.00 8.0000e+00        7.00 -0.95     0.84
+## C_2009                0.99    1.00 8.0000e+00        7.00 -0.82     0.49
+## C_2013                0.99    1.33 8.0000e+00        6.67 -0.72     0.17
+## E_2005                0.99    1.00 7.5000e+00        6.50 -0.27    -0.16
+## E_2009                0.99    1.00 7.3300e+00        6.33 -0.23    -0.18
+## E_2013                0.99    1.33 7.3300e+00        6.00 -0.29    -0.18
+## N_2005                1.48    1.50 8.0000e+00        6.50 -0.07    -0.32
+## N_2009                0.99    1.50 7.6700e+00        6.17 -0.17    -0.30
+## N_2013                1.48    1.50 8.0000e+00        6.50 -0.15    -0.30
+## O_2005                1.48    1.00 7.0000e+00        6.00 -0.23    -0.18
+## O_2009                1.48    1.00 7.0000e+00        6.00 -0.10    -0.30
+## O_2013                0.99    1.00 7.0000e+00        6.00 -0.21    -0.20
+##                       se
+## Procedural__SID 82579.80
+## DOB                 0.14
+## Sex                 0.00
+## A_2005              0.01
+## A_2009              0.01
+## A_2013              0.01
+## C_2005              0.01
+## C_2009              0.01
+## C_2013              0.01
+## E_2005              0.01
+## E_2009              0.01
+## E_2013              0.01
+## N_2005              0.01
+## N_2009              0.01
+## N_2013              0.01
+## O_2005              0.01
+## O_2009              0.01
+## O_2013              0.01&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For count variables, like life events, we need to use something slightly different. We’re typically more interested in counts – in this case, how many people experienced each life event in the 10 years we’re considering?&lt;/p&gt;
+&lt;p&gt;To do this, we’ll use a little bit of &lt;code&gt;dplyr&lt;/code&gt; rather than the base &lt;code&gt;R&lt;/code&gt; function &lt;code&gt;table()&lt;/code&gt; that is often used for count data. Instead, we’ll use a combination of &lt;code&gt;group_by()&lt;/code&gt; and &lt;code&gt;n()&lt;/code&gt; to get the counts by group. In the end, we’re left with a nice little table of counts.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;events_long %&amp;gt;%
+  group_by(item, value) %&amp;gt;% 
+  summarize(N = n()) %&amp;gt;%
+  ungroup() %&amp;gt;%
+  spread(value, N)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 10 x 3
+##    item        `0`   `1`
+##    &amp;lt;chr&amp;gt;     &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;
+##  1 ChldBrth   1600   735
+##  2 ChldMvOut  1555   830
+##  3 DadDied     953   213
+##  4 Divorce     414   122
+##  5 Married    1646   331
+##  6 MomDied     929   219
+##  7 MoveIn     1403   419
+##  8 NewPart    1207   420
+##  9 PartDied    402    76
+## 10 SepPart    1172   415&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;scale-reliability&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scale Reliability&lt;/h2&gt;
+&lt;p&gt;When we work with scales, it’s often a good idea to check the internal consistency of your scale. If the scale isn’t performing how it should be, that could critically impact the inferences you make from your data.&lt;/p&gt;
+&lt;p&gt;To check the internal consistency of our Big 5 scales, we will use the &lt;code&gt;alpha()&lt;/code&gt; function from the &lt;code&gt;psych&lt;/code&gt; package, which will give us Cronbach’s as well as a number of other indicators of internal consistency.&lt;/p&gt;
+&lt;p&gt;Here’s the way you may have seen / done this in the past.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;alpha.C.2005 &amp;lt;- with(soep, psych::alpha(x = cbind(`Big 5__C_thorough.2005`, 
+                                  `Big 5__C_lazy.2005`, `Big 5__C_efficient.2005`)))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in psych::alpha(x = cbind(`Big 5__C_thorough.2005`, `Big 5__C_lazy.2005`, : Some items were negatively correlated with the total scale and probably 
+## should be reversed.  
+## To do this, run the function again with the &amp;#39;check.keys=TRUE&amp;#39; option&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Some items ( Big 5__C_lazy.2005 ) were negatively correlated with the total scale and 
+## probably should be reversed.  
+## To do this, run the function again with the &amp;#39;check.keys=TRUE&amp;#39; option&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But again, doing this 15 times would be quite a pain and would open you up to the possibility of a lot of copy and paste errors.&lt;/p&gt;
+&lt;p&gt;So instead, to do this, I’m going to use a mix of the tidyverse. At first glance, it may seem complex but as you move through other tutorials (particularly the &lt;code&gt;purrr&lt;/code&gt; tutorial), it will begin to make much more sense.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# short function to reshape data and run alpha
+alpha_fun &amp;lt;- function(df){
+  df %&amp;gt;% spread(scrap,value) %&amp;gt;% psych::alpha(.)
+}
+
+(alphas &amp;lt;- soep_long %&amp;gt;%
+  filter(type == &amp;quot;Big 5&amp;quot;) %&amp;gt;% # filter out Big 5
+  select(Procedural__SID, item:value) %&amp;gt;% # get rid of extra columns
+  group_by(item, year) %&amp;gt;% # group by construct and year
+  nest() %&amp;gt;% # nest the data
+  mutate(alpha_res = map(data, alpha_fun), # run alpha
+         alpha = map(alpha_res, ~.$total[2])) %&amp;gt;% # get the alpha value
+  unnest(alpha)) # pull it out of the list column&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 15 x 5
+## # Groups:   item, year [15]
+##    item  year            data alpha_res std.alpha
+##    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;list&amp;lt;df[,3]&amp;gt;&amp;gt; &amp;lt;list&amp;gt;        &amp;lt;dbl&amp;gt;
+##  1 C     2005    [31,117 × 3] &amp;lt;psych&amp;gt;       0.515
+##  2 C     2009    [30,728 × 3] &amp;lt;psych&amp;gt;       0.494
+##  3 C     2013    [28,496 × 3] &amp;lt;psych&amp;gt;       0.482
+##  4 E     2005    [31,188 × 3] &amp;lt;psych&amp;gt;       0.540
+##  5 E     2009    [30,770 × 3] &amp;lt;psych&amp;gt;       0.530
+##  6 E     2013    [28,532 × 3] &amp;lt;psych&amp;gt;       0.544
+##  7 A     2005    [31,184 × 3] &amp;lt;psych&amp;gt;       0.418
+##  8 A     2009    [30,796 × 3] &amp;lt;psych&amp;gt;       0.410
+##  9 A     2013    [28,529 × 3] &amp;lt;psych&amp;gt;       0.401
+## 10 O     2005    [31,091 × 3] &amp;lt;psych&amp;gt;       0.527
+## 11 O     2009    [30,722 × 3] &amp;lt;psych&amp;gt;       0.510
+## 12 O     2013    [28,451 × 3] &amp;lt;psych&amp;gt;       0.497
+## 13 N     2005    [31,162 × 3] &amp;lt;psych&amp;gt;       0.473
+## 14 N     2009    [30,802 × 3] &amp;lt;psych&amp;gt;       0.490
+## 15 N     2013    [28,536 × 3] &amp;lt;psych&amp;gt;       0.480&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;zero-order-correlations&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Zero-Order Correlations&lt;/h2&gt;
+&lt;p&gt;Finally, we often want to look at the zero-order correlation among study variables to make sure they are performing as we think they should.&lt;/p&gt;
+&lt;p&gt;To run the correlations, we will need to have our data in wide format, so we’re going to do a little bit of reshaping before we do.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;b5_soep_long %&amp;gt;%
+  unite(tmp, item, year, sep = &amp;quot;_&amp;quot;) %&amp;gt;%
+  spread(key = tmp, value = value) %&amp;gt;% 
+  select(-Procedural__SID) %&amp;gt;%
+  cor(., use = &amp;quot;pairwise&amp;quot;) %&amp;gt;%
+  round(., 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          DOB   Sex A_2005 A_2009 A_2013 C_2005 C_2009 C_2013 E_2005 E_2009
+## DOB     1.00  0.00  -0.08  -0.07  -0.06  -0.13  -0.12  -0.14   0.10   0.12
+## Sex     0.00  1.00   0.18   0.17   0.18   0.05   0.07   0.09   0.08   0.08
+## A_2005 -0.08  0.18   1.00   0.50   0.50   0.32   0.20   0.19   0.10   0.06
+## A_2009 -0.07  0.17   0.50   1.00   0.55   0.19   0.28   0.18   0.05   0.08
+## A_2013 -0.06  0.18   0.50   0.55   1.00   0.18   0.19   0.29   0.04   0.06
+## C_2005 -0.13  0.05   0.32   0.19   0.18   1.00   0.52   0.48   0.19   0.10
+## C_2009 -0.12  0.07   0.20   0.28   0.19   0.52   1.00   0.55   0.12   0.16
+## C_2013 -0.14  0.09   0.19   0.18   0.29   0.48   0.55   1.00   0.13   0.14
+## E_2005  0.10  0.08   0.10   0.05   0.04   0.19   0.12   0.13   1.00   0.61
+## E_2009  0.12  0.08   0.06   0.08   0.06   0.10   0.16   0.14   0.61   1.00
+## E_2013  0.10  0.11   0.04   0.04   0.07   0.10   0.10   0.18   0.59   0.65
+## N_2005  0.06 -0.18   0.10   0.06   0.02   0.09   0.06   0.03   0.18   0.10
+## N_2009  0.03 -0.22   0.07   0.09   0.03   0.06   0.08   0.05   0.13   0.16
+## N_2013  0.02 -0.21   0.06   0.06   0.10   0.04   0.06   0.08   0.10   0.10
+## O_2005  0.11  0.06   0.12   0.09   0.07   0.17   0.12   0.08   0.40   0.29
+## O_2009  0.10  0.05   0.05   0.11   0.07   0.06   0.13   0.08   0.26   0.36
+## O_2013  0.05  0.07   0.08   0.09   0.13   0.07   0.08   0.15   0.24   0.28
+##        E_2013 N_2005 N_2009 N_2013 O_2005 O_2009 O_2013
+## DOB      0.10   0.06   0.03   0.02   0.11   0.10   0.05
+## Sex      0.11  -0.18  -0.22  -0.21   0.06   0.05   0.07
+## A_2005   0.04   0.10   0.07   0.06   0.12   0.05   0.08
+## A_2009   0.04   0.06   0.09   0.06   0.09   0.11   0.09
+## A_2013   0.07   0.02   0.03   0.10   0.07   0.07   0.13
+## C_2005   0.10   0.09   0.06   0.04   0.17   0.06   0.07
+## C_2009   0.10   0.06   0.08   0.06   0.12   0.13   0.08
+## C_2013   0.18   0.03   0.05   0.08   0.08   0.08   0.15
+## E_2005   0.59   0.18   0.13   0.10   0.40   0.26   0.24
+## E_2009   0.65   0.10   0.16   0.10   0.29   0.36   0.28
+## E_2013   1.00   0.11   0.13   0.15   0.26   0.28   0.35
+## N_2005   0.11   1.00   0.55   0.53   0.09   0.08   0.06
+## N_2009   0.13   0.55   1.00   0.60   0.06   0.07   0.07
+## N_2013   0.15   0.53   0.60   1.00   0.05   0.05   0.05
+## O_2005   0.26   0.09   0.06   0.05   1.00   0.58   0.55
+## O_2009   0.28   0.08   0.07   0.05   0.58   1.00   0.61
+## O_2013   0.35   0.06   0.07   0.05   0.55   0.61   1.00&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is a lot of values and a little hard to make sense of, so as a bonus, I’m going to give you a little bit of more complex code that makes this more readable (and publishable ).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- b5_soep_long %&amp;gt;%
+  unite(tmp, item, year, sep = &amp;quot;_&amp;quot;) %&amp;gt;%
+  spread(key = tmp, value = value) %&amp;gt;% 
+  select(-Procedural__SID, -DOB, -Sex) %&amp;gt;%
+  cor(., use = &amp;quot;pairwise&amp;quot;) 
+
+r[upper.tri(r, diag = T)] &amp;lt;- NA
+diag(r) &amp;lt;- (alphas %&amp;gt;% arrange(item, year))$std.alpha
+
+r %&amp;gt;% data.frame %&amp;gt;%
+  rownames_to_column(&amp;quot;V1&amp;quot;) %&amp;gt;%
+  gather(key = V2, value = r, na.rm = T, -V1) %&amp;gt;%
+  separate(V1, c(&amp;quot;T1&amp;quot;, &amp;quot;Year1&amp;quot;), sep = &amp;quot;_&amp;quot;) %&amp;gt;%
+  separate(V2, c(&amp;quot;T2&amp;quot;, &amp;quot;Year2&amp;quot;), sep = &amp;quot;_&amp;quot;) %&amp;gt;%
+  mutate_at(vars(Year1), ~factor(., levels = c(2013, 2009, 2005))) %&amp;gt;%
+  ggplot(aes(x = Year2, y = Year1, fill = r)) +
+    geom_raster() + 
+  scale_fill_gradient2(low = &amp;quot;blue&amp;quot;, high = &amp;quot;red&amp;quot;, mid = &amp;quot;white&amp;quot;, 
+   midpoint = 0, limit = c(-1,1), space = &amp;quot;Lab&amp;quot;, 
+   name=&amp;quot;Correlations&amp;quot;) +  
+  geom_text(aes(label = round(r,2))) +
+    facet_grid(T1 ~ T2) +
+    theme_classic()&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:unnamed-chunk-5&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;/Workshops/2019-08-14-workshop-1_files/figure-html/unnamed-chunk-5-1.png&#34; alt=&#34;Correlations among Personality Indicators. Values on the diagonal represent Chronbach&#39;s alpha for each scale in each year. Within-trait correlations represent test-retest correlations.&#34; width=&#34;672&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 1: Correlations among Personality Indicators. Values on the diagonal represent Chronbach’s alpha for each scale in each year. Within-trait correlations represent test-retest correlations.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 </description>
     </item>
     
@@ -2133,27 +2781,22 @@ head(sim.1)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;Instructor&lt;/strong&gt;: Joshua Jackson&lt;br /&gt;
 &lt;strong&gt;Office&lt;/strong&gt;: 315B&lt;br /&gt;
 &lt;strong&gt;Office hours&lt;/strong&gt;: 1-2 Wednesday and by appointment&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;TA&lt;/strong&gt;: Emorie Beck
-&lt;strong&gt;Office hours&lt;/strong&gt;: TBD&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AI&lt;/strong&gt;: Emorie Beck
+&lt;strong&gt;Office hours&lt;/strong&gt;: Wednesday 2-3&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Course Description&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;This course covers modern methods of handling longitudinal, repeated measures. The class will introduce the rationale of measuring change and stability over time to study phenomena, as well as how within-person designs can increase statistical power and precision compared to more traditional designs. Most the course will use multi-level models and latent (growth) curve models to specify patterns of change across time. Additional topics include: visualization, measurement invariance, time-to- event models and power. PREREQ: Use of R will be required, Familiarity with MLM and/or Structural Equation Models.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Class textbook&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Readings will be provided&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Structure of class&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Each class will cover a specific type of longitudinal model. During that class, I will provide an overview of the important considerations or motivation for this analysis. This will take the first half of the class or a little longer. The final hour of class will be devoted to walking through code and results.&lt;/p&gt;
+&lt;p&gt;Each class will cover a specific type of longitudinal model. During that class, I will provide an overview of the important considerations or motivation for this analysis. This will take the first half of the class or a little longer. The final hour of class will be devoted to walking through code and results. We’ll call this the workshop portion.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Grading&lt;/strong&gt;
 Grading consists of 3 aspects:
-1. Weekly projects uploaded to github (70% of grade)
-2. Final project covering the method and results of your main longitudinal hypothesis(es) (30%)&lt;/p&gt;
+1. Weekly “pop” quiz (36% of grade - 12 @ 3% each). Quizes consist of 1-3 questions based on the previous lecture and reading.&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Homework take homes (64% of grade - 8 @ 8% each). Homeworks will be presented in the workshop portion of the class and due 1 week later.&lt;/li&gt;
+&lt;/ol&gt;
 &lt;p&gt;&lt;strong&gt;Schedule&lt;/strong&gt;&lt;/p&gt;
 &lt;table&gt;
-&lt;colgroup&gt;
-&lt;col width=&#34;9%&#34; /&gt;
-&lt;col width=&#34;9%&#34; /&gt;
-&lt;col width=&#34;39%&#34; /&gt;
-&lt;col width=&#34;28%&#34; /&gt;
-&lt;col width=&#34;13%&#34; /&gt;
-&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th&gt;Week&lt;/th&gt;
@@ -2168,7 +2811,7 @@ Grading consists of 3 aspects:
 &lt;td&gt;1&lt;/td&gt;
 &lt;td&gt;8/29&lt;/td&gt;
 &lt;td&gt;Motivation, terms, concepts, and graphing&lt;/td&gt;
-&lt;td&gt;Data Descriptives and plotting&lt;/td&gt;
+&lt;td&gt;Data Descriptives&lt;/td&gt;
 &lt;td&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
@@ -2176,70 +2819,70 @@ Grading consists of 3 aspects:
 &lt;td&gt;9/5&lt;/td&gt;
 &lt;td&gt;Growth curve basics; MLM in R: packages and procedures&lt;/td&gt;
 &lt;td&gt;tidyr&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;Hw#1&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td&gt;3&lt;/td&gt;
 &lt;td&gt;9/12&lt;/td&gt;
 &lt;td&gt;Conditional (Level 1 and 2 predictors) MLM models&lt;/td&gt;
 &lt;td&gt;purrr&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;Hw#2&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td&gt;4&lt;/td&gt;
 &lt;td&gt;9/19&lt;/td&gt;
 &lt;td&gt;Polynomial, piecewise and spline models&lt;/td&gt;
 &lt;td&gt;plotting redux&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;Hw#3&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td&gt;5&lt;/td&gt;
 &lt;td&gt;9/26&lt;/td&gt;
 &lt;td&gt;Three level and group models&lt;/td&gt;
 &lt;td&gt;brms&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;Hw#4&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td&gt;6&lt;/td&gt;
 &lt;td&gt;10/03&lt;/td&gt;
 &lt;td&gt;Intensive data analysis/within person fluctuations p1&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;brms&lt;/td&gt;
 &lt;td&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td&gt;7&lt;/td&gt;
 &lt;td&gt;10/10&lt;/td&gt;
 &lt;td&gt;Intensive data analysis/within person fluctuations p2&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;tidybayes&lt;/td&gt;
+&lt;td&gt;Hw#5&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td&gt;8&lt;/td&gt;
 &lt;td&gt;10/17&lt;/td&gt;
 &lt;td&gt;SEM and simple path models&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;lavaan&lt;/td&gt;
 &lt;td&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td&gt;9&lt;/td&gt;
 &lt;td&gt;10/24&lt;/td&gt;
 &lt;td&gt;Latent Grown (curve) Models&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;amelia&lt;/td&gt;
+&lt;td&gt;Hw#6&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td&gt;10&lt;/td&gt;
 &lt;td&gt;10/31&lt;/td&gt;
 &lt;td&gt;MI and Second order Model&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;semPlot&lt;/td&gt;
 &lt;td&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td&gt;11&lt;/td&gt;
 &lt;td&gt;11/7&lt;/td&gt;
 &lt;td&gt;Multiple group models&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;lavaan&lt;/td&gt;
+&lt;td&gt;Hw#7&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td&gt;12&lt;/td&gt;
@@ -2253,7 +2896,7 @@ Grading consists of 3 aspects:
 &lt;td&gt;11/21&lt;/td&gt;
 &lt;td&gt;Flexible SEM models (LCM, STATE-TRAIT; ALT-SR)&lt;/td&gt;
 &lt;td&gt;&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;Hw#8&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td&gt;14&lt;/td&gt;
