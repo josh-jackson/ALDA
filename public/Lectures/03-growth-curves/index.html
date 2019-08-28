@@ -452,12 +452,12 @@ example &lt;- read_csv(&quot;~/Box/5165 Applied Longitudinal Data Analysis/Longi
 example$ID &lt;- as.factor(example$ID)</code></pre>
 <p>Lets look at some data. These data examine older adults who came into a study up to six times over a six year period. Multiple cognitive, psychiatric and imaging assessments were done. Let’s look at functional connectivity network called SMN7.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1           ✔ dplyr   0.8.3      
 ## ✔ tibble  2.1.3           ✔ stringr 1.4.0      
 ## ✔ tidyr   0.8.99.9000     ✔ forcats 0.4.0      
 ## ✔ purrr   0.3.2</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(ggplot2)
@@ -576,8 +576,10 @@ Much like in normal regression there is an error term for all of the variation w
 <div id="icc" class="section level3">
 <h3>ICC</h3>
 <p>ICC:</p>
+<p>If the ICC is greater than zero, we are breaking standard regression assumptions.</p>
 <p><span class="math display">\[\frac{U_{0j}}{U_{0j}+ \varepsilon_{ij}}\]</span></p>
-<p>Is defined as % variation between vs within person variance.</p>
+<p>Is defined as % variation between over total variance.</p>
+<p>ICC can also be interpreted as the average (or expected) correlation within a nested group, in this case a person. On other words, the ICC is the correlation between any person’s repeated measures (technically residuals).</p>
 </div>
 </div>
 <div id="adding-time" class="section level2">

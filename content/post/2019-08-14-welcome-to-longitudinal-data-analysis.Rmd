@@ -9,7 +9,7 @@ subtitle: ''
 summary: ''
 authors: []
 lastmod: '2019-08-14T17:22:25-05:00'
-featured: no
+featured: yes
 image:
   caption: ''
   focal_point: ''
@@ -19,6 +19,6 @@ projects: []
 
 Please take a look at the syllabus for important class details. 
 
-Any updates or announcements to the class will be found here on the main page. Otherwise, the lectures and workshop pages will where you will spend most of your time. 
+Any updates or announcements to the class will be found here on the main page. Otherwise, the lectures and workshop pages will where you will spend most of your time.  
 
 
