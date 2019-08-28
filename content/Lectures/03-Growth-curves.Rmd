@@ -189,11 +189,14 @@ Finally, how is U_{0j} calculated?
 
 ICC: 
 
+If the ICC is greater than zero, we are breaking standard regression assumptions. 
+
 $$\frac{U_{0j}}{U_{0j}+ \varepsilon_{ij}}$$
 
 
-Is defined as % variation between vs within person variance. 
+Is defined as % variation between over total variance. 
 
+ICC can also be interpreted as the average (or expected) correlation within a nested group, in this case a person. On other words, the ICC is the correlation between any person's repeated measures (technically residuals). 
 
 
 ## Adding time
