@@ -3,7 +3,7 @@ title: "Week 2"
 subtitle: "Growth Curves"
 summary: "Growth Curves"
 author: "Josh Jackson"
-date: '2019-08-14'
+date: '2019-09-05'
 type: post
 output:
   blogdown::html_page:
@@ -27,50 +27,21 @@ output:
 <li><a href="#what-does-this-look-like-graphically">What does this look like graphically?</a></li>
 <li><a href="#adding-a-random-slope">Adding a random slope?</a></li>
 </ul></li>
-<li><a href="#individaul-level-random-effects">Individaul level random effects</a><ul>
-<li><a href="#calculation-of-individaul-level-random-effects">Calculation of individaul level random effects</a></li>
+<li><a href="#individual-level-random-effects">Individual level random effects</a><ul>
+<li><a href="#calculation-of-individual-level-random-effects">Calculation of individual level random effects</a></li>
 <li><a href="#how-are-these-random-effects-calculated">How are these random effects calculated?</a></li>
-<li><a href="#random-effects-and-residual-standard-assumptions">random effects and residual (standard) assumptions</a></li>
 <li><a href="#random-effect-decomposition">Random effect decomposition</a></li>
+<li><a href="#random-effects-and-residual-standard-assumptions">Random effects and residual (standard) assumptions</a></li>
 </ul></li>
-<li><a href="#working-with-models-in-r">working with models in R</a></li>
-<li><a href="#data-analysis-and-data-structures">Data analysis and data structures</a><ul>
-<li><a href="#wide-and-long-form">Wide and Long form</a></li>
-<li><a href="#basic-lmer-code">basic lmer code</a></li>
-<li><a href="#example">Example</a></li>
-<li><a href="#how-to-calculate-icc">How to calculate ICC?</a></li>
-</ul></li>
-<li><a href="#exploring-beyond-the-summary">Exploring beyond the summary</a><ul>
-<li><a href="#what-do-the-random-effects-look-like">what do the random effects look like?</a></li>
-</ul></li>
-<li><a href="#adding-time-to-the-mlm">Adding time to the MLM</a><ul>
-<li><a href="#fixed-slope">fixed slope</a></li>
-<li><a href="#random-slope">Random slope</a></li>
-</ul></li>
-<li><a href="#random-effects-1">Random effects</a><ul>
-<li><a href="#calcualtion-of-random-effect-confidence-interval">Calcualtion of random effect confidence interval</a></li>
-<li><a href="#adding-time-1">adding time</a></li>
-<li><a href="#caterpillar-plots">caterpillar plots</a></li>
-<li><a href="#density-of-individaul-random-effects">Density of individaul random effects</a></li>
-</ul></li>
-<li><a href="#comparing-to-a-standard-linear-model">comparing to a standard linear model</a></li>
-<li><a href="#other-types-of-models">Other types of models</a></li>
-<li><a href="#matrix-notation-as-a-way-to-help-understand-what-is-going-on">Matrix notation (as a way to help understand what is going on)</a></li>
+<li><a href="#data-generating-process-dgp">Data generating process (DGP)</a></li>
 <li><a href="#estimation">Estimation</a></li>
 <li><a href="#testing-significance-adapted-from-ben-bolker">Testing significance (adapted from Ben Bolker)</a><ul>
-<li><a href="#p-values-are-not-included">P values are not included</a></li>
-<li><a href="#likelhiood-ratio-test">Likelhiood ratio test</a></li>
+<li><a href="#quick-aside-p-values-are-not-included">Quick aside: P values are not included</a></li>
+<li><a href="#likelihood-ratio-test">Likelihood ratio test</a></li>
 <li><a href="#likelihood-tests-for-random-effects">Likelihood tests for random effects</a></li>
 <li><a href="#aic-and-bic">AIC and BIC</a></li>
-<li><a href="#mcmc">MCMC</a></li>
-<li><a href="#bootstraps">Bootstraps</a></li>
 </ul></li>
-<li><a href="#predictions-and-prediction-intervals">Predictions and prediction intervals</a><ul>
-<li><a href="#predictions-and-prediction-intervals-1">Predictions and prediction intervals</a></li>
-</ul></li>
-<li><a href="#coefficient-of-determination-equivalents">Coefficient of determination equivalents</a><ul>
-<li><a href="#batch-analyses">batch analyses</a></li>
-</ul></li>
+<li><a href="#coefficient-of-determination-equivalents">Coefficient of determination equivalents</a></li>
 </ul></li>
 </ul>
 </div>
@@ -85,16 +56,17 @@ output:
 <p>Parameters are considered fixed where one regression value corresponds to everyone. I.e., that association between X1 and Y is the same for everyone.</p>
 <p>Each person has a Y, denoted by the subscript i, and each has a residual associated with them, also designated by i.</p>
 <pre class="r"><code>library(readr)
-example &lt;- read_csv(&quot;~/Box/5165 Applied Longitudinal Data Analysis/Longitudinal/example.csv&quot;)
-example$ID &lt;- as.factor(example$ID)</code></pre>
+example &lt;- read_csv(&quot;~/Box/5165 Applied Longitudinal Data Analysis/ALDA/example copy.csv&quot;)
+example$ID &lt;- as.factor(example$ID)
+# you can find the data on my github at: https://github.com/josh-jackson/ALDA/example%20copy.csv</code></pre>
 <p>Lets look at some data. These data examine older adults who came into a study up to six times over a six year period. Multiple cognitive, psychiatric and imaging assessments were done. Let’s look at functional connectivity network called SMN7.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1           ✔ dplyr   0.8.3      
 ## ✔ tibble  2.1.3           ✔ stringr 1.4.0      
 ## ✔ tidyr   0.8.99.9000     ✔ forcats 0.4.0      
 ## ✔ purrr   0.3.2</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(ggplot2)
@@ -127,7 +99,7 @@ summary(regression)</code></pre>
 </div>
 <div id="within-person-models-e.g.-2-level-models" class="section level2">
 <h2>Within person models e.g., 2-level models</h2>
-<p>We saw this last time where we can think of everyone being run in a seperate regression model. Here the lines connect the dots of the same people across time.</p>
+<p>We saw this last time where we can think of everyone being run in a separate regression model. Here the lines connect the dots of the same people across time.</p>
 <pre class="r"><code>library(tidyverse)
 gg2 &lt;- ggplot(example,
    aes(x = week, y = SMN7, group = ID)) + geom_point() + stat_smooth(method = &quot;lm&quot;, se = FALSE)   
@@ -137,7 +109,7 @@ print(gg3)</code></pre>
 <p><img src="/Lectures/03-Growth-curves_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Each person has multiple assessments, so we need to distinguish between people and their assessments. In normal regression we wouldn’t think about this as everyone datapoint is assumed to be independent. However, this is not the case here. Failing to distinguish would lead to violation of independence, an important assumption of the standard regression model.</p>
 <p>As seen in the graph above, what we have now is both individual level slopes as well as an average level slope. The average level slope is going to be the average of the individual level slopes, which will look like our average slope ignoring all dependencies. Same for the intercept.</p>
-<p>One way to do this is to run seperate regressions for each person. Then we could just pool (or average) together where people start and how much they change to get the average intercept (starting value) and trajectory (how much people change). We will see later that this is a somewhat poor approach.</p>
+<p>One way to do this is to run separate regressions for each person. Then we could just pool (or average) together where people start and how much they change to get the average intercept (starting value) and trajectory (how much people change). We will see later that this is a somewhat poor approach.</p>
 <pre><code>## Joining, by = &quot;ID&quot;</code></pre>
 <pre class="r"><code>regressions &lt;- example2 %&gt;% 
   group_by(ID) %&gt;% 
@@ -171,11 +143,11 @@ gg4</code></pre>
 <h3>Random effects</h3>
 <p>Within subjects variability in either starting value or slope/trajectory is referenced in terms of random effects. How do we represent this in our equation? Easy, we just say that the typical regression parameters we have are not the same for everyone – that they are random (in contrast to fixed).</p>
 <p>In general, when would we want to use random effects? If there is some sort of selection (random or not) of many possible values of the predictor (e.g., stimuli are 3 random depression drugs, three semi random chosen levels of a drug). With longitudinal data this is (random) people.</p>
-<p>Side bar: Even in situations where these levels are not random (eg working with states) it is still useful to use MLM and we still call them random effects. To be consistent with language, random here can refer to as random from the population average, not randomly selected. When talking about “random effects” you can mean either of these defintions (and a few more). Luckily we can mostly ignore these semantic issues.</p>
+<p>Side bar: Even in situations where these levels are not random (eg working with U.S. states) it is still useful to use MLM and we still call them random effects. To be consistent with language, random here can refer to as random from the population average, not randomly selected. When talking about “random effects” you can mean either of these definitions (and a few more). Luckily we can mostly ignore these semantic issues.</p>
 <p>What is necessary for modeling random effects? For longitudinal models, there needs to be multiple assessments per your grouping category (people, schools, neighborhoods, trials).</p>
-<p>We are assuming these random effects are sampled from some population and thus vary from group to group (or person to person). This means that your coeffients (like traditional regression coefficients) are estimates of some population parameter and thus have error associated with them. This error is not like like a standard residual, which represents error for your overall model. Nor is it like the standard error for a point estimate. Random effects can best be thought of as deviation of individual regression lines from the group regression line (though it technically is not this).</p>
-<p>To facilitate the multiple assessments per person we will now use both i and j subscripts. We will see that the random effects are part of the overall error term in the model. Counterintutitively, the main focus of these types of models will be the fixed effects, with less attention paid to the random effects. That said, the random effects are necessary to account for dependency in the data. One can think about these models as normal fixed effects regressions, with the random effects there to account for the longitudinal nature of the data. They are made up of a number of standard regression equations, each for a single individual. Doing so side steps the trouble of having correlated errors, and thus allows us to interpret our findings without concern.</p>
-<p>To faciliate adding random effects to our model it is helpful to think about two “levels” to our regression equation. We are going to put a regression equation within our requestion equation. (Que Xzhibit joke). The first level will be the within-person model, in that it described how people differ across time. The second level will be the between person level. Note that these do not correspond to fixed or random effects. Instead they can be thought to model either within person differences or between person differences. Mastering thinking at these two levels will help make sense of these MLM models.</p>
+<p>We are assuming these random effects are sampled from some population and thus vary from group to group (or person to person). This means that your coefficients (like traditional regression coefficients) are estimates of some population parameter and thus have error associated with them. This error is not like like a standard residual, which represents error for your overall model. Nor is it like the standard error for a point estimate. Random effects can best be thought of as deviation of individual regression lines from the group regression line (though it technically is not this).</p>
+<p>To facilitate the multiple assessments per person we will now use both i and j subscripts. We will see that the random effects are part of the overall error term in the model. Counterintuitively, the main focus of these types of models will be the fixed effects, with less attention paid to the random effects. That said, the random effects are necessary to account for dependency in the data. One can think about these models as normal fixed effects regressions, with the random effects there to account for the longitudinal nature of the data. They are made up of a number of standard regression equations, each for a single individual. Doing so side steps the trouble of having correlated errors, and thus allows us to interpret our findings without concern.</p>
+<p>To facilitate adding random effects to our model it is helpful to think about two “levels” to our regression equation. We are going to put a regression equation within our regression equation. (Que Xzhibit joke). The first level will be the within-person model, in that it described how people differ across time. The second level will be the between person level. Note that these do not correspond to fixed or random effects. Instead they can be thought to model either within person differences or between person differences. Mastering thinking at these two levels will help make sense of these MLM models.</p>
 </div>
 <div id="empty-model-equation" class="section level3">
 <h3>Empty model equation</h3>
@@ -184,7 +156,7 @@ gg4</code></pre>
 <span class="math display">\[ {Y}_{ij} = \beta_{0j}  +\varepsilon_{ij} \]</span></p>
 <p>Note that we have multiple responses per individual j, noted with an i to refer to specific times.</p>
 <p>Also note that the intercept has a subscript. In typical regression it does not. This suggests that not everyone has the same intercept.</p>
-<p>The residuals at this level are thought of as measurment error OR as something that can be explained by time varying predictors.</p>
+<p>The residuals at this level are thought of as measurement error OR as something that can be explained by time varying predictors.</p>
 <p>Level 2 - between person
 <span class="math display">\[ {\beta}_{0j} = \gamma_{00} + U_{0j} \]</span></p>
 <p>Level 2 takes the intercept (or other parameter) at level 1 and breaks it down into an equation for each individual, j. An overall group average (the gamma) and a residual term specific to deviation around the intercept (see below).</p>
@@ -208,11 +180,10 @@ Much like in normal regression there is an error term for all of the variation w
 <h3>Visualize what you are doing</h3>
 <p>Imagine the raw data plotted without knowing person j, how would <span class="math inline">\(\varepsilon_{i}\)</span> be calculated?</p>
 <p>Now think about the data plotted again but with knowing each person has their own intercept. How would <span class="math inline">\(\varepsilon_{ij}\)</span> be calculated?</p>
-<p>Finally, how is U_{0j} calculated?</p>
+<p>Finally, how is <span class="math inline">\(U_{0j}\)</span> calculated?</p>
 </div>
 <div id="icc" class="section level3">
 <h3>ICC</h3>
-<p>ICC:</p>
 <p>If the ICC is greater than zero, we are breaking standard regression assumptions.</p>
 <p><span class="math display">\[\frac{U_{0j}}{U_{0j}+ \varepsilon_{ij}}\]</span></p>
 <p>Is defined as % variation between over total variance.</p>
@@ -224,7 +195,7 @@ Much like in normal regression there is an error term for all of the variation w
 <p>Here is the basic growth model where our predictor is a time variable</p>
 <p>Level 1:</p>
 <p><span class="math display">\[ {Y}_{ij} = \beta_{0j}  + \beta_{1j}X_{ij} + \varepsilon_{ij} \]</span></p>
-<p>Note how similar this looks like to a normal regression equation. Again, the differences are due to those pesky subscripts. Like before, think of this as a normal regression equation at the level of a person. Each person would have one of these equations with, in addition to a unique Y, X and residual, a unique <span class="math inline">\(\beta_{0}\)</span> and <span class="math inline">\(\beta_{1}\)</span>. Look above to those individaul regressions we did at the start of this section.</p>
+<p>Note how similar this looks like to a normal regression equation. Again, the differences are due to those pesky subscripts. Like before, think of this as a normal regression equation at the level of a person. Each person would have one of these equations with, in addition to a unique Y, X and residual, a unique <span class="math inline">\(\beta_{0}\)</span> and <span class="math inline">\(\beta_{1}\)</span>. Look above to those individual regressions we did at the start of this section.</p>
 <p>Level 2:<br />
 <span class="math display">\[ {\beta}_{0j} = \gamma_{00} + U_{0j}\]</span></p>
 <p>Level 2 takes the parameters at level 1 and decomposes them into a fixed component that reflects that average and then the individual deviations around that fixed effect. <span class="math inline">\(U_{0j}\)</span> is not error in the traditional sense. It describes how much variation there is around that parameter. Do some people start higher while some start lower, for example.</p>
@@ -236,7 +207,6 @@ Much like in normal regression there is an error term for all of the variation w
 <div id="what-does-this-look-like-graphically" class="section level3">
 <h3>What does this look like graphically?</h3>
 <p>And how does this differ from the random intercept model?</p>
-<p>What does this look like graphically?</p>
 <p>Can you draw out the sources of error? The random effects for each participant? The fixed effects?</p>
 </div>
 <div id="adding-a-random-slope" class="section level3">
@@ -247,7 +217,8 @@ Level 1:</p>
 Level 2:<br />
 <span class="math display">\[ {\beta}_{0j} = \gamma_{00} + U_{0j}\]</span></p>
 <p><span class="math display">\[ {\beta}_{1j} = \gamma_{10} + U_{1j} \]</span></p>
-<p><span class="math display">\[ {Y}_{ij} = \gamma_{00} + \gamma_{10}(X_{ij})+ U_{0j} + U_{1j}(X_{ij}) + \varepsilon_{ij} \]</span></p>
+<p>Putting it together:
+<span class="math display">\[ {Y}_{ij} = \gamma_{00} + \gamma_{10}(X_{ij})+ U_{0j} + U_{1j}(X_{ij}) + \varepsilon_{ij} \]</span></p>
 <p>Can think of a persons score divided up into a fixed component as well as the random component.</p>
 <p>These random effects are likely related to one another. For example, if someone starts high on a construct they are then less likely to increase across time. This negative correlation can be seen in the residual structure, where the random effects are again normally distributed with a mean of zero, but this time one must also consider covariance in addition to variance.</p>
 <p><span class="math display">\[ \begin{pmatrix} {U}_{0j} \\ {U}_{1j} \end{pmatrix}
@@ -255,7 +226,7 @@ Level 2:<br />
   0,     &amp; \tau_{00}^{2} &amp; \tau_{01}\\ 
   0, &amp; \tau_{01} &amp; \tau_{10}^{2}
 \end{pmatrix} \]</span></p>
-<p>Note that it is possible to have a different error structure, one where there is no relationship between the intercept and the slope. We will discuss this more later in the semester. Right now just know that the default is to have correlated random effects.</p>
+<p>Note that it is possible to have a different error structures, one where there is no relationship between the intercept and the slope, for example. We will discuss this more later in the semester. Right now just know that the default is to have correlated random effects.</p>
 <p>We also have the within subject variance term that accounts for deviations that are not accounted for by time variable and other level 1 predictors.</p>
 <p><span class="math display">\[ {R}_{ij} \sim \mathcal{N}(0, \sigma^{2})  \]</span></p>
 <p>Note that it is possible to model these level 1 residuals with different structures. This specification implies that there is no correlation across an individuals residuals, once you account for level 1 predictors (ie growth trajectories). Having a specific level 1 autoregressive or other type of pattern is common in other treatments of longitudinal models (panel models) but is not necessary with growth models (but possible).</p>
@@ -263,1467 +234,115 @@ Level 2:<br />
 <p>Level 1 regression coefficients are added to the level 2 model. These coefficients are decomposed into a fixed effect, a random effect (possibly), and between person predictors. As with any regression model, each of these only have a single error term.</p>
 </div>
 </div>
-<div id="individaul-level-random-effects" class="section level2">
-<h2>Individaul level random effects</h2>
-<div id="calculation-of-individaul-level-random-effects" class="section level3">
-<h3>Calculation of individaul level random effects</h3>
+<div id="individual-level-random-effects" class="section level2">
+<h2>Individual level random effects</h2>
+<div id="calculation-of-individual-level-random-effects" class="section level3">
+<h3>Calculation of individual level random effects</h3>
 <p>Random effects are often thought in terms of variance components. We can see this if we think of individual level regressions for each person where we then have a mean and a variance for both the intercept or the slope. The greater the variance around the intercept and the slope means that not everyone starts at the same position and not everyone changes at the same rate.</p>
 <p>If you want to look at a specific person’s random effect you can think of it as a deviation from the fixed effect where subject 6’s intercept can be thought of as</p>
-<p><span class="math display">\[ {\beta}_{06} = \gamma_{00} \pm U_{06}\]</span>
-e.g 2.2 = 3 - .8</p>
+<p><span class="math display">\[ {\beta}_{06} = \gamma_{00} \pm U_{06}\]</span></p>
+<p>e.g 2.2 = 3 - .8</p>
 </div>
 <div id="how-are-these-random-effects-calculated" class="section level3">
 <h3>How are these random effects calculated?</h3>
 <p>It isn’t as straightforward as calculating a slope for each person and then using the difference between that slope and the average slope. Instead, the estimates are partially pooled towards the overall mean of the sample, the fixed effect. We do this to get a better estimate of the parameters, the same way that using regression to predict y-hat given an X is better than binning X and calculating y-hat. More information = better.</p>
-<p>Why not full pooling? Because it ignores individaul differences in change.</p>
-<p>The result is that the variance of the change trajectories (using MLM) will be smaller than the variance of the fitted linear models.</p>
-</div>
-<div id="random-effects-and-residual-standard-assumptions" class="section level3">
-<h3>random effects and residual (standard) assumptions</h3>
-<p>Joint normal distribution of random effects<br />
-Normally distributed residual<br />
-Constant variance over time<br />
-Random effects and residual are uncorrelated<br />
-Both have a mean of zero</p>
-<p>Random effects and residual size will depend on predictors in the model.</p>
+<p>Why not full pooling ie give everyone the same slope? Because it ignores individual differences in change. Often individual differences in (intraindividual) change is what we care about.</p>
+<p>The result is that the variance of the change trajectories (using MLM) will be smaller than the variance of the fitted linear models. Trajectories are “regressed” towards the average trajectory under the assumption that extreme scores are extreme because of (measurement) error, not that people are actually extreme.</p>
+<p>Can think about this in terms of creating an average for your intercept. Do you want the average to be the grand mean average, ignoring group? Do you want it to be the person average, ignoring that some people have more data points and thus are better assessed? No right answer, so maybe lets meet in the middle? This is sometimes called an empirical Bayes estimate.</p>
 </div>
 <div id="random-effect-decomposition" class="section level3">
 <h3>Random effect decomposition</h3>
 <p>Think of the original total variance in a scatter plot of our DVs. Adding random effects takes that variance and trims it down.</p>
-<p>The intercept only MLM seperates it into a level 1 variance (which at this stage is treated as error) and a level 2 random intercept variance.</p>
-<p>Creating a random slopes model takes the Level 1 residual variance and creates a new “pile” of explained variance.</p>
+<p>The intercept only MLM separates it into a level 1 variance (which at this stage is treated as error) and a level 2 random intercept variance.</p>
+<p>Creating a random slopes model takes the Level 1 residual variance and creates a new “pile” of explained or accounted for variance.</p>
+<p>We can then further explain the variance or reduce the pile by predictors at level 1 and level 2. Our goal isn’t necessarily to explain all of the variance but it is helpful to reduce the unexplained variance <span class="math inline">\(\varepsilon_{ij}\)</span> to improve model fit.</p>
 </div>
-</div>
-<div id="working-with-models-in-r" class="section level2">
-<h2>working with models in R</h2>
-</div>
-<div id="data-analysis-and-data-structures" class="section level2">
-<h2>Data analysis and data structures</h2>
-<div id="wide-and-long-form" class="section level3">
-<h3>Wide and Long form</h3>
-<p>Depending on what type of analysis you want to perform you may need to restructure your data. I recommend the combination of tidyr and dplyr (among others) to restructure and manage your dataframes. The first decision you need to make is whether you want your data structured in a long or a wide format. There are multiple names to refer to these two types: multivariate vs univariate, person-level vs person-period, etc but they all refer to the same idea. How to structure your data depends on both what level of analysis (individual, dyad, household) and what type of analyses (MLM/SEM). Typically our focus is on individuals.</p>
-<p>Wide form is common among non-longitudinal data. It has one line per individual with all of their repeated measures in the same row, each with some name to distinguish which assessment wave the data came from. In general, this format is used for SEM.</p>
-<pre><code>## # A tibble: 3 x 4
-##      ID ext_1 ext_2 ext_3
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     1     4     4     4
-## 2     2     6     5     4
-## 3     3     4     5     6</code></pre>
-<p>In contrast, long format has a row per observation. Thus, participants likely have many rows, each one referring to a different assessment wave. There are fewer variables in this format which makes organization somewhat easier. Thus this has been referred to as “Tidy” data. Graphing with ggplot is facilitated when using tidy data such as being in the long format.</p>
-<pre><code>## # A tibble: 9 x 3
-##      ID  time   ext
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     1     1     4
-## 2     1     2     4
-## 3     1     3     4
-## 4     2     1     6
-## 5     2     2     5
-## 6     2     3     4
-## 7     3     1     4
-## 8     3     2     5
-## 9     3     3     6</code></pre>
-<p>How do you go back and forth? We use the tidyr package! As of a few months ago, you would use the gather and the spread functions. Now these are being phased out and are being replaced by pivot_longer and pivot_wider. The functions work similar but the newer ones are a little more intuitive both in terms of remembering the correct function name as well as well adding more bells and whistles.</p>
-<p>Gather and pivot_longer goes from wide to long.</p>
-<pre class="r"><code>library(tidyr)
-
-wide_to_long &lt;- wide %&gt;% 
-  gather(ext_1:ext_3,key = &quot;time&quot;, value = &quot;ext&quot;) 
-wide_to_long</code></pre>
-<pre><code>## # A tibble: 9 x 3
-##      ID time    ext
-##   &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
-## 1     1 ext_1     4
-## 2     2 ext_1     6
-## 3     3 ext_1     4
-## 4     1 ext_2     4
-## 5     2 ext_2     5
-## 6     3 ext_2     5
-## 7     1 ext_3     4
-## 8     2 ext_3     4
-## 9     3 ext_3     6</code></pre>
-<pre class="r"><code>library(tidyr)
-
-wide_to_long.p &lt;- wide %&gt;% 
-  pivot_longer(-ID, names_to = &quot;time&quot;, values_to = &quot;ext&quot;) 
-wide_to_long.p</code></pre>
-<pre><code>## # A tibble: 9 x 3
-##      ID time    ext
-##   &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
-## 1     1 ext_1     4
-## 2     1 ext_2     4
-## 3     1 ext_3     4
-## 4     2 ext_1     6
-## 5     2 ext_2     5
-## 6     2 ext_3     4
-## 7     3 ext_1     4
-## 8     3 ext_2     5
-## 9     3 ext_3     6</code></pre>
-<p>Note the similarities. The key in all three is to 1. identify which columns need to be reshaped. Here is it all of them besides ID. 2. we need to name the newly created variable that consists of the old column names (here time). 3. we need to name what those values represent (here levels of extraversion)</p>
-<p>The separate function could be used to get only the assessment wave number. This might be useful when combining data together or for creating a common time metric for everyone.</p>
-<pre class="r"><code>wide_to_long2 &lt;- wide_to_long %&gt;% 
-  separate(time, into = c(&quot;omit&quot;, &quot;wave&quot;), sep = &quot;_&quot;, convert = TRUE) %&gt;%
-  dplyr::select(-omit) %&gt;% 
-  arrange(ID)
-wide_to_long2</code></pre>
-<pre><code>## # A tibble: 9 x 3
-##      ID  wave   ext
-##   &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-## 1     1     1     4
-## 2     1     2     4
-## 3     1     3     4
-## 4     2     1     6
-## 5     2     2     5
-## 6     2     3     4
-## 7     3     1     4
-## 8     3     2     5
-## 9     3     3     6</code></pre>
-<pre class="r"><code># Note that the seperate function will identify non numeric characters and use that to seperate the values. You can omit the sep = function to check yourself. </code></pre>
-<p>One issue that comes up here is that we have differing dates for each assessment. Ideally we would like to utilize that extra information.</p>
-<pre><code>## # A tibble: 3 x 7
-##      ID ext_1 ext_2 ext_3 date_1 date_2  date_3 
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;  
-## 1     1     4     4     4 1/1/10 5/1/10  8/1/10 
-## 2     2     6     5     4 1/6/10 4/10/10 9/1/10 
-## 3     3     4     5     6 1/8/10 4/25/10 9/13/10</code></pre>
-<p>How do we fix it? The same way we would with multiple variables we want to convert. Wave, along with ID helps us keep track of what variables go with which person at which time. Together, the two serve as a unique identifier. To better understand the code go through each line to see what the intervening data frame looks like.</p>
-<pre class="r"><code>long.date &lt;- wide.date %&gt;% 
-  gather(-ID, key = &quot;time&quot;, value = &quot;value&quot;) %&gt;% 
-  separate(time, into = c(&quot;variable&quot;, &quot;wave&quot;)) %&gt;% 
-  spread(variable,value) 
-long.date</code></pre>
-<pre><code>## # A tibble: 9 x 4
-##      ID wave  date    ext  
-##   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;
-## 1     1 1     1/1/10  4    
-## 2     1 2     5/1/10  4    
-## 3     1 3     8/1/10  4    
-## 4     2 1     1/6/10  6    
-## 5     2 2     4/10/10 5    
-## 6     2 3     9/1/10  4    
-## 7     3 1     1/8/10  4    
-## 8     3 2     4/25/10 5    
-## 9     3 3     9/13/10 6</code></pre>
-<p>One difficulty of creating a wave variable is whether or not the variables are named in a manner such that 1) assessment wave is easily identifiable (e.g. does _a always refer to the first wave whereas _b always refer to the second?) and 2) if that is consistent across variables. Having a wave identifier for your variables is important/necessary. Having an easily selected one (ie at the end of the variable name, hopefully separated by an underscore or a period). If assessment wave separators are embedded within the variable name it will be harder to covert your data. Often, variable data is attached at the end of a name such as SWB_4 to refer to the fourth item in a scale. This may obscure wave identification as in SWB_A_4. A similar naming problem can occur with multiple reports e.g,. SWB_4_parent. I recommend putting wave identification last. The difficulties become partly moot when working in long format (read: entering data in) as opposed to wide.</p>
-<p>In the above code we used spread to go from long to wide as a means of creating a long dataset where there were multiple variables. Technically this is not a tidy dataset in that it comprises of both long and wide information, but it is the typical format used for MLM analyses.</p>
-<p>Going from long to wide uses spread or pivot_wider function. We will utilize this when converting our MLM models to SEM models, but try the code below to see what happens.</p>
-<pre class="r"><code>long_to_wide &lt;- long %&gt;% 
-  spread(time, ext)
-long_to_wide</code></pre>
-<pre><code>## # A tibble: 3 x 4
-##      ID   `1`   `2`   `3`
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     1     4     4     4
-## 2     2     6     5     4
-## 3     3     4     5     6</code></pre>
-<p>Note that this is technically the dataframe format that we want. The problem is that our variable names are numeric. This often causes problems. When working with tibbles use backticks ’ to refer to the column e.g., select(‘1’)</p>
-</div>
-<div id="basic-lmer-code" class="section level3">
-<h3>basic lmer code</h3>
-<p>The basic function we will work with is lmer from the lme4 package</p>
-<pre class="r"><code>library(lme4)</code></pre>
-<pre><code>## Loading required package: Matrix</code></pre>
-<pre><code>## 
-## Attaching package: &#39;Matrix&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
-## 
-##     expand, pack, unpack</code></pre>
-<p>The package was developed to be similar to the lm function. The code will be similar to the formula for the combined model</p>
-<p>Code for empty model</p>
-<pre class="r"><code>lmer(Y ~ 1 + (1 | subjects), data=example)</code></pre>
-<p>Level 1
-<span class="math display">\[ {Y}_{ij} = \beta_{0j}  +\varepsilon_{ij} \]</span>
-Level 2
-<span class="math display">\[ {\beta}_{0j} = \gamma_{00} + U_{0j} \]</span></p>
-<p>Combined
-<span class="math display">\[ {Y}_{ij} = \gamma_{00} + U_{0j}  + \varepsilon_{ij} \]</span></p>
-<p>1 is the way to reference the intercept. All additional fixed effects go outside the parentheses. Inside the parentheses are the random effects and residual terms. To the right of the vertical line is our level 1 residual term, which references the grouping variable. In this case, as with almost all longitudinal work, is the subject ID. To the left of the vertical line is the random effects we want to estimate. Right now this estimates only one random effect, one for the intercept.</p>
-<p>It is possible to suppress a random intercept by putting a zero instead of a 1. If you do not put anything there the 1 is implied.</p>
-<pre class="r"><code>lmer(y ~ 1 + time + (1 + time | subjects), data=data)
-
-lmer(y ~ time + (time | subjects), data=data)
-# both are equivalent</code></pre>
-</div>
-<div id="example" class="section level3">
-<h3>Example</h3>
-<pre class="r"><code>mod.1 &lt;- lmer(SMN7 ~ 1 + (1 | ID), data=example)
-summary(mod.1)</code></pre>
-<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
-## Formula: SMN7 ~ 1 + (1 | ID)
-##    Data: example
-## 
-## REML criterion at convergence: -714.1
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -2.1575 -0.4728 -0.0232  0.4512  3.2750 
-## 
-## Random effects:
-##  Groups   Name        Variance Std.Dev.
-##  ID       (Intercept) 0.001823 0.04270 
-##  Residual             0.001302 0.03608 
-## Number of obs: 225, groups:  ID, 91
-## 
-## Fixed effects:
-##             Estimate Std. Error t value
-## (Intercept) 0.106972   0.005106   20.95</code></pre>
-</div>
-<div id="how-to-calculate-icc" class="section level3">
-<h3>How to calculate ICC?</h3>
-<pre class="r"><code>0.001823/(0.001823 + 0.001302)</code></pre>
-<pre><code>## [1] 0.58336</code></pre>
-</div>
-</div>
-<div id="exploring-beyond-the-summary" class="section level2">
-<h2>Exploring beyond the summary</h2>
-<pre class="r"><code>class(mod.1)</code></pre>
-<pre><code>## [1] &quot;lmerMod&quot;
-## attr(,&quot;package&quot;)
-## [1] &quot;lme4&quot;</code></pre>
-<div id="what-do-the-random-effects-look-like" class="section level3">
-<h3>what do the random effects look like?</h3>
-<pre class="r"><code>library(sjPlot)
-plot_model(mod.1, facet.grid = FALSE, 
-          sort = &quot;sort.all&quot;)</code></pre>
-<pre><code>## Warning in min(new_value, na.rm = T): no non-missing arguments to min;
-## returning Inf</code></pre>
-<pre><code>## Warning in min(dat$conf.low): no non-missing arguments to min; returning
-## Inf</code></pre>
-<pre><code>## Warning in min(dat$estimate): no non-missing arguments to min; returning
-## Inf</code></pre>
-<pre><code>## Warning in max(dat$conf.high): no non-missing arguments to max; returning -
-## Inf</code></pre>
-<pre><code>## Warning in max(dat$estimate): no non-missing arguments to max; returning -
-## Inf</code></pre>
-<pre><code>## Warning in min(ticks): no non-missing arguments to min; returning Inf</code></pre>
-<pre><code>## Warning in max(ticks): no non-missing arguments to max; returning -Inf</code></pre>
-<p><img src="/Lectures/03-Growth-curves_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
-<p>Best Linear Unbiased Predictor = BLUP. More on this later.</p>
-<pre class="r"><code>head(ranef(mod.1))</code></pre>
-<pre><code>## $ID
-##       (Intercept)
-## 6   -0.0597240676
-## 29  -0.0101119688
-## 34  -0.0103698893
-## 36  -0.0035902640
-## 37  -0.0082433829
-## 48   0.0455797808
-## 53  -0.0222710793
-## 54  -0.0066548052
-## 58  -0.0060624543
-## 61  -0.0271347235
-## 66  -0.0123359896
-## 67  -0.0026491341
-## 69   0.0348398944
-## 71  -0.0486040243
-## 74   0.0484338355
-## 75   0.0224228634
-## 76  -0.0021583228
-## 78   0.0224780927
-## 79  -0.0054325535
-## 80  -0.0194707993
-## 81   0.0712662731
-## 82   0.0053695094
-## 85  -0.0532215425
-## 86  -0.0388885304
-## 87  -0.0387411472
-## 89  -0.0208712287
-## 91   0.0123812011
-## 92  -0.0078125821
-## 93   0.0430219016
-## 94  -0.0543390588
-## 96   0.0233440081
-## 97  -0.0497003277
-## 98  -0.0432302582
-## 99   0.0104394983
-## 101  0.0508032394
-## 102 -0.0104344307
-## 103 -0.0206130188
-## 104 -0.0482473609
-## 105 -0.0478231980
-## 106 -0.0028045239
-## 110  0.0418641247
-## 112 -0.0109089622
-## 114 -0.0549314098
-## 115 -0.0013505715
-## 116  0.0062422910
-## 120  0.0300499418
-## 122  0.0793976365
-## 125  0.0532803435
-## 127 -0.0105050866
-## 129 -0.0448207025
-## 135  0.0406255726
-## 136 -0.0364069792
-## 137 -0.0444890904
-## 140 -0.0153440709
-## 141  0.0770651692
-## 142  0.0817077387
-## 143  0.0072423981
-## 144  0.0001680065
-## 146 -0.0551006778
-## 149 -0.0137965477
-## 150  0.0091583792
-## 152 -0.0187707293
-## 153  0.0490992150
-## 155 -0.0233396072
-## 156 -0.0218943803
-## 159 -0.0488368935
-## 160  0.0024524455
-## 162  0.0911638809
-## 163  0.0155327007
-## 165  0.0320764602
-## 167 -0.0025217361
-## 169  0.0647586755
-## 171 -0.0397728293
-## 174  0.0259232134
-## 182 -0.0154177625
-## 187 -0.0581588783
-## 189  0.0348767402
-## 190 -0.0030744230
-## 193  0.0636533019
-## 194  0.0099321407
-## 201  0.0104848276
-## 204  0.0414352908
-## 205  0.0353188897
-## 208  0.0033367444
-## 209 -0.0346144188
-## 211  0.0168223034
-## 214 -0.0374146988
-## 219  0.0564683729
-## 222 -0.0262135788
-## 223 -0.0228606119
-## 229 -0.0484315899</code></pre>
-<pre class="r"><code>head(coef(mod.1))</code></pre>
-<pre><code>## $ID
-##     (Intercept)
-## 6    0.04724795
-## 29   0.09686005
-## 34   0.09660212
-## 36   0.10338175
-## 37   0.09872863
-## 48   0.15255179
-## 53   0.08470093
-## 54   0.10031721
-## 58   0.10090956
-## 61   0.07983729
-## 66   0.09463602
-## 67   0.10432288
-## 69   0.14181191
-## 71   0.05836799
-## 74   0.15540585
-## 75   0.12939488
-## 76   0.10481369
-## 78   0.12945011
-## 79   0.10153946
-## 80   0.08750121
-## 81   0.17823829
-## 82   0.11234152
-## 85   0.05375047
-## 86   0.06808348
-## 87   0.06823087
-## 89   0.08610079
-## 91   0.11935322
-## 92   0.09915943
-## 93   0.14999392
-## 94   0.05263296
-## 96   0.13031602
-## 97   0.05727169
-## 98   0.06374176
-## 99   0.11741151
-## 101  0.15777525
-## 102  0.09653758
-## 103  0.08635900
-## 104  0.05872465
-## 105  0.05914882
-## 106  0.10416749
-## 110  0.14883614
-## 112  0.09606305
-## 114  0.05204060
-## 115  0.10562144
-## 116  0.11321430
-## 120  0.13702196
-## 122  0.18636965
-## 125  0.16025236
-## 127  0.09646693
-## 129  0.06215131
-## 135  0.14759759
-## 136  0.07056503
-## 137  0.06248292
-## 140  0.09162794
-## 141  0.18403718
-## 142  0.18867975
-## 143  0.11421441
-## 144  0.10714002
-## 146  0.05187134
-## 149  0.09317547
-## 150  0.11613039
-## 152  0.08820128
-## 153  0.15607123
-## 155  0.08363241
-## 156  0.08507763
-## 159  0.05813512
-## 160  0.10942446
-## 162  0.19813589
-## 163  0.12250471
-## 165  0.13904847
-## 167  0.10445028
-## 169  0.17173069
-## 171  0.06719918
-## 174  0.13289523
-## 182  0.09155425
-## 187  0.04881314
-## 189  0.14184875
-## 190  0.10389759
-## 193  0.17062532
-## 194  0.11690415
-## 201  0.11745684
-## 204  0.14840730
-## 205  0.14229090
-## 208  0.11030876
-## 209  0.07235760
-## 211  0.12379432
-## 214  0.06955732
-## 219  0.16344039
-## 222  0.08075844
-## 223  0.08411140
-## 229  0.05854042</code></pre>
-<pre class="r"><code>fixef(mod.1)</code></pre>
-<pre><code>## (Intercept) 
-##    0.106972</code></pre>
-<p>How do these relate? Lets calculate ID 6 intercept random effect</p>
-<pre class="r"><code>#coef = fixef + raneff
-
-# coef for ID = 6 is 0.04724795  
-0.106972 -0.0597240676 </code></pre>
-<pre><code>## [1] 0.04724793</code></pre>
-<p>To get residuals and fitted scores</p>
-<pre class="r"><code>library(broom)
-example.aug&lt;- augment(mod.1, data = example)
-
-
-# .fitted    = predicted values
-# .resid    = residuals/errors
-# .fixed     = predicted values with no random effects</code></pre>
-</div>
-</div>
-<div id="adding-time-to-the-mlm" class="section level2">
-<h2>Adding time to the MLM</h2>
-<div id="fixed-slope" class="section level3">
-<h3>fixed slope</h3>
-<pre class="r"><code>mod.2f &lt;- lmer(SMN7 ~ 1 + week + (1  | ID), data=example)
-summary(mod.2f)</code></pre>
-<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
-## Formula: SMN7 ~ 1 + week + (1 | ID)
-##    Data: example
-## 
-## REML criterion at convergence: -675.4
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -2.2308 -0.4868 -0.0377  0.4542  3.2337 
-## 
-## Random effects:
-##  Groups   Name        Variance Std.Dev.
-##  ID       (Intercept) 0.001815 0.04261 
-##  Residual             0.001300 0.03606 
-## Number of obs: 216, groups:  ID, 88
-## 
-## Fixed effects:
-##             Estimate Std. Error t value
-## (Intercept) 0.104041   0.005733  18.147
-## week        0.001331   0.001755   0.758
-## 
-## Correlation of Fixed Effects:
-##      (Intr)
-## week -0.426</code></pre>
-<p>What does this look like graphically?</p>
-</div>
-<div id="random-slope" class="section level3">
-<h3>Random slope</h3>
-<pre class="r"><code>mod.2 &lt;- lmer(SMN7 ~ 1 + week + (week  | ID), data=example)
-summary(mod.2)</code></pre>
-<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
-## Formula: SMN7 ~ 1 + week + (week | ID)
-##    Data: example
-## 
-## REML criterion at convergence: -678.1
-## 
-## Scaled residuals: 
-##      Min       1Q   Median       3Q      Max 
-## -1.93345 -0.47015 -0.00405  0.46985  2.67965 
-## 
-## Random effects:
-##  Groups   Name        Variance  Std.Dev. Corr
-##  ID       (Intercept) 1.688e-03 0.041085     
-##           week        5.999e-05 0.007745 0.11
-##  Residual             1.114e-03 0.033378     
-## Number of obs: 216, groups:  ID, 88
-## 
-## Fixed effects:
-##             Estimate Std. Error t value
-## (Intercept) 0.104719   0.005466  19.157
-## week        0.000489   0.001913   0.256
-## 
-## Correlation of Fixed Effects:
-##      (Intr)
-## week -0.339</code></pre>
-<p>How does the intercept change from the random intercpet only model? It may change because the intercept is now conditional on time ie after accounting for time. It is not the predicted outcome when time = 0. You can think of the previous intercept as the grand mean of person means. If our week variable here changed across time then there would be a larger change in the intercept.</p>
-<p>How do you interpret week?</p>
-<p>How did the random effects change?</p>
-<div id="why-treating-time-is-so-important" class="section level4">
-<h4>Why treating time is so important</h4>
-<p>Time with a different scale. How do we interpret? And what changes?</p>
-<pre class="r"><code>example$week.n &lt;- (example$week - 30)
-  
-mod.2n &lt;- lmer(SMN7 ~ 1 + week.n + (week.n  | ID), data=example)</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl =
-## control$checkConv, : Model failed to converge with max|grad| = 1.99825 (tol
-## = 0.002, component 1)</code></pre>
-<pre class="r"><code>summary(mod.2n)</code></pre>
-<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
-## Formula: SMN7 ~ 1 + week.n + (week.n | ID)
-##    Data: example
-## 
-## REML criterion at convergence: -674.8
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -2.2053 -0.4841 -0.0423  0.4505  3.2646 
-## 
-## Random effects:
-##  Groups   Name        Variance  Std.Dev.  Corr 
-##  ID       (Intercept) 1.001e-03 0.0316327      
-##           week.n      1.333e-07 0.0003652 -1.00
-##  Residual             1.320e-03 0.0363343      
-## Number of obs: 216, groups:  ID, 88
-## 
-## Fixed effects:
-##             Estimate Std. Error t value
-## (Intercept) 0.146910   0.050598   2.904
-## week.n      0.001432   0.001763   0.812
-## 
-## Correlation of Fixed Effects:
-##        (Intr)
-## week.n 0.995 
-## convergence code: 0
-## Model failed to converge with max|grad| = 1.99825 (tol = 0.002, component 1)</code></pre>
-</div>
-</div>
-</div>
-<div id="random-effects-1" class="section level2">
-<h2>Random effects</h2>
-<div id="calcualtion-of-random-effect-confidence-interval" class="section level3">
-<h3>Calcualtion of random effect confidence interval</h3>
-<p>Conveys the predicted range around each fixed effect in which 95% of the sample individauls are predicted to fall.</p>
-<p>95% random effect = fixed effect plus minus 1.96 * random standard deviation</p>
-<p>How to calcualte?
-1. Intercept <span class="math display">\[ \gamma_{00} \pm  1.96  *  \tau_{U_{0j}}  \]</span></p>
-<pre class="r"><code>0.1193933 + (1.96 * 0.240217) </code></pre>
-<pre><code>## [1] 0.5902186</code></pre>
-<pre class="r"><code>0.1193933 - (1.96 * 0.240217) </code></pre>
-<pre><code>## [1] -0.351432</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Slope <span class="math display">\[ \gamma_{10} \pm  1.96  *  \tau_{U_{1j}}  \]</span></li>
+<div id="random-effects-and-residual-standard-assumptions" class="section level3">
+<h3>Random effects and residual (standard) assumptions</h3>
+<ol style="list-style-type: decimal">
+<li>Joint normal distribution of random effects (Do we expect this to hold?)<br />
+</li>
+<li>Normally distributed residual<br />
+</li>
+<li>Constant variance over time<br />
+</li>
+<li>Random effects <span class="math inline">\(\pm U_{0j}\)</span> and residual <span class="math inline">\(\varepsilon_{ij}\)</span> are uncorrelated and have a mean of zero</li>
 </ol>
-<pre class="r"><code>0.0004891 + (1.96 * 0.007745) </code></pre>
-<pre><code>## [1] 0.0156693</code></pre>
-<pre class="r"><code>0.0004891 - (1.96 * 0.007745) </code></pre>
-<pre><code>## [1] -0.0146911</code></pre>
-<p>###Individaul level random effects</p>
-<p>Are the intercept random effects the same as the model with only the intercept? Why or why not?</p>
-<pre class="r"><code>head(ranef(mod.1))</code></pre>
-<pre><code>## $ID
-##       (Intercept)
-## 6   -0.0597240676
-## 29  -0.0101119688
-## 34  -0.0103698893
-## 36  -0.0035902640
-## 37  -0.0082433829
-## 48   0.0455797808
-## 53  -0.0222710793
-## 54  -0.0066548052
-## 58  -0.0060624543
-## 61  -0.0271347235
-## 66  -0.0123359896
-## 67  -0.0026491341
-## 69   0.0348398944
-## 71  -0.0486040243
-## 74   0.0484338355
-## 75   0.0224228634
-## 76  -0.0021583228
-## 78   0.0224780927
-## 79  -0.0054325535
-## 80  -0.0194707993
-## 81   0.0712662731
-## 82   0.0053695094
-## 85  -0.0532215425
-## 86  -0.0388885304
-## 87  -0.0387411472
-## 89  -0.0208712287
-## 91   0.0123812011
-## 92  -0.0078125821
-## 93   0.0430219016
-## 94  -0.0543390588
-## 96   0.0233440081
-## 97  -0.0497003277
-## 98  -0.0432302582
-## 99   0.0104394983
-## 101  0.0508032394
-## 102 -0.0104344307
-## 103 -0.0206130188
-## 104 -0.0482473609
-## 105 -0.0478231980
-## 106 -0.0028045239
-## 110  0.0418641247
-## 112 -0.0109089622
-## 114 -0.0549314098
-## 115 -0.0013505715
-## 116  0.0062422910
-## 120  0.0300499418
-## 122  0.0793976365
-## 125  0.0532803435
-## 127 -0.0105050866
-## 129 -0.0448207025
-## 135  0.0406255726
-## 136 -0.0364069792
-## 137 -0.0444890904
-## 140 -0.0153440709
-## 141  0.0770651692
-## 142  0.0817077387
-## 143  0.0072423981
-## 144  0.0001680065
-## 146 -0.0551006778
-## 149 -0.0137965477
-## 150  0.0091583792
-## 152 -0.0187707293
-## 153  0.0490992150
-## 155 -0.0233396072
-## 156 -0.0218943803
-## 159 -0.0488368935
-## 160  0.0024524455
-## 162  0.0911638809
-## 163  0.0155327007
-## 165  0.0320764602
-## 167 -0.0025217361
-## 169  0.0647586755
-## 171 -0.0397728293
-## 174  0.0259232134
-## 182 -0.0154177625
-## 187 -0.0581588783
-## 189  0.0348767402
-## 190 -0.0030744230
-## 193  0.0636533019
-## 194  0.0099321407
-## 201  0.0104848276
-## 204  0.0414352908
-## 205  0.0353188897
-## 208  0.0033367444
-## 209 -0.0346144188
-## 211  0.0168223034
-## 214 -0.0374146988
-## 219  0.0564683729
-## 222 -0.0262135788
-## 223 -0.0228606119
-## 229 -0.0484315899</code></pre>
-<pre class="r"><code>head(coef(mod.1))</code></pre>
-<pre><code>## $ID
-##     (Intercept)
-## 6    0.04724795
-## 29   0.09686005
-## 34   0.09660212
-## 36   0.10338175
-## 37   0.09872863
-## 48   0.15255179
-## 53   0.08470093
-## 54   0.10031721
-## 58   0.10090956
-## 61   0.07983729
-## 66   0.09463602
-## 67   0.10432288
-## 69   0.14181191
-## 71   0.05836799
-## 74   0.15540585
-## 75   0.12939488
-## 76   0.10481369
-## 78   0.12945011
-## 79   0.10153946
-## 80   0.08750121
-## 81   0.17823829
-## 82   0.11234152
-## 85   0.05375047
-## 86   0.06808348
-## 87   0.06823087
-## 89   0.08610079
-## 91   0.11935322
-## 92   0.09915943
-## 93   0.14999392
-## 94   0.05263296
-## 96   0.13031602
-## 97   0.05727169
-## 98   0.06374176
-## 99   0.11741151
-## 101  0.15777525
-## 102  0.09653758
-## 103  0.08635900
-## 104  0.05872465
-## 105  0.05914882
-## 106  0.10416749
-## 110  0.14883614
-## 112  0.09606305
-## 114  0.05204060
-## 115  0.10562144
-## 116  0.11321430
-## 120  0.13702196
-## 122  0.18636965
-## 125  0.16025236
-## 127  0.09646693
-## 129  0.06215131
-## 135  0.14759759
-## 136  0.07056503
-## 137  0.06248292
-## 140  0.09162794
-## 141  0.18403718
-## 142  0.18867975
-## 143  0.11421441
-## 144  0.10714002
-## 146  0.05187134
-## 149  0.09317547
-## 150  0.11613039
-## 152  0.08820128
-## 153  0.15607123
-## 155  0.08363241
-## 156  0.08507763
-## 159  0.05813512
-## 160  0.10942446
-## 162  0.19813589
-## 163  0.12250471
-## 165  0.13904847
-## 167  0.10445028
-## 169  0.17173069
-## 171  0.06719918
-## 174  0.13289523
-## 182  0.09155425
-## 187  0.04881314
-## 189  0.14184875
-## 190  0.10389759
-## 193  0.17062532
-## 194  0.11690415
-## 201  0.11745684
-## 204  0.14840730
-## 205  0.14229090
-## 208  0.11030876
-## 209  0.07235760
-## 211  0.12379432
-## 214  0.06955732
-## 219  0.16344039
-## 222  0.08075844
-## 223  0.08411140
-## 229  0.05854042</code></pre>
-<pre class="r"><code>fixef(mod.1)</code></pre>
-<pre><code>## (Intercept) 
-##    0.106972</code></pre>
-<p>How do these relate? Lets calculate ID 6 intercept random effect</p>
-<pre class="r"><code>#coef = fixef + raneff
-
-# 0.04724795  
-0.106972 -0.0597240676 </code></pre>
-<pre><code>## [1] 0.04724793</code></pre>
-<p>To get residuals and fitted scores</p>
-<pre class="r"><code>library(broom)
-example.aug&lt;- augment(mod.1, data = example)
-
-
-# .fitted    = predicted values
-# .resid    = residuals/errors
-# .fixed     = predicted values with no random effects</code></pre>
-</div>
-<div id="adding-time-1" class="section level3">
-<h3>adding time</h3>
-<pre class="r"><code>mod.2 &lt;- lmer(SMN7 ~ 1 + week + (week  | ID), data=example)
-summary(mod.2)</code></pre>
-<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
-## Formula: SMN7 ~ 1 + week + (week | ID)
-##    Data: example
-## 
-## REML criterion at convergence: -678.1
-## 
-## Scaled residuals: 
-##      Min       1Q   Median       3Q      Max 
-## -1.93345 -0.47015 -0.00405  0.46985  2.67965 
-## 
-## Random effects:
-##  Groups   Name        Variance  Std.Dev. Corr
-##  ID       (Intercept) 1.688e-03 0.041085     
-##           week        5.999e-05 0.007745 0.11
-##  Residual             1.114e-03 0.033378     
-## Number of obs: 216, groups:  ID, 88
-## 
-## Fixed effects:
-##             Estimate Std. Error t value
-## (Intercept) 0.104719   0.005466  19.157
-## week        0.000489   0.001913   0.256
-## 
-## Correlation of Fixed Effects:
-##      (Intr)
-## week -0.339</code></pre>
-<p>Random effects another way</p>
-<pre class="r"><code>re2 &lt;- ranef(mod.2)
-head(re2)</code></pre>
-<pre><code>## $ID
-##       (Intercept)          week
-## 6   -5.657190e-02 -0.0036945459
-## 29  -8.481756e-03 -0.0012401120
-## 34  -6.559720e-03 -0.0036272361
-## 36  -7.107377e-03  0.0047529824
-## 37  -7.584156e-03  0.0003779790
-## 48   3.760800e-02  0.0079905136
-## 53  -1.989445e-02 -0.0015608099
-## 54   1.298061e-03 -0.0046572183
-## 58   3.763976e-04 -0.0054304028
-## 61  -2.523030e-02 -0.0013740463
-## 66  -1.692834e-02  0.0022291440
-## 67  -4.435808e-03  0.0020525694
-## 71  -4.790346e-02  0.0002829010
-## 75   2.147451e-02  0.0025670702
-## 76  -1.178132e-03  0.0005880005
-## 78   1.590422e-02  0.0031440504
-## 79  -4.554999e-03  0.0005646937
-## 80  -1.789820e-02 -0.0007154790
-## 81   5.310404e-02  0.0082155118
-## 82   4.163353e-03  0.0008114128
-## 85  -5.229368e-02 -0.0013883325
-## 86  -3.747004e-02 -0.0020088462
-## 87  -3.530494e-02 -0.0042629307
-## 89  -1.906497e-02 -0.0008530205
-## 91   1.547560e-02 -0.0021933791
-## 92  -5.127067e-03 -0.0012825084
-## 93   3.779074e-02  0.0055466427
-## 94  -5.318192e-02 -0.0005568113
-## 96   2.535874e-02 -0.0004379578
-## 97  -4.654850e-02 -0.0019515143
-## 98  -3.875698e-02 -0.0027541673
-## 99   9.785177e-03  0.0016155143
-## 101  4.073120e-02  0.0116039230
-## 103 -1.910831e-02 -0.0013254022
-## 104 -4.656380e-02 -0.0034349757
-## 105 -4.532176e-02 -0.0021913974
-## 106  4.024883e-05 -0.0015454111
-## 110  5.266477e-02 -0.0065630548
-## 112 -5.482604e-03 -0.0041413140
-## 114 -5.187791e-02 -0.0023737578
-## 115 -6.018565e-04  0.0004676209
-## 116  7.916722e-03 -0.0002939168
-## 120  3.156554e-02  0.0021828094
-## 122  7.845607e-02  0.0030220350
-## 125  5.565560e-02 -0.0004030572
-## 127 -1.035814e-02  0.0009947753
-## 129 -4.383714e-02 -0.0011901610
-## 135  4.517320e-02 -0.0027851051
-## 136 -3.257406e-02 -0.0027536989
-## 137 -4.307457e-02 -0.0026649722
-## 140 -1.389973e-02 -0.0009470411
-## 141  7.828180e-02  0.0011246004
-## 142  7.656429e-02  0.0071700560
-## 143  8.802167e-03  0.0001782843
-## 144  5.023920e-04  0.0007247389
-## 146 -5.190868e-02 -0.0030652978
-## 149 -1.315714e-02  0.0001913378
-## 150  1.329264e-02 -0.0028911814
-## 152 -1.719482e-02 -0.0013669192
-## 153  4.865193e-02  0.0022929034
-## 155 -2.212352e-02 -0.0004931690
-## 156 -2.041537e-02 -0.0004522343
-## 159 -4.783022e-02 -0.0015435325
-## 160  3.459146e-03  0.0001563020
-## 162  8.771544e-02  0.0058967120
-## 163  1.575853e-02  0.0011486036
-## 165  3.244233e-02  0.0013196820
-## 167 -5.436807e-04 -0.0009083619
-## 169  6.576873e-02  0.0011926808
-## 171 -3.475852e-02 -0.0047511867
-## 174  2.798144e-02 -0.0004759192
-## 182 -5.231973e-03 -0.0081378967
-## 187 -5.609959e-02 -0.0019680493
-## 189  3.456648e-02  0.0020405469
-## 190 -1.620723e-03 -0.0003743333
-## 193  5.854085e-02  0.0071786529
-## 194  4.241261e-03  0.0066159420
-## 201  1.187752e-02 -0.0001340229
-## 204  3.799808e-02  0.0055309494
-## 205  4.004323e-02 -0.0029413522
-## 208  3.040083e-04  0.0043109412
-## 209 -3.367017e-02 -0.0004225192
-## 211  1.856239e-02 -0.0003192506
-## 214 -3.676234e-02 -0.0001666149
-## 219  4.541593e-02  0.0143735740
-## 222 -1.947934e-02 -0.0063364890
-## 223 -1.719018e-02 -0.0051038253
-## 229 -4.254994e-02 -0.0060019177</code></pre>
-<pre class="r"><code>random_params &lt;- tidy(mod.2, effect = &quot;ran_modes&quot;)
-head(random_params)</code></pre>
-<pre><code>##   level group        term      estimate   std.error
-## 1   101    ID (Intercept)  0.1454506216 0.018681911
-## 2   101    ID        week  0.0120929048 0.006503270
-## 3   103    ID (Intercept)  0.0856111110 0.020552331
-## 4   103    ID        week -0.0008364205 0.007484617
-## 5   104    ID (Intercept)  0.0581556164 0.020564418
-## 6   104    ID        week -0.0029459940 0.007471121</code></pre>
-<p>Using simulations to get better estimates of confidence around our estimates</p>
-<pre class="r"><code>library(merTools)</code></pre>
-<pre><code>## Loading required package: arm</code></pre>
-<pre><code>## Loading required package: MASS</code></pre>
-<pre><code>## 
-## Attaching package: &#39;MASS&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
-## 
-##     select</code></pre>
-<pre><code>## 
-## arm (Version 1.10-1, built: 2018-4-12)</code></pre>
-<pre><code>## Working directory is /Users/jackson/Box/5165 Applied Longitudinal Data Analysis/ALDA/content/Lectures</code></pre>
-<pre class="r"><code>FEsim(mod.2)</code></pre>
-<pre><code>##          term         mean       median          sd
-## 1 (Intercept) 0.1044074017 0.1039119381 0.005272623
-## 2        week 0.0007611029 0.0006878781 0.001868060</code></pre>
-<pre class="r"><code>re.sim &lt;- REsim(mod.2)
-head(re.sim)</code></pre>
-<pre><code>##   groupFctr groupID        term         mean       median         sd
-## 1        ID       6 (Intercept) -0.056526527 -0.056522578 0.01853652
-## 2        ID      29 (Intercept) -0.009124553 -0.008835317 0.02100211
-## 3        ID      34 (Intercept) -0.008828907 -0.006406779 0.01971484
-## 4        ID      36 (Intercept) -0.007870006 -0.006666001 0.02263088
-## 5        ID      37 (Intercept) -0.008727056 -0.008822997 0.01890044
-## 6        ID      48 (Intercept)  0.039487607  0.040242941 0.02003504</code></pre>
-<p>This can be used to create CIs for each individaul random effect (and fixed effect). What is the confidence interval around person 6’s intercept estimate compared to person 2000 who has 25 repeated measurements?</p>
-</div>
-<div id="caterpillar-plots" class="section level3">
-<h3>caterpillar plots</h3>
-<p>Look through these different methods of getting random effects. Note that they are not all exactly the same.</p>
-<p>caterpillar plots</p>
-<pre class="r"><code>p1 &lt;- plotREsim(re.sim)
-p1</code></pre>
-<p><img src="/Lectures/03-Growth-curves_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
-</div>
-<div id="density-of-individaul-random-effects" class="section level3">
-<h3>Density of individaul random effects</h3>
-<pre class="r"><code>p1.gg1 &lt;- re.sim %&gt;% 
-  filter(term == &quot;(Intercept)&quot;) 
-
-ggplot(p1.gg1, aes(mean)) +
-  geom_density()</code></pre>
-<p><img src="/Lectures/03-Growth-curves_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
-<pre class="r"><code>p1.gg2 &lt;- re.sim %&gt;% 
-  filter(term == &quot;week&quot;) 
-
-
-ggplot(p1.gg2, aes(mean)) +
-  geom_density()</code></pre>
-<p><img src="/Lectures/03-Growth-curves_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
 </div>
 </div>
-<div id="comparing-to-a-standard-linear-model" class="section level2">
-<h2>comparing to a standard linear model</h2>
-<pre class="r"><code>lm.1 &lt;- lm(SMN7 ~ 1 + week, data = example)
-summary(lm.1)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = SMN7 ~ 1 + week, data = example)
-## 
-## Residuals:
-##       Min        1Q    Median        3Q       Max 
-## -0.099294 -0.039929 -0.005938  0.032715  0.169885 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.100161   0.005261  19.039   &lt;2e-16 ***
-## week        0.004087   0.002563   1.595    0.112    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.05562 on 214 degrees of freedom
-##   (9 observations deleted due to missingness)
-## Multiple R-squared:  0.01174,    Adjusted R-squared:  0.007124 
-## F-statistic: 2.543 on 1 and 214 DF,  p-value: 0.1123</code></pre>
-</div>
-<div id="other-types-of-models" class="section level2">
-<h2>Other types of models</h2>
-<p>Depending on your DV, you might not want to have a Gaussian sampling distribution. Instead you may want something like a Poisson or a negative binomial if you are using some sort of count data. You can do this somewhat with lme4. However, the BRMS package – which uses Bayesian estimation – has many more possibilities: geometric, log normal, weibull, exponential, gamma, Beta, hurdle Poisson/gamma/negative binomial, zero inflated beta/Poisson/negative binomial, cumulative. Maybe we will fit some of these later in the semester.</p>
-</div>
-<div id="matrix-notation-as-a-way-to-help-understand-what-is-going-on" class="section level2">
-<h2>Matrix notation (as a way to help understand what is going on)</h2>
-<p><span class="math display">\[ y_{i} = X_{i}\beta + Z_{i}b_{i} + \varepsilon_{i} \]</span></p>
-<p>Lets assume we have four time points. This formula is equivalent to:</p>
-<p>$$ \begin{bmatrix}
-y_{1j} \
-y_{2j} \
-y_{3j} \
-y_{4j}<br />
-\end{bmatrix} +</p>
-<p>\begin{bmatrix}
-1 &amp; time_{1j} \
-1 &amp; time_{2j} \
-1 &amp; time_{3j} \
-1 &amp; time_{4j}<br />
-\end{bmatrix}</p>
-<p>\begin{bmatrix}
-<em>{0} \
-</em>{1} \
-<em>{2} \
-</em>{3}<br />
-\end{bmatrix}</p>
-<ul>
-<li>\begin{bmatrix}
-1 &amp; time_{1j} \
-1 &amp; time_{2j} \
-1 &amp; time_{3j} \
-1 &amp; time_{4j}<br />
-\end{bmatrix}
-\begin{bmatrix}
-b_{0j} \
-b_{1j} \
-\end{bmatrix}</li>
-<li>\begin{bmatrix}
-<em>{1j} \
-</em>{2j} \
-<em>{3j} \
-</em>{4j}<br />
-\end{bmatrix} $$</li>
-</ul>
-<p>X is the design matrix for fixed effects
-Z is the design matrix for random effects.
-<span class="math inline">\(\beta\)</span> is a vector of fixed effects
-b is a vector of random effects
-<span class="math inline">\(\varepsilon\)</span> is a vector of residual error</p>
-<p>Note that all are subject specific (j) besides the vector of fixed effects</p>
-<p>The design matrix can be increased with the inclusion of other predictors (See next week)</p>
-<pre class="r"><code>model.matrix(mod.2)</code></pre>
-<pre><code>##     (Intercept)      week
-## 1             1 0.0000000
-## 2             1 0.9479452
-## 3             1 1.8493151
-## 4             1 0.0000000
-## 5             1 1.0383562
-## 6             1 0.0000000
-## 7             1 2.3917808
-## 8             1 0.0000000
-## 9             1 2.9589041
-## 10            1 0.0000000
-## 11            1 1.9369863
-## 12            1 2.7917808
-## 13            1 0.0000000
-## 14            1 1.9068493
-## 15            1 2.9424658
-## 16            1 0.0000000
-## 17            1 3.2246575
-## 18            1 0.0000000
-## 19            1 1.8602740
-## 20            1 4.0109589
-## 21            1 0.0000000
-## 22            1 1.4082192
-## 23            1 2.4739726
-## 24            1 0.0000000
-## 25            1 2.6575342
-## 26            1 0.0000000
-## 27            1 2.9698630
-## 28            1 5.8109589
-## 29            1 0.0000000
-## 30            1 0.8931507
-## 31            1 1.6657534
-## 32            1 4.5232877
-## 35            1 0.0000000
-## 36            1 0.8657534
-## 37            1 1.7753425
-## 41            1 0.0000000
-## 42            1 2.9589041
-## 43            1 0.0000000
-## 44            1 1.0164384
-## 45            1 2.0328767
-## 46            1 0.0000000
-## 47            1 3.1232877
-## 48            1 5.9863014
-## 49            1 0.0000000
-## 50            1 2.0164384
-## 51            1 0.0000000
-## 52            1 3.8109589
-## 53            1 0.0000000
-## 54            1 3.1150685
-## 55            1 6.0493151
-## 56            1 0.0000000
-## 57            1 2.1369863
-## 58            1 3.2301370
-## 59            1 6.3178082
-## 60            1 0.0000000
-## 61            1 1.0712329
-## 62            1 0.0000000
-## 63            1 1.2109589
-## 64            1 0.0000000
-## 65            1 2.1369863
-## 66            1 0.0000000
-## 67            1 1.1397260
-## 68            1 2.0383562
-## 69            1 0.0000000
-## 70            1 0.9753425
-## 71            1 1.8657534
-## 72            1 0.0000000
-## 73            1 1.9260274
-## 74            1 3.0356164
-## 75            1 0.0000000
-## 76            1 1.9315068
-## 77            1 3.0438356
-## 78            1 0.0000000
-## 79            1 1.0054795
-## 80            1 2.2136986
-## 81            1 0.0000000
-## 82            1 0.9698630
-## 83            1 0.0000000
-## 84            1 1.0054795
-## 85            1 2.0575342
-## 86            1 2.9150685
-## 87            1 0.0000000
-## 88            1 0.9616438
-## 89            1 2.2986301
-## 90            1 3.3232877
-## 91            1 0.0000000
-## 92            1 1.0520548
-## 93            1 2.1835616
-## 94            1 3.0164384
-## 95            1 0.0000000
-## 96            1 0.9041096
-## 97            1 3.2657534
-## 102           1 0.0000000
-## 103           1 1.1534247
-## 104           1 0.0000000
-## 105           1 1.1945205
-## 106           1 0.0000000
-## 107           1 0.9671233
-## 108           1 2.2410959
-## 109           1 0.0000000
-## 110           1 1.0410959
-## 111           1 3.1123288
-## 112           1 0.0000000
-## 113           1 1.6164384
-## 114           1 3.8794521
-## 115           1 0.0000000
-## 116           1 0.9369863
-## 117           1 3.2273973
-## 118           1 0.0000000
-## 119           1 1.0602740
-## 120           1 3.1232877
-## 121           1 0.0000000
-## 122           1 1.0136986
-## 123           1 3.2986301
-## 124           1 0.0000000
-## 125           1 0.9178082
-## 126           1 3.1616438
-## 127           1 0.0000000
-## 128           1 1.0027397
-## 129           1 0.0000000
-## 130           1 0.9780822
-## 131           1 3.3041096
-## 132           1 0.0000000
-## 133           1 1.2054795
-## 134           1 3.0767123
-## 135           1 0.0000000
-## 136           1 1.0410959
-## 137           1 3.0739726
-## 138           1 0.0000000
-## 139           1 0.9232877
-## 140           1 0.0000000
-## 141           1 0.9589041
-## 142           1 2.9972603
-## 143           1 0.0000000
-## 144           1 1.0383562
-## 145           1 3.3890411
-## 146           1 0.0000000
-## 147           1 1.0739726
-## 148           1 0.0000000
-## 149           1 0.9095890
-## 150           1 0.0000000
-## 151           1 3.2602740
-## 152           1 0.0000000
-## 153           1 3.2273973
-## 154           1 0.0000000
-## 155           1 1.1205479
-## 156           1 0.0000000
-## 157           1 3.2082192
-## 158           1 0.0000000
-## 159           1 2.9972603
-## 160           1 0.0000000
-## 161           1 3.2794521
-## 162           1 0.0000000
-## 163           1 2.9917808
-## 164           1 0.0000000
-## 165           1 1.2356164
-## 166           1 0.0000000
-## 167           1 3.1780822
-## 168           1 0.0000000
-## 169           1 1.9123288
-## 170           1 0.0000000
-## 171           1 1.0520548
-## 172           1 2.9397260
-## 173           1 0.0000000
-## 174           1 0.9753425
-## 175           1 0.0000000
-## 176           1 3.0876712
-## 177           1 0.0000000
-## 178           1 1.0383562
-## 179           1 3.0109589
-## 180           1 0.0000000
-## 181           1 3.0876712
-## 182           1 0.0000000
-## 183           1 3.0493151
-## 184           1 0.0000000
-## 185           1 2.9342466
-## 186           1 0.0000000
-## 187           1 3.1315068
-## 188           1 0.0000000
-## 189           1 2.9342466
-## 190           1 0.0000000
-## 191           1 2.9780822
-## 192           1 0.0000000
-## 193           1 3.4575342
-## 194           1 0.0000000
-## 195           1 2.9945205
-## 196           1 0.0000000
-## 197           1 3.0520548
-## 198           1 0.0000000
-## 199           1 2.9972603
-## 200           1 0.0000000
-## 201           1 3.1041096
-## 202           1 0.0000000
-## 203           1 3.1863014
-## 204           1 0.0000000
-## 205           1 3.4547945
-## 206           1 0.0000000
-## 207           1 2.9369863
-## 208           1 0.0000000
-## 209           1 3.0849315
-## 210           1 0.0000000
-## 211           1 2.9945205
-## 212           1 0.0000000
-## 213           1 3.3150685
-## 214           1 0.0000000
-## 215           1 3.0876712
-## 216           1 0.0000000
-## 217           1 2.9945205
-## 218           1 0.0000000
-## 219           1 2.8273973
-## 220           1 0.0000000
-## 221           1 2.9178082
-## 222           1 0.0000000
-## 223           1 2.9479452
-## 224           1 0.0000000
-## 225           1 2.8465753
-## attr(,&quot;assign&quot;)
-## [1] 0 1
-## attr(,&quot;msgScaleX&quot;)
-## character(0)</code></pre>
+<div id="data-generating-process-dgp" class="section level2">
+<h2>Data generating process (DGP)</h2>
+<p>Our standard assumption is that the DV comes from a data generating process that results in normal distributions. This does not mean that it needs to result in an observed normal distribution. Instead, the default of assuming an Gaussian DGP is practical: it is robust against violations and the alternatives are sometimes harder to justify.</p>
+<p>If you think you have a non-Gaussian DGP (like a Poisson or a negative binomial if you are using some sort of count data) you will need to use a different estimation technique. You can do this somewhat with the package we will be working with primarily, lme4. However, the BRMS package – which uses Bayesian estimation – has many more possibilities: geometric, log normal, weibull, exponential, gamma, Beta, hurdle Poisson/gamma/negative binomial, zero inflated beta/Poisson/negative binomial, cumulative. We will fit some of these later in the semester. Currently, however, assume we are working with <span class="math inline">\({Y}_{ij} \sim \mathcal{N}(0, \sigma^{2})\)</span></p>
 </div>
 <div id="estimation" class="section level2">
 <h2>Estimation</h2>
-<p>Maximum likelihood estimation. Uses a likelihood function that describes the probability of observing the sample data as a function of the parameters. Attempts to maximize the function.</p>
-<p>REML vs ML</p>
-<p>Differences account for the fact that fixed effects are being estimated simultaously with th variance parameters. REML accounts for uncertainty in the fixed effects before estimating residual variance. REML attempts to maximize the likelihood of the residuals whereas ML the sample data.</p>
-<p>If you use REML you should be careful in testing fixed effects against eachother (more down below)</p>
+<p>Maximum likelihood estimation. Uses a likelihood function that describes the probability of observing the sample data as a function of the parameters. Attempts to maximize the function through an iterative process. Because it is iterative, it might fail.</p>
+<p>There are fixed effects as well as random effects we need to count for. Maximum likelihood takes our assumptions about the model (normally distributed residuals, etc) and creates probability densities for each parameters. For example, based on certain fixed effects and sd of random effects, how likely is it that person x has a slope of z? The algorithm looks at the full sample to see how likely different parameters are, spits back the most likely, and gives you a number to show how likely they are (compared to others). This is akin to saying you rolled 10 dice, 5 came up as 2s. How likely is this dice fair? But instead of fair vs not fair it gives a likelihood to certain possibilities (e.g., a 2 comes up at 25%, 50% 75% rates).</p>
+<p>Restricted maximum likelihood (REML) vs Full Maximum likelihood (ML). Will give you similar parameters, the differences are in the standard errors. REML is similar to dividing by N - 1 for SE whereas ML is similar to dividing by N.</p>
+<p>Differences account for the fact that fixed effects are being estimated simultaneously with the variance parameters in ML. Estimates of the variance parameters assume that the fixed effects estimates are known and thus does not account for uncertainty in these estimates.</p>
+<p>REML accounts for uncertainty in the fixed effects before estimating residual variance. REML attempts to maximize the likelihood of the residuals whereas ML maximizes the sample data. REML can be thought of as an unbiased estimate of the residual variance.</p>
+<p>REML is good for small sample size both N and group. However, if you use REML you should be careful in testing fixed effects against each other (more down below). Deviances tests for fixed effects should be done with ML, but only random effects with REML. ML can also look at random effects too.</p>
 </div>
 <div id="testing-significance-adapted-from-ben-bolker" class="section level2">
 <h2>Testing significance (adapted from Ben Bolker)</h2>
-<p>Methods for testing single parameters
+<p>4 Methods for testing single parameters
 From worst to best:</p>
 <ol style="list-style-type: decimal">
-<li>Wald Z-tests. Easy to compute. However, they are asymptotic approximations, assuming both that (1) the sampling distributions of the parameters are multivariate normal and that (2) the sampling distribution of the log-likelihood is (proportional to) χ2.</li>
-<li>Wald t-tests</li>
-<li>Likelihood ratio test.<br />
-</li>
-<li>Markov chain Monte Carlo (MCMC) or parametric bootstrap confidence intervals</li>
+<li><p>Wald Z-tests.</p></li>
+<li><p>Wald t-tests</p></li>
 </ol>
-<div id="p-values-are-not-included" class="section level3">
-<h3>P values are not included</h3>
-<p>Authors are not convinced of the utility of the general approach of testing with reference to an approximate null distribution. In general, it is not clear that the null distribution of the computed ratio of sums of squares is really an F distribution, for any choice of denominator degrees of freedom. While this is true for special cases that correspond to classical experimental designs (nested, split-plot, randomized block, etc.), it is apparently not true for more complex designs (unbalanced, GLMMs, temporal or spatial correlation, etc.).</p>
-<p>tl;dr: it gets messy with more complex models</p>
+<p>Easy to compute - test statistic over standard error However, they are asymptotic standard error approximations, assuming both that (1) the sampling distributions of the parameters are multivariate normal and that (2) the sampling distribution of the log-likelihood is (proportional to) χ2.</p>
+<p>The above two are okay to do for single parameter estimates of fixed effects. But beware that a) degrees of freedom calculations are not straightforward and b) the assumptions for random effects are be hard to meet.</p>
+<div id="quick-aside-p-values-are-not-included" class="section level3">
+<h3>Quick aside: P values are not included</h3>
+<p>Authors of the package we will be using first lme4 are not convinced of the utility of the general approach of testing with reference to an approximate null distribution. In general, it is not clear that the null distribution of the computed ratio of sums of squares is really an F distribution, for any choice of denominator degrees of freedom. While this is true for special cases that correspond to classical experimental designs (nested, split-plot, randomized block, etc.), it is apparently not true for more complex designs (unbalanced, GLMMs, temporal or spatial correlation, etc.).</p>
+<p>tl;dr: it gets messy with more complex models.</p>
 <p>If you really want p values</p>
 <pre class="r"><code># library(lmerTest)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li><p>Likelihood ratio test (also called deviance test).</p></li>
+<li><p>Markov chain Monte Carlo (MCMC) or parametric bootstrap confidence intervals ( we will get to this later)</p></li>
+</ol>
 </div>
-<div id="likelhiood-ratio-test" class="section level3">
-<h3>Likelhiood ratio test</h3>
+<div id="likelihood-ratio-test" class="section level3">
+<h3>Likelihood ratio test</h3>
+<p>Used for model comparisons (often multiparameter comparisons) and for tests of random effects. REML can only be used if model compared have the same fixed parts and only differ in random. Otherwise ML must be used.</p>
 <p>How much more likely the data is under a more complex model than under the simpler model (these models need to be nested to compare this).</p>
-<p>Log Likelihood (LL) is derived from ML estimation. Larger the LL the better the fit.</p>
-<p>Deviance compares two LLs. Current model and a saturated model (that fits data perfectly).</p>
-<p>Deviance = -2[LL current - LL saturated]</p>
-<p>LL saturated = 1 for MLMs (probability it will perfectly recapture data). log of 1 is 0. So this term drops out.</p>
-<p>Deviance = -2LL current model.</p>
-<p>Comparing 2 models is called a likelihood ration test. Need to have:
+<p>Log Likelihood (LL) is derived from ML estimation. Logs are used because they are computationally simpler; logs of multiplications are reduced to adding the logs together.</p>
+<p>Larger the LL the better the fit.</p>
+<p>Deviance compares two LLs. Current model and a saturated model (that fits data perfectly). Asks how much worse the current model is to the best possible model. Deviance = -2[LL current - LL saturated]</p>
+<p>LL saturated = 1 for MLMs (probability it will perfectly recapture data). log of 1 is 0. So this term drops out. Deviance = -2(LL current model). AKA -2logL or -2LL</p>
+<p>Can compare two models via subtraction, often referred to as a full and reduced model. Differences is distributed as a chi square with a df equal to how many “constraints” are included. Constraints can be thought of as forcing a parameter to be zero ie removing it.</p>
+<p>Comparing 2 models is called a likelihood ratio test. Need to have:
 1. same data
 2. nested models (think of constraining a parameter to zero)</p>
-<p>Distributed as chi-square with df equal to constraint differences between models.</p>
-<pre class="r"><code>mod.2r &lt;- lmer(SMN7 ~ 1 + week + ( 1  | ID), data=example)
-summary(mod.2r)</code></pre>
-<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
-## Formula: SMN7 ~ 1 + week + (1 | ID)
-##    Data: example
-## 
-## REML criterion at convergence: -675.4
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -2.2308 -0.4868 -0.0377  0.4542  3.2337 
-## 
-## Random effects:
-##  Groups   Name        Variance Std.Dev.
-##  ID       (Intercept) 0.001815 0.04261 
-##  Residual             0.001300 0.03606 
-## Number of obs: 216, groups:  ID, 88
-## 
-## Fixed effects:
-##             Estimate Std. Error t value
-## (Intercept) 0.104041   0.005733  18.147
-## week        0.001331   0.001755   0.758
-## 
-## Correlation of Fixed Effects:
-##      (Intr)
-## week -0.426</code></pre>
+<p>Why work with deviances and not just log likelihoods? Why -2? Why a ratio test when you subtract deviances? Maths. Working with deviances allows us to subtract two from one another, which is equivalent to taking the ratio of likelihoods.</p>
+<p>You can test in r using the same procedure we would to test different regression models.</p>
 <pre class="r"><code>anova(mod.2, mod.2r)</code></pre>
-<pre><code>## refitting model(s) with ML (instead of REML)</code></pre>
-<pre><code>## Data: example
-## Models:
-## mod.2r: SMN7 ~ 1 + week + (1 | ID)
-## mod.2: SMN7 ~ 1 + week + (week | ID)
-##        Df     AIC     BIC logLik deviance  Chisq Chi Df Pr(&gt;Chisq)
-## mod.2r  4 -686.93 -673.43 347.46  -694.93                         
-## mod.2   6 -685.45 -665.20 348.73  -697.45 2.5248      2      0.283</code></pre>
 </div>
 <div id="likelihood-tests-for-random-effects" class="section level3">
 <h3>Likelihood tests for random effects</h3>
-<p>Not listed in the output because it is hard to do this with variances. Remember variances do not have values below zero and thus the distributions get a wonky quickly. Needs mixture distributions (Cannot be easily done with chi square, for example)</p>
-<p>Can Do anova comparisons, though that falls to many similar problems as trying to do a Wald test.</p>
+<p>Not listed in the output because it is harder to do this with variances. Remember variances do not have values below zero and thus the distributions get a wonky quickly. Needs mixture distributions (Cannot be easily done with chi square, for example)</p>
+<p>Can technically do anova comparisons for random effects, though that falls to many similar problems as trying to do a Wald test.</p>
 <p>The sampling distribution of variance estimates is in general strongly asymmetric: the standard error may be a poor characterization of the uncertainty. Thus the best way to handle is to do bootstrapped estimates.</p>
 </div>
 <div id="aic-and-bic" class="section level3">
 <h3>AIC and BIC</h3>
-<p>AIC (Akaike’s Information Criterion) and the BIC (Bayesian Information Criterion) where “smaller is better.” This is the opposite of LL/Deviance As with the other types, these may give you wonky findings depending on some factors as they are related to LLs.</p>
+<p>Used when you want to compare non-nested data. Need to have the same data, however.</p>
+<p>AIC (Akaike’s Information Criterion) and the BIC (Bayesian Information Criterion) where “smaller is better.” This is the opposite of LL. As with the other types, these may give you wonky findings depending on some factors as they are related to LLs.</p>
 <p>AIC = 2(number of parameters) + (−2LL)
 BIC = ln(n)(number of parameters) + (−2LL)</p>
 <p>BIC penalizes models with more parameters more than AIC does.</p>
 </div>
-<div id="mcmc" class="section level3">
-<h3>MCMC</h3>
-<p>More on this later.</p>
-<pre class="r"><code>library(rstanarm)
-library(brms)
-library(mcmcsamp)</code></pre>
-<pre class="r"><code>#library(mcmcsamp)</code></pre>
-</div>
-<div id="bootstraps" class="section level3">
-<h3>Bootstraps</h3>
-<p>Parametric bootstrap:</p>
-<pre class="r"><code>confint(mod.1, method=&quot;boot&quot;, nsim=1000)</code></pre>
-<pre><code>## Computing bootstrap confidence intervals ...</code></pre>
-<pre><code>## 
-## 7 warning(s): Model failed to converge with max|grad| = 0.00326574 (tol = 0.002, component 1) (and others)</code></pre>
-<pre><code>##                  2.5 %     97.5 %
-## .sig01      0.03437911 0.05119232
-## .sigma      0.03201764 0.04051648
-## (Intercept) 0.09665970 0.11679542</code></pre>
-<pre class="r"><code>summary(mod.1)</code></pre>
-<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
-## Formula: SMN7 ~ 1 + (1 | ID)
-##    Data: example
-## 
-## REML criterion at convergence: -714.1
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -2.1575 -0.4728 -0.0232  0.4512  3.2750 
-## 
-## Random effects:
-##  Groups   Name        Variance Std.Dev.
-##  ID       (Intercept) 0.001823 0.04270 
-##  Residual             0.001302 0.03608 
-## Number of obs: 225, groups:  ID, 91
-## 
-## Fixed effects:
-##             Estimate Std. Error t value
-## (Intercept) 0.106972   0.005106   20.95</code></pre>
-<pre class="r"><code># uses SDs of random effects
-# sigma = residual standard error</code></pre>
-<p>Comparing two models. fit the reduced model, then repeatedly simulate from it and compute the differences between the deviance of the reduced and the full model for each simulated data set. Compare this null distribution to the observed deviance difference.
-This procedure is implemented in the pbkrtest package.</p>
-<pre class="r"><code>library(pbkrtest)
-#pb &lt;- PBmodcomp(mod.2,mod.2r)</code></pre>
-</div>
-</div>
-<div id="predictions-and-prediction-intervals" class="section level2">
-<h2>Predictions and prediction intervals</h2>
-<p>Predict function is deterministic and uses only the fixed effects (i.e. does not include random effects in the predictions). It does not do prediction in the typical sense where you are predicting <em>new</em> individual’s scores.</p>
-<p>Simulate is non-deterministic because it samples random effect values for all subjects and then samples from the conditional distribution. Simulation is needed to create true predictions.</p>
-<div id="predictions-and-prediction-intervals-1" class="section level3">
-<h3>Predictions and prediction intervals</h3>
-<p>Predict function is deterministic and uses only the fixed effects (i.e. does not include random effects in the predictions). It does not do prediction in the typical sense where you are predicting <em>new</em> individuals’s scores.</p>
-<p>Simulate is non-deterministic because it samples random effect values for all subjects and then samples from the conditional distribution. Simulation is needed to create true preditions.</p>
-<p>Short of a fully Bayesian analysis, bootstrapping is the gold-standard for deriving prediction intervals/bands (ie where would a new person score given X), but the time required is typically high.</p>
-<p>In order to generate a proper prediction (for either a new person or a new observation within a person), a prediction must account for three sources of uncertainty in mixed models:</p>
-<ol style="list-style-type: decimal">
-<li>the residual (observation-level) variance,</li>
-<li>the uncertainty in the fixed coefficients, and</li>
-<li>the uncertainty in the variance parameters for the random effects</li>
-</ol>
-<p>Does so by:
-1. extracting the fixed and random coefficients
-2. takes n draws from the multivariate normal distribution of the fixed and random coefficients (separately)
-3. calculates the linear predictor for each row in newdata based on these draws, and
-4. incorporates the residual variation<br />
-then:
-5. returns newdata with the lower and upper limits of the prediction interval and the mean or median of the simulated predictions</p>
-<pre class="r"><code>library(merTools)
-# see also their shiny app: shinyMer(mod.1)
-PI &lt;- predictInterval(merMod = mod.2, newdata = example, level = 0.9, n.sims = 100, stat = &quot;median&quot;, include.resid.var = TRUE)
-head(PI)</code></pre>
-<pre><code>##          fit       upr          lwr
-## 1 0.05308144 0.1183545 -0.002075082
-## 2 0.03924756 0.1016895 -0.024710060
-## 3 0.04589155 0.1067230 -0.027015400
-## 4 0.09898652 0.1629507  0.022304816
-## 5 0.09481132 0.1548010  0.028729007
-## 6 0.09965443 0.1668782  0.041778680</code></pre>
-<p>Nice for bringing in confidence bands around your prediction (And we might use this later)</p>
-<p>Broom offers the fitted (predicted) values already if you just want to plot your trajectory. But note that these are not typical prediction intervals (what happens if you get a new participant with a certain value of X). The bands fit in ggplot are for predicted <span class="math inline">\(\mu\)</span>|X</p>
-<p>Broom offers the fitted (predicted) values already if you just want to plot your trajectory. But note that these are not typical prediction intervals (what happens if you get a new particpant with a certain value of X). The bands fit in ggplot are for predicted <span class="math inline">\(\mu\)</span>|X</p>
-<pre class="r"><code>P.gg &lt;- ggplot(example.aug, aes(x= week, y = .fitted)) + geom_point() + stat_smooth(method = &quot;lm&quot;)   
-
-P.gg</code></pre>
-<pre><code>## Warning: Removed 9 rows containing non-finite values (stat_smooth).</code></pre>
-<pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/03-Growth-curves_files/figure-html/unnamed-chunk-57-1.png" width="672" /></p>
-<p>Can also explicitly simulate new data (rather than rely on another function to do so), which will be useful for power calculations later. In the simulated data, the subject means are different from the means in the original data because simulate samples by-subject random effect values using the variance components in the fitted model.</p>
-<pre class="r"><code>sim.1&lt;- simulate(mod.2)
-head(sim.1)</code></pre>
-</div>
 </div>
 <div id="coefficient-of-determination-equivalents" class="section level2">
 <h2>Coefficient of determination equivalents</h2>
-<p>Issue is: should you include or exclude variation of different random-effects terms?</p>
-<p>Can do a more Psuedo R2 by taking the difference in variance between model 1 and model 2 and deviding it by model 1.</p>
-<p>E.g,. residual variance in varying intercept model subtracted from growth model devided by intercept only model.</p>
+<p>You want to get a model fit estimate. BIC and AIC are good to compare nested models but they aren’t standardized and thus make comparison across non nested models difficult.</p>
+<p>With MLM models we cannot directly compute R2. Instead we will use pseudo R2. Pseudo R2 is similar to R2 in that it can be thought of as the correlation between your predicted and actual scores. For example, assume we have three waves of data. The intercept is 1, the slope is 2 and time is coded 0,1,2. The predicted scores are: 1, 3, 5. We would then correlate everyone’s first, second and third wave scores with these predicted scores. This correlation squared is pseudo R2, telling us how much variance time explains in our DV.</p>
+<p>Yes, we typically think of this as a measure of variance explained divided by total variance. This is where things get tricky: should you include or exclude variation of different random-effects terms? These are error, but they are modeled in the sense that they are not unexplained. Is the effect size wanted after you are “controlling for” or do you want to talk about total variation. There are similarities here with regards to Eta and Partial Eta squared.</p>
+<p>The general idea is to be upfront about what you are comparing and what is included. Typically this is done with comparing models, much like a hierarchical regression. Taking the difference in variance between model 1 and model 2 and dividing it by model 1 makes it explicit what you are looking at and what you are including or not including.</p>
+<p>E.g,. residual variance in varying intercept model subtracted from growth model divided by intercept only model. This can tell you how much unexplained variance is explained by time.</p>
 <pre class="r"><code>(sigma(mod.1) - sigma(mod.2)) / sigma(mod.1)</code></pre>
-<pre><code>## [1] 0.07484984</code></pre>
-<p>Proportion of variance explained by time.</p>
-<div id="batch-analyses" class="section level3">
-<h3>batch analyses</h3>
-<p>Can easily do a lot of models simulataniously. You do not need to use for loops.</p>
-<p>Check out dplyr::do as well as purrr::map.</p>
-<p>##Now you try:</p>
-<ol style="list-style-type: decimal">
-<li>Graph by hand what an empty model, showing at least two people’s raw data points and describign different sources or error.</li>
-</ol>
-<p>1.Run linear models on all of your subjects (a basic regression). What is the average intercept, the average slope?</p>
-<ol start="2" style="list-style-type: decimal">
-<li><p>Now run a mlm/lmer model with only a random intercept. What is the ICC? What does residual variance look like compared to linear model? Create a graph to show this effect.</p></li>
-<li><p>Introduce a fixed slope term. What is the difference in terms of the fixed effects estimates between this estimate and the previous? Of the residual standard error? Create a graph to show both fixed effects estimates and the CIs around them.</p></li>
-<li><p>Run an additional model with a random slope. How does this change compare to the previous model? Should you keep the random slope or not?</p></li>
-<li><p>Interpret the correlation between the slope and the intercept.</p></li>
-<li><p>Create a density plot of the random effects from your final model.</p></li>
-<li><p>Create a catepilar plot of the random effects. Is there any person that seems odd in terms of a large standard errors around intercept and slope estimates?</p></li>
-<li><p>Create a plot of the trajectory, along with a spaghetti plot of each person’s individual slope. Set the alpha level (transparency) on the individual slopes to make them easier to see.</p></li>
-<li><p>Create a plot of the trajectory, along with a spagehtti plot of each person’s individual slope. Set the alpha level (transperancy) on the individual slopes to make them easier to see.</p></li>
-</ol>
-</div>
 </div>
 </div>
