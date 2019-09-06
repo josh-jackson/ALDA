@@ -20,18 +20,22 @@
       <description>
 
 
-&lt;p&gt;##Now you try:&lt;/p&gt;
+&lt;div id=&#34;answer-the-questions-below-using-your-own-data-for-question-1-and-the-dataset-from-this-file-for-the-remaining-questions.-if-you-have-your-own-longitudinal-data-please-feel-free-to-use-that-instead.&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Answer the questions below using your own data (for question 1) and the dataset from this file for the remaining questions. If you have your own longitudinal data, please feel free to use that instead.&lt;/h1&gt;
+&lt;/div&gt;
+&lt;div id=&#34;please-email-your-answers-via-a-an-rmd-file-and-b-a-pdf-to-homewor.dk7huzwn6n5aohkau.box.com-if-you-are-using-your-own-data-please-also-attach-the-dataset.&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Please email your answers via a) an Rmd file and b) a pdf to: &lt;a href=&#34;mailto:Homewor.dk7huzwn6n5aohka@u.box.com&#34; class=&#34;email&#34;&gt;Homewor.dk7huzwn6n5aohka@u.box.com&lt;/a&gt; If you are using your own data please also attach the dataset.&lt;/h1&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;&lt;p&gt;Create a codebook with an actual dataset you are working with (it does not need to be longitudinal). Feed it into R to change variable names.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Take the wide dataset and make it long&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Take a wide dataset and make it long&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Run separate linear models on all of the participants subjects (a basic regression). What is the average intercept, the average slope?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Now run a mlm/lmer model with only a random intercept. What is the ICC?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now run a mlm/lmer model with only a random intercept. What is the ICC? Interpret.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Introduce a fixed slope term. What is the difference in interpretation for the fixed effects estimates in this estimate and the previous? Of the residual standard error?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Run an additional model with a random slope. How does this change compare to the previous model? Should you keep the random slope or not?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Run an additional model with a random slope. How does this change compare to the previous fixed slope model? Should you keep the random slope or not?&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Interpret the correlation between the slope and the intercept.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Create a density plot of the random effects from your final model.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Create a caterpillar plot of the random effects. Is there any person that seems odd in terms of a large standard errors around intercept and slope estimates?&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
+&lt;/div&gt;
 </description>
     </item>
     

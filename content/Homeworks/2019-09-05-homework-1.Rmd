@@ -3,10 +3,10 @@ title: 'homework #1'
 author: Josh
 date: '2019-09-05'
 slug: homework-1
+summary: "Homework #1"
 categories: []
 tags: []
 subtitle: ''
-summary: ''
 authors: []
 lastmod: '2019-09-04T13:56:17-05:00'
 featured: no
@@ -17,27 +17,28 @@ image:
 projects: []
 ---
 
+# Answer the questions below using your own data (for question 1) and the dataset from this file for the remaining questions. If you have your own longitudinal data, please feel free to use that instead. 
 
-##Now you try:
+# Please email your answers via a) an Rmd file and b) a pdf to: Homewor.dk7huzwn6n5aohka@u.box.com  If you are using your own data please also attach the dataset. 
+
 
 
 1. Create a codebook with an actual dataset you are working with (it does not need to be longitudinal). Feed it into R to change variable names. 
 
-2. Take the wide dataset and make it long
+2. Take a wide dataset and make it long
 
 3. Run separate linear models on all of the participants subjects (a basic regression). What is the average intercept, the average slope?  
 
-4. Now run a mlm/lmer model with only a random intercept. What is the ICC? 
+4. Now run a mlm/lmer model with only a random intercept. What is the ICC? Interpret. 
 
 5. Introduce a fixed slope term. What is the difference in interpretation for the fixed effects estimates in this estimate and the previous? Of the residual standard error? 
 
-6. Run an additional model with a random slope. How does this change compare to the previous model? Should you keep the random slope or not?  
+6. Run an additional model with a random slope. How does this change compare to the previous fixed slope model? Should you keep the random slope or not?  
 
 7. Interpret the correlation between the slope and the intercept. 
 
 8. Create a density plot of the random effects from your final model. 
 
-9. Create a caterpillar plot of the random effects. Is there any person that seems odd in terms of a large standard errors around intercept and slope estimates? 
 
 
  

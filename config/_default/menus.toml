@@ -13,6 +13,11 @@
   name = "Workshops"
   url = "/Workshops"
   weight = 30
+  
+[[main]]
+  name = "Homeworks"
+  url = "/Homeworks"
+  weight = 40
 
 [[main]]
   name = "Syllabus"
