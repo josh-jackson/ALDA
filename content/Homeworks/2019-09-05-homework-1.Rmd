@@ -17,11 +17,15 @@ image:
 projects: []
 ---
 
+
  Answer the questions below using your own data (for question 1) and the dataset from this file for the remaining questions:https://raw.github.com/josh-jackson/ALDA/master/Hw1 If you have your own longitudinal data, please feel free to use that instead. 
 
  If using the provided dataset note that we are looking at depression across 5 waves during college. Waves are signified by a letter at the start of the variable name, starting with A, then B, then C, etcetera. Not all waves collected depression during college.  
 
 Please email your answers via a) an Rmd file and b) a pdf to: Homewor.dk7huzwn6n5aohka@u.box.com  If you are using your own data please also attach the dataset. 
+
+
+
 
 
 1. Create a codebook with an actual dataset you are working with (it does not need to be longitudinal). Feed it into R to change variable names. 
