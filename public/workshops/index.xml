@@ -953,6 +953,2682 @@ head(sim.1)&lt;/code&gt;&lt;/pre&gt;
     </item>
     
     <item>
+      <title>Workshop #3</title>
+      <link>/workshops/workshop-2/</link>
+      <pubDate>Wed, 04 Sep 2019 00:00:00 +0000</pubDate>
+      <guid>/workshops/workshop-2/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#purrr&#34;&gt;purrr&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#background-iteration&#34;&gt;Background: Iteration&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-reading&#34;&gt;Data Reading&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#many-subjects-same-variables-example-1&#34;&gt;Many Subjects, Same Variables (Example 1)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#many-subjects-different-variables-example-2&#34;&gt;Many Subjects, Different Variables (Example 2)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#multiple-waves-same-variables-example-3&#34;&gt;Multiple Waves, Same Variables (Example 3)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#multiple-waves-different-variables-example-4&#34;&gt;Multiple Waves, Different Variables (Example 4)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#multiple-waves-multiple-files-for-same-variables-example-5&#34;&gt;Multiple Waves, Multiple Files for Same Variables (Example 5)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#running-models&#34;&gt;Running Models&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#read-in-data&#34;&gt;Read in Data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#clean-data&#34;&gt;Clean Data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#descriptives&#34;&gt;Descriptives&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#coding-time&#34;&gt;Coding Time&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#fit-unconditional-models&#34;&gt;Fit Unconditional Models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#icc&#34;&gt;ICC&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#fit-growth-models&#34;&gt;Fit Growth Models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#model-comparisons&#34;&gt;Model Comparisons&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tabling-values&#34;&gt;Tabling Values&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;purrr&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;purrr&lt;/h1&gt;
+&lt;p&gt;In my opinion, &lt;code&gt;purrr&lt;/code&gt; is one of the most underrated and under-utilized &lt;code&gt;R&lt;/code&gt; packages. It has completely revolutionized my own efficiency and workspace organization, particularly as someone who works with super messy data that comes in a variety of forms.&lt;/p&gt;
+&lt;p&gt;In this tutorial, we are going to cover a number of what I believe are the most functional and important applications of &lt;code&gt;purrr&lt;/code&gt; in psychological research. Given the audience, in the first half of the tutorial, I will focus on working with the diverse forms of data that many of you work with, providing examples of how to load, clean, and merge data using &lt;code&gt;purrr&lt;/code&gt;. In the second half, I will focus on how we can use &lt;code&gt;purrr&lt;/code&gt; with longitudinal data analysis when we are working with multiple predictors and outcomes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;background-iteration&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Background: Iteration&lt;/h1&gt;
+&lt;p&gt;Before we get there, though, I think it’s useful to think about when and where we would use &lt;code&gt;purrr&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Iteration is everywhere. It underpins much of mathematics and statistics. If you’ve ever seen the &lt;span class=&#34;math inline&#34;&gt;\(\Sigma\)&lt;/span&gt; symbol, then you’ve seen (and probably used) iteration.&lt;/p&gt;
+&lt;p&gt;It’s also incredibly useful. Anytime you have to repeat some sort of action many times, iteration is your best friend. In psychology, this often means reading in a bunch of individual data files from an experiment, repeating an analysis with a series of different predictors or outcomes, or creating a series of figures.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(psych)
+library(knitr)
+library(kableExtra)
+library(lme4)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required package: Matrix&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(broom.mixed)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Registered S3 methods overwritten by &amp;#39;broom.mixed&amp;#39;:
+##   method         from 
+##   augment.lme    broom
+##   augment.merMod broom
+##   glance.lme     broom
+##   glance.merMod  broom
+##   glance.stanreg broom
+##   tidy.brmsfit   broom
+##   tidy.gamlss    broom
+##   tidy.lme       broom
+##   tidy.merMod    broom
+##   tidy.rjags     broom
+##   tidy.stanfit   broom
+##   tidy.stanreg   broom&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(plyr)
+library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.2.1           ✔ purrr   0.3.2      
+## ✔ tibble  2.1.3           ✔ dplyr   0.8.3      
+## ✔ tidyr   0.8.99.9000     ✔ stringr 1.4.0      
+## ✔ readr   1.3.1           ✔ forcats 0.4.0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ ggplot2::%+%()      masks psych::%+%()
+## ✖ ggplot2::alpha()    masks psych::alpha()
+## ✖ dplyr::arrange()    masks plyr::arrange()
+## ✖ purrr::compact()    masks plyr::compact()
+## ✖ dplyr::count()      masks plyr::count()
+## ✖ tidyr::expand()     masks Matrix::expand()
+## ✖ dplyr::failwith()   masks plyr::failwith()
+## ✖ dplyr::filter()     masks stats::filter()
+## ✖ dplyr::group_rows() masks kableExtra::group_rows()
+## ✖ dplyr::id()         masks plyr::id()
+## ✖ dplyr::lag()        masks stats::lag()
+## ✖ dplyr::mutate()     masks plyr::mutate()
+## ✖ tidyr::pack()       masks Matrix::pack()
+## ✖ dplyr::rename()     masks plyr::rename()
+## ✖ dplyr::summarise()  masks plyr::summarise()
+## ✖ dplyr::summarize()  masks plyr::summarize()
+## ✖ tidyr::unpack()     masks Matrix::unpack()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Enter &lt;code&gt;for&lt;/code&gt; loops. &lt;code&gt;for&lt;/code&gt; loops are the “OG” form of iteration in computer science. The basic syntax is below. Basically, we can use a for loop to loop through and print a series of things.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for(i in letters[1:5]){
+  print(i)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;a&amp;quot;
+## [1] &amp;quot;b&amp;quot;
+## [1] &amp;quot;c&amp;quot;
+## [1] &amp;quot;d&amp;quot;
+## [1] &amp;quot;e&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The code above “loops” through 5 times, printing the iteration letter.&lt;/p&gt;
+&lt;p&gt;Essentially, like the &lt;code&gt;apply()&lt;/code&gt;, &lt;code&gt;lapply()&lt;/code&gt;, &lt;code&gt;sapply()&lt;/code&gt;, and &lt;code&gt;mapply()&lt;/code&gt; family of functions, &lt;code&gt;purrr&lt;/code&gt; is meant to be an alternative to iteration (i.e. &lt;code&gt;for&lt;/code&gt; loops) in &lt;code&gt;R&lt;/code&gt;. &lt;code&gt;for&lt;/code&gt; loops are great, but they aren’t as great in &lt;code&gt;R&lt;/code&gt; as they are in other programming languages. In &lt;code&gt;R&lt;/code&gt;, you’re better off vectorizing or building in C++ backends.&lt;/p&gt;
+&lt;p&gt;There are a lot of functions in the &lt;code&gt;purrr&lt;/code&gt; package that I encourage you to check out. Today, though, we’ll focus on the &lt;code&gt;map()&lt;/code&gt; family of functions. The breakdown of map functions is pretty intuitive. The basic map function wants two things as input – a list or vector and a function. So the &lt;code&gt;purrr&lt;/code&gt; equivalent of the example above would be:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;map(letters[1:5], print)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;a&amp;quot;
+## [1] &amp;quot;b&amp;quot;
+## [1] &amp;quot;c&amp;quot;
+## [1] &amp;quot;d&amp;quot;
+## [1] &amp;quot;e&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [[1]]
+## [1] &amp;quot;a&amp;quot;
+## 
+## [[2]]
+## [1] &amp;quot;b&amp;quot;
+## 
+## [[3]]
+## [1] &amp;quot;c&amp;quot;
+## 
+## [[4]]
+## [1] &amp;quot;d&amp;quot;
+## 
+## [[5]]
+## [1] &amp;quot;e&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that this returns a list, which we may not always want. With &lt;code&gt;purrr&lt;/code&gt;, we can change the kind of output of &lt;code&gt;map()&lt;/code&gt; by adding a predicate, like &lt;code&gt;lgl&lt;/code&gt;, &lt;code&gt;dbl&lt;/code&gt;, &lt;code&gt;chr&lt;/code&gt;, and &lt;code&gt;df&lt;/code&gt;. So in the example above, we may have wanted just the characters to print. To do that we’d call &lt;code&gt;map_chr()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;map_chr(letters[1:5], print)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;a&amp;quot;
+## [1] &amp;quot;b&amp;quot;
+## [1] &amp;quot;c&amp;quot;
+## [1] &amp;quot;d&amp;quot;
+## [1] &amp;quot;e&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;a&amp;quot; &amp;quot;b&amp;quot; &amp;quot;c&amp;quot; &amp;quot;d&amp;quot; &amp;quot;e&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that it also returns the concatenated character vector as well as printing each letter individually (i.e. iteratively).&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;map()&lt;/code&gt; functions can also hand multiple inputs. Often we may need to input multiple pieces of information to a function, similarly to how we work with nested &lt;code&gt;for&lt;/code&gt; loops. In this case, we have &lt;code&gt;map2()&lt;/code&gt; and &lt;code&gt;pmap()&lt;/code&gt; that take additional arguments. &lt;code&gt;map2()&lt;/code&gt; shockingly takes two inputs and &lt;code&gt;pmap()&lt;/code&gt; takes p arguments that you feed in as list (e.g. &lt;code&gt;pmap(list(a, b, c, d), my_fun))&lt;/code&gt;. A simple printing example would be:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;map2_chr(letters[1:5], 1:5, paste)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;a 1&amp;quot; &amp;quot;b 2&amp;quot; &amp;quot;c 3&amp;quot; &amp;quot;d 4&amp;quot; &amp;quot;e 5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note here that we can use &lt;code&gt;map2()&lt;/code&gt; and &lt;code&gt;pmap()&lt;/code&gt; with the predicates from above.&lt;/p&gt;
+&lt;p&gt;This likely makes little sense at this point, and that’s fine. The examples in the rest of this tutorial should elucidate their usage. The last note I’ll make is that thinking about the structure of your data is going to be very important when using &lt;code&gt;purrr&lt;/code&gt;. To use it effectively, you’ll need your data in specific forms, which will often require data manipulations. It just takes practice.&lt;/p&gt;
+&lt;p&gt;Regardless of the programmatic form, iteration is everywhere. It underpins much of mathematics and statistics. If you’ve ever seen the &lt;span class=&#34;math inline&#34;&gt;\(\Sigma\)&lt;/span&gt; symbol, then you’ve seen (and probably used) iteration.&lt;/p&gt;
+&lt;p&gt;It’s also incredibly useful. Anytime you have to repeat some sort of action many times, iteration is your best friend. In psychology, this could mean reading in a bunch of separate data files (with separate files for different people, variables, waves, etc.) or performing a number of regressions or other statistical tests.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-reading&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Data Reading&lt;/h1&gt;
+&lt;p&gt;To demonstrate the first case in which I find &lt;code&gt;purrr&lt;/code&gt; useful, we are going to consider a five cases that, in my experience, capture many of the challenges we often face in working with psychological data. In each of these cases, we will use a codebook of the form we discussed in the previous tutorial on codebooks.&lt;/p&gt;
+&lt;p&gt;All of these share a similar feature: multiple files. There are a variety of other techniques you could use to get your data into a usable form, such as those below:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+Writing code to load in each file separately (not good).
+&lt;/li&gt;
+&lt;li&gt;
+Copying each data file into one larger data set in Excel (worse)
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;But let’s not do that. Let’s use iteration to make our process efficient and transparent.&lt;/p&gt;
+&lt;div id=&#34;many-subjects-same-variables-example-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Many Subjects, Same Variables (Example 1)&lt;/h2&gt;
+&lt;p&gt;We will start with a data storage format that is very common in experimental studies in various fields of psychology as well as in observational studies of repeated assessments of individuals (i.e. ESM, EMA, etc.).&lt;/p&gt;
+&lt;p&gt;For this first example, I’ll show you how this would look with a &lt;code&gt;for&lt;/code&gt; loop before I show you how it looks with &lt;code&gt;purrr&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Assuming you have all the data in a single folder and the format is reasonably similar, you have the following basic syntax:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_path &amp;lt;- &amp;quot;&amp;quot;
+files &amp;lt;- list.files(data_path)
+data &amp;lt;- list()
+for(i in files){
+  data[[i]] &amp;lt;- read.csv(i, stringsAsFactors = F)
+}
+data &amp;lt;- combine(data)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This works fine in this simple case, but where &lt;code&gt;purrr&lt;/code&gt; really shines in when you need to make modifications to your data before combining, whether this be recoding, removing missing cases, or renaming variables.&lt;/p&gt;
+&lt;p&gt;But first, the simple case of reading data.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_path &amp;lt;- &amp;quot;~/Documents/week_3_purrr&amp;quot;
+df1 &amp;lt;- tibble(ID = list.files(sprintf(&amp;quot;%s/data/example_1&amp;quot;, data_path))) %&amp;gt;%
+  mutate(path = sprintf(&amp;quot;%s/data/example_1/%s&amp;quot;, data_path, ID),
+         data = map(path, read_csv),
+         ID = str_remove(ID, &amp;quot;.csv&amp;quot;)) %&amp;gt;%
+  unnest(data) %&amp;gt;%
+  select(-path)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The code above creates a list of ID’s from the data path (files named for each person), reads the data in using the &lt;code&gt;map()&lt;/code&gt; function from &lt;code&gt;purrr&lt;/code&gt;, removes the “.csv” from the ID variable, then unnests the data, resulting in a data frame for each person.&lt;/p&gt;
+&lt;p&gt;But often, we have variable names that aren’t super informative, so we want to rename them. In this case, we need to use our codebook to give them more informative variable names.&lt;/p&gt;
+&lt;p&gt;In this case, where all people have the same variables, it’s easiest to just rename them after unnesting, so the full code would look like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_path &amp;lt;- &amp;quot;https://github.com/emoriebeck/R-tutorials/raw/master&amp;quot;
+(codebook &amp;lt;- sprintf(&amp;quot;%s/ALDA/week_3_purrr/data/codebook_ex1.csv&amp;quot;, data_path) %&amp;gt;% read_csv)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   new_name = col_character(),
+##   old_name = col_character()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 15 x 2
+##    new_name   old_name
+##    &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;   
+##  1 O_AesSens  O_1     
+##  2 E_Assert   E_1     
+##  3 N_Depr     N_1     
+##  4 N_EmoVol   N_2     
+##  5 O_IntCur   O_2     
+##  6 C_Org      C_1     
+##  7 A_Rspct    A_1     
+##  8 C_Rspnbl   C_2     
+##  9 A_Cmpn     A_2     
+## 10 O_CrtvImag O_3     
+## 11 E_EnerLev  E_2     
+## 12 C_Prdctv   C_3     
+## 13 A_Trust    A_3     
+## 14 N_Anxty    N_3     
+## 15 E_Scblty   E_3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;old.names &amp;lt;- codebook$old_name
+new.names &amp;lt;- codebook$new_name
+df1 &amp;lt;- tibble(ID = list.files(sprintf(&amp;quot;%s/data/example_1&amp;quot;, data_path))) %&amp;gt;%
+  mutate(path = sprintf(&amp;quot;%s/data/example_1/%s&amp;quot;, data_path, ID),
+         data = map(path, read_csv),
+         ID = str_remove(ID, &amp;quot;.csv&amp;quot;))%&amp;gt;%
+  unnest(data) %&amp;gt;%
+  select(ID, old.names) %&amp;gt;%
+  setNames(c(&amp;quot;ID&amp;quot;, new.names))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;many-subjects-different-variables-example-2&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Many Subjects, Different Variables (Example 2)&lt;/h2&gt;
+&lt;p&gt;In some cases, participants may have different variables. This could be do to a skip rule in a study or intentionally different variable collection (e.g. in between-person experiments or idiographic work like I do). In this case, we might need to filter or rename variables within our iterative loop.&lt;/p&gt;
+&lt;p&gt;In this case, all participants have the same set of core variables but were randomly assigned to complete one additional scale.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   C_Rspnbl = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   C_Rspnbl = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   C_Rspnbl = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   C_Rspnbl = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   C_Rspnbl = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   C_Rspnbl = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   C_Rspnbl = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   A_Rspct = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   N_Anxty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   C_Rspnbl = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   A_Rspct = col_double(),
+##   C_Rspnbl = col_double(),
+##   A_Cmpn = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   A_Trust = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   O_AesSens = col_double(),
+##   E_Assert = col_double(),
+##   N_Depr = col_double(),
+##   N_EmoVol = col_double(),
+##   O_IntCur = col_double(),
+##   C_Org = col_double(),
+##   C_Rspnbl = col_double(),
+##   O_CrtvImag = col_double(),
+##   E_EnerLev = col_double(),
+##   C_Prdctv = col_double(),
+##   N_Anxty = col_double(),
+##   E_Scblty = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df2 &amp;lt;- tibble(ID = list.files(sprintf(&amp;quot;%s/data/example_2&amp;quot;, data_path))) %&amp;gt;%
+  mutate(path = sprintf(&amp;quot;%s/data/example_2/%s&amp;quot;, data_path, ID),
+         data = map(path, read_csv),
+         ID = str_remove(ID, &amp;quot;.csv&amp;quot;))%&amp;gt;%
+  unnest(data) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;multiple-waves-same-variables-example-3&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Multiple Waves, Same Variables (Example 3)&lt;/h2&gt;
+&lt;p&gt;In some cases, instead of multiple files for each participant, we collect a single file for all participants across different waves (e.g. using Qualtrics). In this case, we need to index the files a little differently. Instead of reading in files for participants, we need to read in files for waves, which may be named in a variety of ways.&lt;/p&gt;
+&lt;p&gt;Here, I’ll start with a simple example of data that were well-managed and nicely named the same except for wave content. This is a good practice to do. I’m in general against modifying data, but I am a fan of changing file &lt;em&gt;names&lt;/em&gt; because I think this actually helps with data management and prevents the need to actually go in and modify information within files.&lt;/p&gt;
+&lt;p&gt;These data come from a longitudinal study of personality. We have seven waves, and the variable names for all items are consistent across waves. In this case, our code is almost identical to reading in multiple files for each participant, except that now we have wave info and will need to toss out part of the file names at the end.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;codebook &amp;lt;- sprintf(&amp;quot;%s/ALDA/week_3_purrr/data/codebook_ex3.csv&amp;quot;, data_path) %&amp;gt;% read_csv&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   old_name = col_character(),
+##   item_text = col_character(),
+##   scale = col_logical(),
+##   new_name = col_character(),
+##   rev_code = col_double(),
+##   type = col_character(),
+##   var = col_character()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;old.names &amp;lt;- str_remove_all(codebook$old_name, &amp;quot;[ ]&amp;quot;)
+new.names &amp;lt;- codebook$new_name
+
+df3 &amp;lt;- tibble(wave = paste(&amp;quot;T&amp;quot;, 1:7, sep = &amp;quot;&amp;quot;),
+              path = sprintf(&amp;quot;%s/ALDA/week_3_purrr/data/example_3/%s.csv&amp;quot;, data_path, wave)) %&amp;gt;%
+  mutate(data = map(path, read_csv),
+         wave = as.numeric(str_extract_all(wave, &amp;quot;[0-9]&amp;quot;))) %&amp;gt;%
+  select(-path) %&amp;gt;%
+  unnest(data) %&amp;gt;%
+  select(old.names) %&amp;gt;%
+  setNames(new.names)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The only change from the code for reading in multiple files for participants is that we have “wave” as a variable instead of “ID” and we use the &lt;code&gt;str_extract_all()&lt;/code&gt; function from the &lt;code&gt;stringr&lt;/code&gt; package (part of &lt;code&gt;tidyverse&lt;/code&gt;) to get rid of everything except the numeric wave value.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;multiple-waves-different-variables-example-4&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Multiple Waves, Different Variables (Example 4)&lt;/h2&gt;
+&lt;p&gt;Oftentimes, however, we do not have the same variables across waves or they do have the same names across waves. In those cases, we’ll have to do a little extra work to get our data into a form where we can &lt;code&gt;unnest()&lt;/code&gt; them – that is where shared column names will actually be shared.&lt;/p&gt;
+&lt;p&gt;We’ll start with the case where we have some additional information (e.g. demographics) in the first wave.&lt;/p&gt;
+&lt;p&gt;These data are the same as we used in the previous example except that I changed the names and added demographic information for this example. This means that we have slightly different information in wave one and need a way to match the same variables across waves. We’ll use our codebook to achieve this with little issue!&lt;/p&gt;
+&lt;p&gt;However, because of this, we’ll need to use a function that take the year as input, so that we pull the correct variables from the codebook.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;read_fun &amp;lt;- function(Wave){
+  old.names &amp;lt;- str_remove_all((codebook %&amp;gt;% filter(wave == &amp;quot;All&amp;quot; | wave == Wave))$old_name, &amp;quot;[ ]&amp;quot;)
+  new.names &amp;lt;- (codebook %&amp;gt;% filter(wave == &amp;quot;All&amp;quot; | wave == Wave))$new_name
+  
+  sprintf(&amp;quot;%s/ALDA/week_3_purrr/data/example_4/T%s.csv&amp;quot;, data_path, Wave) %&amp;gt;%
+    read_csv() %&amp;gt;%
+    select(old.names) %&amp;gt;%
+    setNames(new.names) %&amp;gt;%
+    gather(key = item, value = value, -SID)
+}
+
+codebook &amp;lt;- sprintf(&amp;quot;%s/ALDA/week_3_purrr/data/codebook_ex4.csv&amp;quot;, data_path) %&amp;gt;% read_csv&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   old_name = col_character(),
+##   item_text = col_character(),
+##   scale = col_character(),
+##   new_name = col_character(),
+##   rev_code = col_double(),
+##   type = col_character(),
+##   var = col_character(),
+##   wave = col_character()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df4 &amp;lt;- tibble(wave = 1:7) %&amp;gt;%
+  mutate(data = map(wave, read_fun)) %&amp;gt;%
+  unnest(data) %&amp;gt;%
+  unite(tmp, item, wave, sep = &amp;quot;.&amp;quot;) %&amp;gt;%
+  spread(tmp, value) %&amp;gt;%
+  gather(key = item, value = value, -SID, -contains(&amp;quot;Dem&amp;quot;)) %&amp;gt;%
+  separate(item, c(&amp;quot;item&amp;quot;, &amp;quot;wave&amp;quot;), sep = &amp;quot;[.]&amp;quot;) %&amp;gt;%
+  spread(item, value) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;multiple-waves-multiple-files-for-same-variables-example-5&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Multiple Waves, Multiple Files for Same Variables (Example 5)&lt;/h2&gt;
+&lt;p&gt;In other cases, we may have multiple types of files for different waves. Across waves, those variables may be the same or different, but we’ll focus on the case when we largely want the same variables.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;running-models&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Running Models&lt;/h1&gt;
+&lt;p&gt;Another really powerful feature of &lt;code&gt;purrr&lt;/code&gt; is keeping your data, models, tables, plots, etc all conveniently indexed together. Often we need to do this for multiple DV’s or predictors, and you may end up with an environment that looks something like &lt;code&gt;E_fit1&lt;/code&gt;, &lt;code&gt;A_fit1&lt;/code&gt;, &lt;code&gt;E_fit2&lt;/code&gt;, &lt;code&gt;A_fit2&lt;/code&gt; and so on. There’s nothing wrong with this. But eventually you’ll want to pull out coefficients, plot results, etc., and it’s easy to make a copy and paste error or name different types of objects inconsistently, which can be difficult both for future you or someone else using your code.&lt;/p&gt;
+&lt;p&gt;Before we can learn how to use &lt;code&gt;purrr&lt;/code&gt; for this, we need to understand what a nested data frame is. If you’ve ever worked with a list in R, you are halfway there. Basically a nested data frame takes the normal data frame you are probably familiar with and adds some new features. It still has columns, rows, and cells, but what makes up those cells isn’t restrictred to numbers, strings, or logicals. Instead, you can put essentially anything you want: lists, models, data frames, plots, etc!&lt;/p&gt;
+&lt;p&gt;If this sounds scary, it will hopefully become clearer if we use our read in data from above to run, table, and plot some basic longitudinal models of our data.&lt;/p&gt;
+&lt;div id=&#34;read-in-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Read in Data&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;codebook &amp;lt;- sprintf(&amp;quot;%s/ALDA/week_3_purrr/data/codebook_ex6.csv&amp;quot;, data_path) %&amp;gt;%
+  read_csv %&amp;gt;%
+  mutate(old_name = str_to_lower(old_name))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   dataset = col_character(),
+##   old_name = col_character(),
+##   item_text = col_character(),
+##   scale = col_character(),
+##   category = col_character(),
+##   label = col_character(),
+##   item_name = col_character(),
+##   year = col_character(),
+##   new_name = col_character(),
+##   reverse = col_double(),
+##   mini = col_double(),
+##   maxi = col_double(),
+##   recode = col_character()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;read_fun &amp;lt;- function(Year){
+  old.names &amp;lt;- (codebook %&amp;gt;% filter(year == Year | year == 0))$old_name
+  new.names &amp;lt;- (codebook %&amp;gt;% filter(year == Year | year == 0))$new_name
+  set &amp;lt;- (codebook %&amp;gt;% filter(year == Year))$dataset[1]
+  sprintf(&amp;quot;%s/ALDA/week_3_purrr/data/example_6/%s.csv&amp;quot;, data_path, set) %&amp;gt;%
+    read_csv %&amp;gt;%
+    select(old.names) %&amp;gt;%
+    setNames(new.names)
+}
+
+(df6 &amp;lt;- tibble(year = 2005:2015) %&amp;gt;%
+  mutate(data = map(year, read_fun)) %&amp;gt;%
+  select(-year) %&amp;gt;%
+  unnest(data) )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   persnr = col_double(),
+##   hhnr = col_double(),
+##   wp14107 = col_double(),
+##   wp14110 = col_double(),
+##   wp14116 = col_double(),
+##   wp14122 = col_double(),
+##   wp14101 = col_double(),
+##   wp14125 = col_double(),
+##   wp14104 = col_double(),
+##   wp14119 = col_double(),
+##   wp14113 = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   persnr = col_double(),
+##   hhnr = col_double(),
+##   xp14807 = col_double(),
+##   xp14813 = col_double(),
+##   xp14819 = col_double(),
+##   xp14825 = col_double(),
+##   xp14801 = col_double(),
+##   xp14828 = col_double(),
+##   xp14804 = col_double(),
+##   xp14822 = col_double(),
+##   xp14816 = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   persnr = col_double(),
+##   hhnr = col_double(),
+##   yp15407 = col_double(),
+##   yp15413 = col_double(),
+##   yp15419 = col_double(),
+##   yp15425 = col_double(),
+##   yp15401 = col_double(),
+##   yp15428 = col_double(),
+##   yp15404 = col_double(),
+##   yp15422 = col_double(),
+##   yp15416 = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   persnr = col_double(),
+##   hhnr = col_double(),
+##   bap15907 = col_double(),
+##   bap15913 = col_double(),
+##   bap15919 = col_double(),
+##   bap15925 = col_double(),
+##   bap15901 = col_double(),
+##   bap15928 = col_double(),
+##   bap15904 = col_double(),
+##   bap15922 = col_double(),
+##   bap15916 = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   persnr = col_double(),
+##   hhnr = col_double(),
+##   bbp15110 = col_double(),
+##   bbp15116 = col_double(),
+##   bbp15122 = col_double(),
+##   bbp15128 = col_double(),
+##   bbp15101 = col_double(),
+##   bbp15104 = col_double(),
+##   bbp15131 = col_double(),
+##   bbp15107 = col_double(),
+##   bbp15125 = col_double(),
+##   bbp15119 = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   persnr = col_double(),
+##   hhnr = col_double(),
+##   bcp15010 = col_double(),
+##   bcp15016 = col_double(),
+##   bcp15022 = col_double(),
+##   bcp15028 = col_double(),
+##   bcp15001 = col_double(),
+##   bcp15004 = col_double(),
+##   bcp15031 = col_double(),
+##   bcp15007 = col_double(),
+##   bcp15025 = col_double(),
+##   bcp15019 = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   persnr = col_double(),
+##   hhnr = col_double(),
+##   bep15010 = col_double(),
+##   bep15016 = col_double(),
+##   bep15022 = col_double(),
+##   bep15028 = col_double(),
+##   bep15001 = col_double(),
+##   bep15004 = col_double(),
+##   bep15031 = col_double(),
+##   bep15007 = col_double(),
+##   bep15025 = col_double(),
+##   bep15019 = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   persnr = col_double(),
+##   hhnr = col_double(),
+##   bfp17310 = col_double(),
+##   bfp17316 = col_double(),
+##   bfp17322 = col_double(),
+##   bfp17328 = col_double(),
+##   bfp17301 = col_double(),
+##   bfp17304 = col_double(),
+##   bfp17331 = col_double(),
+##   bfp17307 = col_double(),
+##   bfp17325 = col_double(),
+##   bfp17319 = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 256,663 x 151
+##    Procedural__SID Procedural__hou… `Big 5__C_thoro… `Big 5__E_commu…
+##              &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;
+##  1             901               94                6                4
+##  2            1202              124                7                6
+##  3            2301              230                7                6
+##  4            2304              230                5                7
+##  5            2302              230                6                5
+##  6            4601              469                6                6
+##  7            4701              477                6                6
+##  8            4901              493                5                7
+##  9            5201              523                7                5
+## 10            5202              523                6                5
+## # … with 256,653 more rows, and 147 more variables: `Big
+## #   5__A_coarse.2005` &amp;lt;dbl&amp;gt;, `Big 5__O_original.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_worry.2005` &amp;lt;dbl&amp;gt;, `Big 5__A_forgive.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_lazy.2005` &amp;lt;dbl&amp;gt;, `Big 5__E_sociable.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_artistic.2005` &amp;lt;dbl&amp;gt;, `Big 5__N_nervous.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__C_efficient.2005` &amp;lt;dbl&amp;gt;, `Big 5__E_reserved.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_friendly.2005` &amp;lt;dbl&amp;gt;, `Big 5__O_imagin.2005` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_dealStress.2005` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2005` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2005` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2005` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__DadDied.2005` &amp;lt;dbl&amp;gt;, `Life Event__Married.2005` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__MomDied.2005` &amp;lt;dbl&amp;gt;, `Life Event__MoveIn.2005` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__PartDied.2005` &amp;lt;dbl&amp;gt;, `Life Event__SepPart.2005` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2006` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2006` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__Divorce.2006` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2006` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__Married.2006` &amp;lt;dbl&amp;gt;, `Life Event__MomDied.2006` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__MoveIn.2006` &amp;lt;dbl&amp;gt;, `Life Event__PartDied.2006` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__SepPart.2006` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2007` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2007` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2007` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__DadDied.2007` &amp;lt;dbl&amp;gt;, `Life Event__Married.2007` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__MomDied.2007` &amp;lt;dbl&amp;gt;, `Life Event__MoveIn.2007` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__PartDied.2007` &amp;lt;dbl&amp;gt;, `Life Event__SepPart.2007` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2008` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2008` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__Divorce.2008` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2008` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__Married.2008` &amp;lt;dbl&amp;gt;, `Life Event__MomDied.2008` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__MoveIn.2008` &amp;lt;dbl&amp;gt;, `Life Event__PartDied.2008` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__SepPart.2008` &amp;lt;dbl&amp;gt;, `Big 5__C_thorough.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__E_communic.2009` &amp;lt;dbl&amp;gt;, `Big 5__A_coarse.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_original.2009` &amp;lt;dbl&amp;gt;, `Big 5__N_worry.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__A_forgive.2009` &amp;lt;dbl&amp;gt;, `Big 5__C_lazy.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__E_sociable.2009` &amp;lt;dbl&amp;gt;, `Big 5__O_artistic.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__N_nervous.2009` &amp;lt;dbl&amp;gt;, `Big 5__C_efficient.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__E_reserved.2009` &amp;lt;dbl&amp;gt;, `Big 5__A_friendly.2009` &amp;lt;dbl&amp;gt;, `Big
+## #   5__O_imagin.2009` &amp;lt;dbl&amp;gt;, `Big 5__N_dealStress.2009` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2009` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2009` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__Divorce.2009` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2009` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__Married.2009` &amp;lt;dbl&amp;gt;, `Life Event__MomDied.2009` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__MoveIn.2009` &amp;lt;dbl&amp;gt;, `Life Event__PartDied.2009` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__SepPart.2009` &amp;lt;dbl&amp;gt;, `Life Event__ChldBrth.2010` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldMvOut.2010` &amp;lt;dbl&amp;gt;, `Life Event__Divorce.2010` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__DadDied.2010` &amp;lt;dbl&amp;gt;, `Life Event__Married.2010` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__MomDied.2010` &amp;lt;dbl&amp;gt;, `Life Event__MoveIn.2010` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__PartDied.2010` &amp;lt;dbl&amp;gt;, `Life Event__SepPart.2010` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2011` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2011` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__Divorce.2011` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2011` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__NewPart.2011` &amp;lt;dbl&amp;gt;, `Life Event__Married.2011` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__MomDied.2011` &amp;lt;dbl&amp;gt;, `Life Event__MoveIn.2011` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__PartDied.2011` &amp;lt;dbl&amp;gt;, `Life Event__SepPart.2011` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__ChldBrth.2012` &amp;lt;dbl&amp;gt;, `Life Event__ChldMvOut.2012` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__Divorce.2012` &amp;lt;dbl&amp;gt;, `Life Event__DadDied.2012` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__NewPart.2012` &amp;lt;dbl&amp;gt;, `Life Event__Married.2012` &amp;lt;dbl&amp;gt;, `Life
+## #   Event__MomDied.2012` &amp;lt;dbl&amp;gt;, `Life Event__MoveIn.2012` &amp;lt;dbl&amp;gt;, …&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;clean-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Clean Data&lt;/h2&gt;
+&lt;p&gt;Now the data are all loaded in and have been given informative variable names, but we still need to do some data cleaning for the personality data.&lt;/p&gt;
+&lt;p&gt;We’ll start by selecting only the personality variables and reverse-scoring them. Then we’ll create composites. To do so, we’ll again use our codebook.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# reverse code
+(df6_long &amp;lt;- df6 %&amp;gt;%
+  select(Procedural__SID, contains(&amp;quot;Big 5&amp;quot;)) %&amp;gt;%
+  gather(key = item, value = value, -Procedural__SID, na.rm = T) %&amp;gt;%
+  left_join(codebook %&amp;gt;% select(item = new_name, reverse, mini, maxi)) %&amp;gt;%
+  mutate(value = ifelse(reverse == 1, value, 
+                        reverse.code(-1, value, mini = mini, maxi = maxi))))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Joining, by = &amp;quot;item&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 544,830 x 6
+##    Procedural__SID item                   value reverse  mini  maxi
+##              &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1             901 Big 5__C_thorough.2005     6       1     1     8
+##  2            1202 Big 5__C_thorough.2005     7       1     1     8
+##  3            2301 Big 5__C_thorough.2005     7       1     1     8
+##  4            2304 Big 5__C_thorough.2005     5       1     1     8
+##  5            2302 Big 5__C_thorough.2005     6       1     1     8
+##  6            4601 Big 5__C_thorough.2005     6       1     1     8
+##  7            4701 Big 5__C_thorough.2005     6       1     1     8
+##  8            4901 Big 5__C_thorough.2005     5       1     1     8
+##  9            5201 Big 5__C_thorough.2005     7       1     1     8
+## 10            5202 Big 5__C_thorough.2005     6       1     1     8
+## # … with 544,820 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create compoistes  
+(df6_long &amp;lt;- df6_long %&amp;gt;%
+  mutate(item = str_remove(item, &amp;quot;Big 5__&amp;quot;)) %&amp;gt;%
+  separate(item, c(&amp;quot;trait&amp;quot;, &amp;quot;item&amp;quot;), sep = &amp;quot;_&amp;quot;) %&amp;gt;%
+  separate(item, c(&amp;quot;item&amp;quot;, &amp;quot;year&amp;quot;), sep = &amp;quot;[.]&amp;quot;) %&amp;gt;%
+  group_by(Procedural__SID, trait, year) %&amp;gt;%
+  summarize(value = mean(value, na.rm = T)) %&amp;gt;%
+  ungroup())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 181,610 x 4
+##    Procedural__SID trait year  value
+##              &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;
+##  1             901 A     2005   5   
+##  2             901 A     2009   5.33
+##  3             901 A     2013   5   
+##  4             901 C     2005   5.33
+##  5             901 C     2009   3.33
+##  6             901 C     2013   6   
+##  7             901 E     2005   4   
+##  8             901 E     2009   4   
+##  9             901 E     2013   4   
+## 10             901 N     2005   4   
+## # … with 181,600 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;descriptives&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Descriptives&lt;/h2&gt;
+&lt;table class=&#34;table&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;caption&gt;
+&lt;span id=&#34;tab:unnamed-chunk-2&#34;&gt;Table 1: &lt;/span&gt;Descriptive Statistics of Study Variables
+&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;border-bottom:hidden&#34; colspan=&#34;1&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;3&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Extraversion
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;3&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Agreeablness
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;3&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Conscientiousness
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;3&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Neuroticism
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;3&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Openness
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+Year
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+M
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+SD
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+N
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+M
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+SD
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+N
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+M
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+SD
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+N
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+M
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+SD
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+N
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+M
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+SD
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+N
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2005
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5.14
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.17
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10451
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5.78
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10451
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+6.21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10451
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.72
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10451
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.46
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10451
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2009
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5.09
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.17
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10327
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5.66
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.01
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10327
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+6.13
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10327
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.85
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10327
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.36
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10327
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2013
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+3.71
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.08
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+15544
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.04
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.27
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+15544
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.30
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.46
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+15544
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5.98
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.64
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+15544
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.88
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.75
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+15544
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;coding-time&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Coding Time&lt;/h2&gt;
+&lt;p&gt;It’s important to remember how we code time. There are several ways we can do it. For now, for simplicity, we will create a new wave variable where 2005 = 0, 2009 = 1, and 2013 = 3, but we could make a lot of other choices depending on our goals.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(df6_long &amp;lt;- df6_long %&amp;gt;%
+  mutate(wave = as.numeric(mapvalues(year, from = seq(2005, 2013, 4), to = seq(0, 2, 1)))))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 181,610 x 5
+##    Procedural__SID trait year  value  wave
+##              &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1             901 A     2005   5        0
+##  2             901 A     2009   5.33     1
+##  3             901 A     2013   5        2
+##  4             901 C     2005   5.33     0
+##  5             901 C     2009   3.33     1
+##  6             901 C     2013   6        2
+##  7             901 E     2005   4        0
+##  8             901 E     2009   4        1
+##  9             901 E     2013   4        2
+## 10             901 N     2005   4        0
+## # … with 181,600 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It’s going to get mad later when I run growth models if I keep people with only one wave, so we’re going to remove them now.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(df6_long &amp;lt;- df6_long %&amp;gt;%
+  group_by(trait, Procedural__SID) %&amp;gt;%
+  filter(n() &amp;gt; 1) %&amp;gt;%
+  ungroup())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 110,935 x 5
+##    Procedural__SID trait year  value  wave
+##              &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1             901 A     2005   5        0
+##  2             901 A     2009   5.33     1
+##  3             901 A     2013   5        2
+##  4             901 C     2005   5.33     0
+##  5             901 C     2009   3.33     1
+##  6             901 C     2013   6        2
+##  7             901 E     2005   4        0
+##  8             901 E     2009   4        1
+##  9             901 E     2013   4        2
+## 10             901 N     2005   4        0
+## # … with 110,925 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;fit-unconditional-models&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Fit Unconditional Models&lt;/h2&gt;
+&lt;p&gt;Now, here we could run separate unconditional growth models for each of the Big 5 like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit0_E &amp;lt;- lmer(value ~ 1 + (1 | Procedural__SID), data = df6_long %&amp;gt;% filter(trait == &amp;quot;E&amp;quot;))
+summary(fit0_E)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Linear mixed model fit by REML [&amp;#39;lmerMod&amp;#39;]
+## Formula: value ~ 1 + (1 | Procedural__SID)
+##    Data: df6_long %&amp;gt;% filter(trait == &amp;quot;E&amp;quot;)
+## 
+## REML criterion at convergence: 62339.1
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -5.8959 -0.4997  0.0144  0.5498  3.3758 
+## 
+## Random effects:
+##  Groups          Name        Variance Std.Dev.
+##  Procedural__SID (Intercept) 0.7865   0.8868  
+##  Residual                    0.5308   0.7286  
+## Number of obs: 22187, groups:  Procedural__SID, 8592
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)  5.11572    0.01078   474.6&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But this would be tedious and prone to error. So instead we will use list columns to do it. We’ll start by using the &lt;code&gt;group_by()&lt;/code&gt; and &lt;code&gt;nest()&lt;/code&gt; functions from &lt;code&gt;dplyr&lt;/code&gt; and &lt;code&gt;tidyr&lt;/code&gt; to put the data for each trait into a cell of our data frame:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(df6_nested &amp;lt;- df6_long %&amp;gt;%
+  group_by(trait) %&amp;gt;%
+  nest())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 2
+## # Groups:   trait [5]
+##   trait           data
+##   &amp;lt;chr&amp;gt; &amp;lt;list&amp;lt;df[,4]&amp;gt;&amp;gt;
+## 1 A       [22,187 × 4]
+## 2 C       [22,187 × 4]
+## 3 E       [22,187 × 4]
+## 4 N       [22,187 × 4]
+## 5 O       [22,187 × 4]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, our data frame is 5 x 2, with the elements in the second column each containing the data frame that corresponds to that trait. This makes it really easy to run our models using the &lt;code&gt;map()&lt;/code&gt; family of unctions from &lt;code&gt;purrr&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Below, we will add a new column to our data frame that will contain the unconditional model for each trait.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(df6_nested &amp;lt;- df6_nested %&amp;gt;%
+  mutate(fit0 = map(data, ~lmer(value ~ 1 + (1 | Procedural__SID), data = .))))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in checkConv(attr(opt, &amp;quot;derivs&amp;quot;), opt$par, ctrl =
+## control$checkConv, : Model failed to converge with max|grad| = 0.00599678
+## (tol = 0.002, component 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in checkConv(attr(opt, &amp;quot;derivs&amp;quot;), opt$par, ctrl =
+## control$checkConv, : Model failed to converge with max|grad| = 0.00597745
+## (tol = 0.002, component 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 3
+## # Groups:   trait [5]
+##   trait           data fit0     
+##   &amp;lt;chr&amp;gt; &amp;lt;list&amp;lt;df[,4]&amp;gt;&amp;gt; &amp;lt;list&amp;gt;   
+## 1 A       [22,187 × 4] &amp;lt;lmerMod&amp;gt;
+## 2 C       [22,187 × 4] &amp;lt;lmerMod&amp;gt;
+## 3 E       [22,187 × 4] &amp;lt;lmerMod&amp;gt;
+## 4 N       [22,187 × 4] &amp;lt;lmerMod&amp;gt;
+## 5 O       [22,187 × 4] &amp;lt;lmerMod&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we can see we have a new list column in our data frame called fit0 that contains an S4 class lmerMod, which simply means your growth model. To understand model, I personally find it easiest to visualize it. What this model is telling us is the mean across all observations as well as the between-person variability in that estimate. I find it easiest to plot this. We’ll go over the code for it next week.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Picking joint bandwidth of 0.103&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Workshops/week_3_purrr_files/figure-html/unc%20plot%20ex6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;icc&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;ICC&lt;/h2&gt;
+&lt;p&gt;If you remember, what we’re often intersted in with the unconditional model is the ICC (relative between v. within variance), so let’s extract that from the models using the &lt;code&gt;ICC()&lt;/code&gt; function from the &lt;code&gt;reghelper&lt;/code&gt; package. In this case, we will use a version of &lt;code&gt;map()&lt;/code&gt; called &lt;code&gt;map_dbl&lt;/code&gt; because we want our result to be a regular numeric column, not a list column.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(df6_nested &amp;lt;- df6_nested %&amp;gt;%
+  mutate(ICC = map_dbl(fit0, reghelper::ICC)))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 4
+## # Groups:   trait [5]
+##   trait           data fit0        ICC
+##   &amp;lt;chr&amp;gt; &amp;lt;list&amp;lt;df[,4]&amp;gt;&amp;gt; &amp;lt;list&amp;gt;    &amp;lt;dbl&amp;gt;
+## 1 A       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.484
+## 2 C       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.490
+## 3 E       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.597
+## 4 N       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.543
+## 5 O       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.545&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;fit-growth-models&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Fit Growth Models&lt;/h2&gt;
+&lt;p&gt;What we’re starting to see is that we still have a tidy working environment, but we’re still holding onto a lot of info that we can access with relative ease.&lt;/p&gt;
+&lt;p&gt;But before we get to things like pulling info from our models, let’s go ahead and run our basic growth model with and without a random slope.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(df6_nested &amp;lt;- df6_nested %&amp;gt;%
+  mutate(fit1 = map(data, ~lmer(value ~ 1 + wave + (1 | Procedural__SID), data = .)),
+         fit2 = map(data, ~lmer(value ~ 1 + wave + (wave | Procedural__SID), data = .))))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in checkConv(attr(opt, &amp;quot;derivs&amp;quot;), opt$par, ctrl =
+## control$checkConv, : Model failed to converge with max|grad| = 0.00801569
+## (tol = 0.002, component 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in checkConv(attr(opt, &amp;quot;derivs&amp;quot;), opt$par, ctrl =
+## control$checkConv, : Model failed to converge with max|grad| = 0.00445414
+## (tol = 0.002, component 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in checkConv(attr(opt, &amp;quot;derivs&amp;quot;), opt$par, ctrl =
+## control$checkConv, : Model failed to converge with max|grad| = 0.00298935
+## (tol = 0.002, component 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 6
+## # Groups:   trait [5]
+##   trait           data fit0        ICC fit1      fit2     
+##   &amp;lt;chr&amp;gt; &amp;lt;list&amp;lt;df[,4]&amp;gt;&amp;gt; &amp;lt;list&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;list&amp;gt;    &amp;lt;list&amp;gt;   
+## 1 A       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.484 &amp;lt;lmerMod&amp;gt; &amp;lt;lmerMod&amp;gt;
+## 2 C       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.490 &amp;lt;lmerMod&amp;gt; &amp;lt;lmerMod&amp;gt;
+## 3 E       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.597 &amp;lt;lmerMod&amp;gt; &amp;lt;lmerMod&amp;gt;
+## 4 N       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.543 &amp;lt;lmerMod&amp;gt; &amp;lt;lmerMod&amp;gt;
+## 5 O       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.545 &amp;lt;lmerMod&amp;gt; &amp;lt;lmerMod&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Our data frame has expanded to have two more columns.&lt;/p&gt;
+&lt;p&gt;Let’s visualize the difference between these two models.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pred_fun &amp;lt;- function(m){
+  crossing(wave = seq(0, 2, .5), 
+           Procedural__SID = m@frame$Procedural__SID) %&amp;gt;%
+    mutate(pred = predict(m, newdata = .))
+}
+
+subs &amp;lt;- sample(df6_nested$fit1[[1]]@frame$Procedural__SID, 50)
+df6_nested %&amp;gt;%
+  select(trait, fit1, fit2) %&amp;gt;%
+  gather(model, fit, fit1, fit2) %&amp;gt;%
+  mutate(model = mapvalues(model, c(&amp;quot;fit1&amp;quot;, &amp;quot;fit2&amp;quot;), c(&amp;quot;Random Intercept&amp;quot;, &amp;quot;Random Intercept + Slope&amp;quot;)),
+         pred = map(fit, pred_fun)) %&amp;gt;%
+  select(trait, model, pred) %&amp;gt;%
+  unnest(pred) %&amp;gt;%
+  mutate(Procedural__SID = as.character(Procedural__SID)) %&amp;gt;%
+  filter(Procedural__SID %in% subs) %&amp;gt;%
+  ggplot(aes(x = wave, y = pred, color = Procedural__SID, group = Procedural__SID)) + 
+    geom_line(alpha = .5, size = .25) +
+    facet_grid(model ~ trait) +
+    theme_classic() +
+    theme(legend.position = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Workshops/week_3_purrr_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;model-comparisons&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Model Comparisons&lt;/h2&gt;
+&lt;p&gt;To decide if we should have a random slope, we typically do nested model comparisons. We can do that here, too. Here, we need to use both fit1 and fit2, so we’ll use the &lt;code&gt;map2()&lt;/code&gt; function from &lt;code&gt;purrr&lt;/code&gt; to take 2 inputs and use the &lt;code&gt;anova()&lt;/code&gt; function to compare them.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(df6_nested &amp;lt;- df6_nested %&amp;gt;%
+  mutate(anova1 = map2(fit1, fit2, anova)))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## refitting model(s) with ML (instead of REML)
+## refitting model(s) with ML (instead of REML)
+## refitting model(s) with ML (instead of REML)
+## refitting model(s) with ML (instead of REML)
+## refitting model(s) with ML (instead of REML)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 7
+## # Groups:   trait [5]
+##   trait           data fit0        ICC fit1      fit2      anova1          
+##   &amp;lt;chr&amp;gt; &amp;lt;list&amp;lt;df[,4]&amp;gt;&amp;gt; &amp;lt;list&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;list&amp;gt;    &amp;lt;list&amp;gt;    &amp;lt;list&amp;gt;          
+## 1 A       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.484 &amp;lt;lmerMod&amp;gt; &amp;lt;lmerMod&amp;gt; &amp;lt;df[,8] [2 × 8]&amp;gt;
+## 2 C       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.490 &amp;lt;lmerMod&amp;gt; &amp;lt;lmerMod&amp;gt; &amp;lt;df[,8] [2 × 8]&amp;gt;
+## 3 E       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.597 &amp;lt;lmerMod&amp;gt; &amp;lt;lmerMod&amp;gt; &amp;lt;df[,8] [2 × 8]&amp;gt;
+## 4 N       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.543 &amp;lt;lmerMod&amp;gt; &amp;lt;lmerMod&amp;gt; &amp;lt;df[,8] [2 × 8]&amp;gt;
+## 5 O       [22,187 × 4] &amp;lt;lmerMod&amp;gt; 0.545 &amp;lt;lmerMod&amp;gt; &amp;lt;lmerMod&amp;gt; &amp;lt;df[,8] [2 × 8]&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To see the results, we can do the following:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df6_nested$anova1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [[1]]
+## Data: .
+## Models:
+## .x[[1L]]: value ~ 1 + wave + (1 | Procedural__SID)
+## .y[[1L]]: value ~ 1 + wave + (wave | Procedural__SID)
+##          Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&amp;gt;Chisq)
+## .x[[1L]]  4 58533 58565 -29263    58525                         
+## .y[[1L]]  6 58535 58583 -29261    58523 2.8338      2     0.2425
+## 
+## [[2]]
+## Data: .
+## Models:
+## .x[[1L]]: value ~ 1 + wave + (1 | Procedural__SID)
+## .y[[1L]]: value ~ 1 + wave + (wave | Procedural__SID)
+##          Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&amp;gt;Chisq)   
+## .x[[1L]]  4 57394 57426 -28693    57386                            
+## .y[[1L]]  6 57389 57437 -28688    57377 9.3688      2   0.009238 **
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## [[3]]
+## Data: .
+## Models:
+## .x[[1L]]: value ~ 1 + wave + (1 | Procedural__SID)
+## .y[[1L]]: value ~ 1 + wave + (wave | Procedural__SID)
+##          Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&amp;gt;Chisq)   
+## .x[[1L]]  4 62305 62337 -31149    62297                            
+## .y[[1L]]  6 62298 62346 -31143    62286 11.531      2   0.003134 **
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## [[4]]
+## Data: .
+## Models:
+## .x[[1L]]: value ~ 1 + wave + (1 | Procedural__SID)
+## .y[[1L]]: value ~ 1 + wave + (wave | Procedural__SID)
+##          Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&amp;gt;Chisq)    
+## .x[[1L]]  4 66171 66203 -33081    66163                             
+## .y[[1L]]  6 66146 66194 -33067    66134 28.585      2  6.207e-07 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## [[5]]
+## Data: .
+## Models:
+## .x[[1L]]: value ~ 1 + wave + (1 | Procedural__SID)
+## .y[[1L]]: value ~ 1 + wave + (wave | Procedural__SID)
+##          Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&amp;gt;Chisq)    
+## .x[[1L]]  4 67780 67812 -33886    67772                             
+## .y[[1L]]  6 67766 67814 -33877    67754 18.507      2  9.579e-05 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;tabling-values&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Tabling Values&lt;/h2&gt;
+&lt;p&gt;Looks like we have enough slope variance for all traits but Agreeableness to proceed with the random slope models. We’re going to proceed with the random slope models for all traits for consistency.&lt;/p&gt;
+&lt;p&gt;The next thing we want to do is actually examine the model coefficients. To do that, I prefer to use the &lt;code&gt;tidy()&lt;/code&gt; function from the &lt;code&gt;broom.mixed&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(df6_nested &amp;lt;- df6_nested %&amp;gt;%
+  mutate(tidy = map(fit2, ~tidy(., conf.int = T))))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 8
+## # Groups:   trait [5]
+##   trait           data fit0      ICC fit1    fit2    anova1      tidy      
+##   &amp;lt;chr&amp;gt; &amp;lt;list&amp;lt;df[,4]&amp;gt;&amp;gt; &amp;lt;list&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;list&amp;gt;  &amp;lt;list&amp;gt;  &amp;lt;list&amp;gt;      &amp;lt;list&amp;gt;    
+## 1 A       [22,187 × 4] &amp;lt;lmerM… 0.484 &amp;lt;lmerM… &amp;lt;lmerM… &amp;lt;df[,8] [2… &amp;lt;tibble […
+## 2 C       [22,187 × 4] &amp;lt;lmerM… 0.490 &amp;lt;lmerM… &amp;lt;lmerM… &amp;lt;df[,8] [2… &amp;lt;tibble […
+## 3 E       [22,187 × 4] &amp;lt;lmerM… 0.597 &amp;lt;lmerM… &amp;lt;lmerM… &amp;lt;df[,8] [2… &amp;lt;tibble […
+## 4 N       [22,187 × 4] &amp;lt;lmerM… 0.543 &amp;lt;lmerM… &amp;lt;lmerM… &amp;lt;df[,8] [2… &amp;lt;tibble […
+## 5 O       [22,187 × 4] &amp;lt;lmerM… 0.545 &amp;lt;lmerM… &amp;lt;lmerM… &amp;lt;df[,8] [2… &amp;lt;tibble […&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we have a new column called tidy that contains a data frame. But we want to be able to see those values. This is where &lt;code&gt;purrr&lt;/code&gt; will really shine once again, especially when coupled with the &lt;code&gt;unnest()&lt;/code&gt; from &lt;code&gt;tidyr&lt;/code&gt;. Watch:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df6_nested %&amp;gt;%
+  select(trait, tidy) %&amp;gt;%
+  unnest(tidy)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 30 x 9
+## # Groups:   trait [5]
+##    trait effect group term  estimate std.error statistic conf.low conf.high
+##    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 A     fixed  &amp;lt;NA&amp;gt;  (Int…   5.77     0.0107     539.     5.75      5.79  
+##  2 A     fixed  &amp;lt;NA&amp;gt;  wave   -0.0576   0.00646     -8.91  -0.0702   -0.0449
+##  3 A     ran_p… Proc… sd__…   0.701   NA           NA     NA        NA     
+##  4 A     ran_p… Proc… sd__…   0.107   NA           NA     NA        NA     
+##  5 A     ran_p… Proc… cor_…  -0.121   NA           NA     NA        NA     
+##  6 A     ran_p… Resi… sd__…   0.707   NA           NA     NA        NA     
+##  7 C     fixed  &amp;lt;NA&amp;gt;  (Int…   6.22     0.0105     592.     6.20      6.24  
+##  8 C     fixed  &amp;lt;NA&amp;gt;  wave   -0.0461   0.00633     -7.29  -0.0586   -0.0337
+##  9 C     ran_p… Proc… sd__…   0.699   NA           NA     NA        NA     
+## 10 C     ran_p… Proc… sd__…   0.143   NA           NA     NA        NA     
+## # … with 20 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is fine, but kind of ugly (I can’t publish this table, and it should be clear right now that I do not like copying and pasting).&lt;/p&gt;
+&lt;p&gt;The code below is going to clean this up a bit. See if you can figure out what’s going on:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;terms &amp;lt;- tibble(old = c(&amp;quot;(Intercept)&amp;quot;, &amp;quot;wave&amp;quot;, &amp;quot;sd__(Intercept)&amp;quot;, &amp;quot;sd__wave&amp;quot;,
+                        &amp;quot;cor__(Intercept).wave&amp;quot;, &amp;quot;sd__Observation&amp;quot;),
+                new = c(&amp;quot;Intercept&amp;quot;, &amp;quot;Slope&amp;quot;, &amp;quot;SD Intercept&amp;quot;, &amp;quot;SD Slope&amp;quot;, &amp;quot;Intercept-Slope Correlation&amp;quot;, &amp;quot;SD Residual&amp;quot;))
+
+(tab &amp;lt;- df6_nested %&amp;gt;%
+  select(trait, tidy) %&amp;gt;%
+  unnest(tidy) %&amp;gt;% 
+  mutate(term = mapvalues(term, from = terms$old, to = terms$new)) %&amp;gt;%
+  select(trait, effect, term, estimate, conf.low, conf.high))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 30 x 6
+## # Groups:   trait [5]
+##    trait effect   term                        estimate conf.low conf.high
+##    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;                          &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 A     fixed    Intercept                     5.77     5.75      5.79  
+##  2 A     fixed    Slope                        -0.0576  -0.0702   -0.0449
+##  3 A     ran_pars SD Intercept                  0.701   NA        NA     
+##  4 A     ran_pars SD Slope                      0.107   NA        NA     
+##  5 A     ran_pars Intercept-Slope Correlation  -0.121   NA        NA     
+##  6 A     ran_pars SD Residual                   0.707   NA        NA     
+##  7 C     fixed    Intercept                     6.22     6.20      6.24  
+##  8 C     fixed    Slope                        -0.0461  -0.0586   -0.0337
+##  9 C     ran_pars SD Intercept                  0.699   NA        NA     
+## 10 C     ran_pars SD Slope                      0.143   NA        NA     
+## # … with 20 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We extracted some elements, but we still aren’t quite ready for publication. Let’s do some reshaping so that we have different rows for terms and different columns for traits.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;levs &amp;lt;- paste(rep(c(&amp;quot;E&amp;quot;, &amp;quot;A&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;N&amp;quot;, &amp;quot;O&amp;quot;), each = 2), rep(c(&amp;quot;b&amp;quot;, &amp;quot;CI&amp;quot;), 5), sep = &amp;quot;.&amp;quot;)
+(tab &amp;lt;- tab %&amp;gt;%
+  mutate(sig = ifelse(sign(conf.low) == sign(conf.high), &amp;quot;sig&amp;quot;, &amp;quot;ns&amp;quot;)) %&amp;gt;%
+  mutate_at(vars(estimate:conf.high), ~sprintf(&amp;quot;%.2f&amp;quot;, .)) %&amp;gt;%
+  mutate_at(vars(conf.low, conf.high), ~ifelse(. == &amp;quot;NA&amp;quot;, &amp;quot;&amp;quot;, .)) %&amp;gt;%
+  mutate(CI = ifelse(effect == &amp;quot;fixed&amp;quot;, sprintf(&amp;quot;[%s, %s]&amp;quot;, conf.low, conf.high), &amp;quot;&amp;quot;)) %&amp;gt;%
+  mutate_at(vars(estimate, CI), ~ifelse(is.na(sig), .,
+              ifelse(sig == &amp;quot;sig&amp;quot;, sprintf(&amp;quot;&amp;lt;strong&amp;gt;%s&amp;lt;/strong&amp;gt;&amp;quot;, .), .))) %&amp;gt;%
+  select(trait:term, b = estimate, CI) %&amp;gt;%
+  gather(key = est, value = value, b, CI) %&amp;gt;%
+  unite(tmp, trait, est, sep = &amp;quot;.&amp;quot;) %&amp;gt;%
+  mutate(tmp = factor(tmp, levels = levs)) %&amp;gt;%
+  spread(tmp, value))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 12
+##   effect  term  E.b   E.CI  A.b   A.CI  C.b   C.CI  N.b   N.CI  O.b   O.CI 
+##   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;
+## 1 fixed   Inte… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str…
+## 2 fixed   Slope &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str… &amp;lt;str…
+## 3 ran_pa… Inte… -0.20 &amp;quot;&amp;quot;    -0.12 &amp;quot;&amp;quot;    -0.19 &amp;quot;&amp;quot;    -0.28 &amp;quot;&amp;quot;    -0.16 &amp;quot;&amp;quot;   
+## 4 ran_pa… SD I… 0.91  &amp;quot;&amp;quot;    0.70  &amp;quot;&amp;quot;    0.70  &amp;quot;&amp;quot;    0.94  &amp;quot;&amp;quot;    0.95  &amp;quot;&amp;quot;   
+## 5 ran_pa… SD R… 0.71  &amp;quot;&amp;quot;    0.71  &amp;quot;&amp;quot;    0.68  &amp;quot;&amp;quot;    0.79  &amp;quot;&amp;quot;    0.83  &amp;quot;&amp;quot;   
+## 6 ran_pa… SD S… 0.16  &amp;quot;&amp;quot;    0.11  &amp;quot;&amp;quot;    0.14  &amp;quot;&amp;quot;    0.22  &amp;quot;&amp;quot;    0.20  &amp;quot;&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we have it formatted, but let’s make it pretty using the &lt;code&gt;kable()&lt;/code&gt; function from the &lt;code&gt;knitr&lt;/code&gt; package and the &lt;code&gt;kableExtra&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab %&amp;gt;%
+  mutate(effect = mapvalues(effect, c(&amp;quot;fixed&amp;quot;, &amp;quot;ran_pars&amp;quot;), c(&amp;quot;Fixed&amp;quot;, &amp;quot;Random&amp;quot;))) %&amp;gt;%
+  kable(., &amp;quot;html&amp;quot;, escape = F, booktabs = T, 
+        col.names = c(&amp;quot;Effect&amp;quot;, &amp;quot;Term&amp;quot;, rep(c(&amp;quot;b&amp;quot;, &amp;quot;CI&amp;quot;), times = 5)),
+        align = c(&amp;quot;r&amp;quot;, &amp;quot;r&amp;quot;, rep(&amp;quot;c&amp;quot;,10)),
+        caption = &amp;quot;Growth Model Terms for the Big 5&amp;quot;) %&amp;gt;%
+  kable_styling(full_width = F) %&amp;gt;%
+  collapse_rows(1, valign = &amp;quot;top&amp;quot;) %&amp;gt;%
+  add_header_above(c(&amp;quot; &amp;quot; = 2, &amp;quot;Extraversion&amp;quot; = 2, &amp;quot;Agreeablness&amp;quot; = 2, 
+                     &amp;quot;Conscientiousness&amp;quot; = 2, &amp;quot;Neuroticism&amp;quot; = 2, &amp;quot;Openness&amp;quot; = 2))&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;caption&gt;
+(#tab:kable ex6)Growth Model Terms for the Big 5
+&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;border-bottom:hidden&#34; colspan=&#34;2&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;2&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Extraversion
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;2&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Agreeablness
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;2&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Conscientiousness
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;2&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Neuroticism
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;2&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Openness
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Effect
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Term
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+b
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+CI
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+b
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+CI
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+b
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+CI
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+b
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+CI
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+b
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+CI
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;vertical-align: top !important;&#34; rowspan=&#34;2&#34;&gt;
+Fixed
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+Intercept
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;5.15&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;[5.13, 5.18]&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;5.77&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;[5.75, 5.79]&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;6.22&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;[6.20, 6.24]&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;4.74&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;[4.72, 4.77]&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;4.46&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;[4.44, 4.49]&lt;/strong&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+Slope
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;-0.04&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;[-0.05, -0.03]&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;-0.06&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;[-0.07, -0.04]&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;-0.05&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;[-0.06, -0.03]&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;0.08&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;[0.07, 0.10]&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;-0.04&lt;/strong&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;strong&gt;[-0.06, -0.03]&lt;/strong&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;vertical-align: top !important;&#34; rowspan=&#34;4&#34;&gt;
+Random
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+Intercept-Slope Correlation
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+SD Intercept
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.91
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.70
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.70
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.94
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.95
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+SD Residual
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.71
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.71
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.68
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.79
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.83
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+SD Slope
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.14
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Workshop Week 1</title>
       <link>/workshops/workshop-1/</link>
       <pubDate>Wed, 14 Aug 2019 00:00:00 +0000</pubDate>

@@ -1,0 +1,599 @@
+---
+title: 'Workshop #3'
+author: Emorie D Beck"
+date: '2019-09-04'
+summary: "purrr Tutorial"
+slug: workshop-2
+categories: []
+tags: []
+lastmod: '2019-09-12T12:00:19-05:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: post
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+# purrr
+
+In my opinion, `purrr` is one of the most underrated and under-utilized `R` packages. It has completely revolutionized my own efficiency and workspace organization, particularly as someone who works with super messy data that comes in a variety of forms.  
+
+In this tutorial, we are going to cover a number of what I believe are the most functional and important applications of `purrr` in psychological research. Given the audience, in the first half of the tutorial, I will focus on working with the diverse forms of data that many of you work with, providing examples of how to load, clean, and merge data using `purrr`. In the second half, I will focus on how we can use `purrr` with longitudinal data analysis when we are working with multiple predictors and outcomes.  
+
+# Background: Iteration  
+Before we get there, though, I think it's useful to think about when and where we would use `purrr`. 
+
+Iteration is everywhere. It underpins much of mathematics and statistics. If you've ever seen the $\Sigma$ symbol, then you've seen (and probably used) iteration. 
+
+It's also incredibly useful. Anytime you have to repeat some sort of action many times, iteration is your best friend. In psychology, this often means reading in a bunch of individual data files from an experiment, repeating an analysis with a series of different predictors or outcomes, or creating a series of figures. 
+
+```{r packages}
+library(psych)
+library(knitr)
+library(kableExtra)
+library(lme4)
+library(broom.mixed)
+library(plyr)
+library(tidyverse)
+```
+
+
+Enter `for` loops. `for` loops are the "OG" form of iteration in computer science. The basic syntax is below. Basically, we can use a for loop to loop through and print a series of things.
+
+```{r basic loop}
+for(i in letters[1:5]){
+  print(i)
+}
+```
+
+The code above "loops" through 5 times, printing the iteration letter. 
+
+Essentially, like the `apply()`, `lapply()`, `sapply()`, and `mapply()` family of functions, `purrr` is meant to be an alternative to iteration (i.e. `for` loops) in `R`. `for` loops are great, but they aren't as great in `R` as they are in other programming languages. In `R`, you're better off vectorizing or building in C++ backends. 
+
+There are a lot of functions in the `purrr` package that I encourage you to check out. Today, though, we'll focus on the `map()` family of functions. The breakdown of map functions is pretty intuitive. The basic map function wants two things as input -- a list or vector and a function. So the `purrr` equivalent of the example above would be: 
+
+```{r basic map}
+map(letters[1:5], print)
+```
+
+Note that this returns a list, which we may not always want. With `purrr`, we can change the kind of output of `map()` by adding a predicate, like `lgl`, `dbl`, `chr`, and `df`. So in the example above, we may have wanted just the characters to print. To do that we'd call `map_chr()`:  
+
+```{r basic map_chr}
+map_chr(letters[1:5], print)
+```
+
+Note that it also returns the concatenated character vector as well as printing each letter individually (i.e. iteratively).  
+
+`map()` functions can also hand multiple inputs. Often we may need to input multiple pieces of information to a function, similarly to how we work with nested `for` loops. In this case, we have `map2()` and `pmap()` that take additional arguments. `map2()` shockingly takes two inputs and `pmap()` takes p arguments that you  feed in as list (e.g. `pmap(list(a, b, c, d), my_fun))`. A simple printing example would be: 
+
+```{r}
+map2_chr(letters[1:5], 1:5, paste)
+```
+
+Note here that we can use `map2()` and `pmap()` with the predicates from above.  
+
+This likely makes little sense at this point, and that's fine. The examples in the rest of this tutorial should elucidate their usage. The last note I'll make is that thinking about the structure of your data is going to be very important when using `purrr`.  To use it effectively, you'll need your data in specific forms, which will often require data manipulations. It just takes practice.  
+
+Regardless of the programmatic form, iteration is everywhere. It underpins much of mathematics and statistics. If you've ever seen the $\Sigma$ symbol, then you've seen (and probably used) iteration.  
+
+It's also incredibly useful. Anytime you have to repeat some sort of action many times, iteration is your best friend. In psychology, this could mean reading in a bunch of separate data files (with separate files for different people, variables, waves, etc.) or performing a number of regressions or other statistical tests.  
+
+# Data Reading  
+To demonstrate the first case in which I find `purrr` useful, we are going to consider a five cases that, in my experience, capture many of the challenges we often face in working with psychological data. In each of these cases, we will use a codebook of the form we discussed in the previous tutorial on codebooks.  
+
+All of these share a similar feature: multiple files. There are a variety of other techniques you could use to get your data into a usable form, such as those below: 
+
+<ol>
+<li>Writing code to load in each file separately (not good).</li>
+<li>Copying each data file into one larger data set in Excel (worse)</li>
+</ol>
+
+But let's not do that. Let's use iteration to make our process efficient and transparent.  
+
+## Many Subjects, Same Variables (Example 1)  
+
+We will start with a data storage format that is very common in experimental studies in various fields of psychology as well as in observational studies of repeated assessments of individuals (i.e. ESM, EMA, etc.).
+
+For this first example, I'll show you how this would look with a `for` loop before I show you how it looks with `purrr`.
+
+Assuming you have all the data in a single folder and the format is reasonably similar, you have the following basic syntax:  
+
+
+```{r simple reading loop, eval = F}
+data_path <- ""
+files <- list.files(data_path)
+data <- list()
+for(i in files){
+  data[[i]] <- read.csv(i, stringsAsFactors = F)
+}
+data <- combine(data)
+```
+
+This works fine in this simple case, but where `purrr` really shines in when you need to make modifications to your data before combining, whether this be recoding, removing missing cases, or renaming variables. 
+
+```{r setup ex1, echo=F, eval=F}
+data_path <- "~/Documents/Github/R-tutorials/ALDA/week_3_purrr/data/example_1"
+
+change_fun <- function(file){
+  sprintf("%s/%s", data_path, file) %>% 
+    read_csv() %>%
+    gather(key = item, value = value) %>%
+    separate(item, c("trait", "scrap"), sep = "_") %>%
+    group_by(trait) %>%
+    mutate(num = 1:n()) %>%
+    ungroup() %>%
+    unite(tmp, trait, num, sep = "_") %>%
+    select(-scrap) %>%
+    spread(tmp, value) %>%
+    write.csv(., file = sprintf("%s/%s", data_path, file), row.names = F)
+}
+
+tibble(file = list.files(data_path)) %>%
+  mutate(map(file, change_fun))
+```
+
+
+But first, the simple case of reading data. 
+
+```{r list ex1, echo = F}
+library(httr)
+req <- GET("https://api.github.com/repos/emoriebeck/R-tutorials/git/trees/master?recursive=1")
+stop_for_status(req)
+filelist <- unlist(lapply(content(req)$tree, "[", "path"), use.names = F)
+IDs <- grep("ALDA/week_3_purrr/data/example_1/", filelist, value = TRUE, fixed = TRUE)
+
+data_path <- "https://github.com/emoriebeck/R-tutorials/raw/master"
+df1 <- tibble(ID = IDs) %>%
+  mutate(data = map(ID, ~read_csv(sprintf("%s/%s", data_path, .))),
+         ID = str_remove(ID, ".csv"),
+         ID = str_remove(ID, "ALDA/week_3_purrr/data/example_1/")) %>%
+  unnest(data)
+```
+
+```{r read data ex1, eval = F}
+data_path <- "~/Documents/week_3_purrr"
+df1 <- tibble(ID = list.files(sprintf("%s/data/example_1", data_path))) %>%
+  mutate(path = sprintf("%s/data/example_1/%s", data_path, ID),
+         data = map(path, read_csv),
+         ID = str_remove(ID, ".csv")) %>%
+  unnest(data) %>%
+  select(-path)
+```
+
+The code above creates a list of ID's from the data path (files named for each person), reads the data in using the `map()` function from `purrr`, removes the ".csv" from the ID variable, then unnests the data, resulting in a data frame for each person.
+
+But often, we have variable names that aren't super informative, so we want to rename them. In this case, we need to use our codebook to give them more informative variable names. 
+
+In this case, where all people have the same variables, it's easiest to just rename them after unnesting, so the full code would look like this: 
+
+```{r codebook ex1}
+data_path <- "https://github.com/emoriebeck/R-tutorials/raw/master"
+(codebook <- sprintf("%s/ALDA/week_3_purrr/data/codebook_ex1.csv", data_path) %>% read_csv)
+```
+
+
+```{r read data complex ex1, eval = F}
+old.names <- codebook$old_name
+new.names <- codebook$new_name
+df1 <- tibble(ID = list.files(sprintf("%s/data/example_1", data_path))) %>%
+  mutate(path = sprintf("%s/data/example_1/%s", data_path, ID),
+         data = map(path, read_csv),
+         ID = str_remove(ID, ".csv"))%>%
+  unnest(data) %>%
+  select(ID, old.names) %>%
+  setNames(c("ID", new.names))
+```
+
+## Many Subjects, Different Variables (Example 2)  
+In some cases, participants may have different variables. This could be do to a skip rule in a study or intentionally different variable collection (e.g. in between-person experiments or idiographic work like I do). In this case, we might need to filter or rename variables within our iterative loop.  
+
+In this case, all participants have the same set of core variables but were randomly assigned to complete one additional scale.  
+
+```{r setup ex2, echo = F, eval = F}
+data_path <- "~/Documents/Github/R-tutorials/ALDA/week_3_purrr/data/example_2"
+change_fun <- function(file){
+  remove <- sample(paste(c("E", "A", "C", "N", "O"), "_", sep = ""),1)
+  sprintf("%s/%s", data_path, file) %>%
+    read_csv() %>%
+    select(-contains(remove)) %>%
+    write.csv(., sprintf("%s/%s", data_path, file), row.names = F)
+}
+tibble(file = list.files(data_path)) %>%
+  mutate(map(file, change_fun))
+```
+
+```{r list ex2, echo = F}
+req <- GET("https://api.github.com/repos/emoriebeck/R-tutorials/git/trees/master?recursive=1")
+stop_for_status(req)
+filelist <- unlist(lapply(content(req)$tree, "[", "path"), use.names = F)
+IDs <- grep("ALDA/week_3_purrr/data/example_2/", filelist, value = TRUE, fixed = TRUE)
+
+data_path <- "https://github.com/emoriebeck/R-tutorials/raw/master"
+df2 <- tibble(ID = IDs) %>%
+  mutate(data = map(ID, ~read_csv(sprintf("%s/%s", data_path, .))),
+         ID = str_remove(ID, ".csv"),
+         ID = str_remove(ID, "ALDA/week_3_purrr/data/example_2/")) %>%
+  unnest(data)
+```
+
+```{r read data ex2, eval = F}
+df2 <- tibble(ID = list.files(sprintf("%s/data/example_2", data_path))) %>%
+  mutate(path = sprintf("%s/data/example_2/%s", data_path, ID),
+         data = map(path, read_csv),
+         ID = str_remove(ID, ".csv"))%>%
+  unnest(data) 
+```
+
+## Multiple Waves, Same Variables (Example 3)  
+In some cases, instead of multiple files for each participant, we collect a single file for all participants across different waves (e.g. using Qualtrics). In this case, we need to index the files a little differently. Instead of reading in files for participants, we need to read in files for waves, which may be named in a variety of ways.  
+
+Here, I'll start with a simple example of data that were well-managed and nicely named the same except for wave content. This is a good practice to do. I'm in general against modifying data, but I am a fan of changing file *names* because I think this actually helps with data management and prevents the need to actually go in and modify information within files.  
+
+These data come from a longitudinal study of personality. We have seven waves, and the variable names for all items are consistent across waves. In this case, our code is almost identical to reading in multiple files for each participant, except that now we have wave info and will need to toss out part of the file names at the end.    
+
+```{r read data ex3}
+codebook <- sprintf("%s/ALDA/week_3_purrr/data/codebook_ex3.csv", data_path) %>% read_csv
+old.names <- str_remove_all(codebook$old_name, "[ ]")
+new.names <- codebook$new_name
+
+df3 <- tibble(wave = paste("T", 1:7, sep = ""),
+              path = sprintf("%s/ALDA/week_3_purrr/data/example_3/%s.csv", data_path, wave)) %>%
+  mutate(data = map(path, read_csv),
+         wave = as.numeric(str_extract_all(wave, "[0-9]"))) %>%
+  select(-path) %>%
+  unnest(data) %>%
+  select(old.names) %>%
+  setNames(new.names)
+```
+
+The only change from the code for reading in multiple files for participants is that we have "wave" as a variable instead of "ID" and we use the `str_extract_all()` function from the `stringr` package (part of `tidyverse`) to get rid of everything except the numeric wave value. 
+
+## Multiple Waves, Different Variables (Example 4)  
+
+Oftentimes, however, we do not have the same variables across waves or they do have the same names across waves. In those cases, we'll have to do a little extra work to get our data into a form where we can `unnest()` them -- that is where shared column names will actually be shared.  
+
+We'll start with the case where we have some additional information (e.g. demographics) in the first wave.   
+
+These data are the same as we used in the previous example except that I changed the names and added demographic information for this example. This means that we have slightly different information in wave one and need a way to match the same variables across waves. We'll use our codebook to achieve this with little issue!  
+
+However, because of this, we'll need to use a function that take the year as input, so that we pull the correct variables from the codebook.  
+
+```{r read data ex4}
+read_fun <- function(Wave){
+  old.names <- str_remove_all((codebook %>% filter(wave == "All" | wave == Wave))$old_name, "[ ]")
+  new.names <- (codebook %>% filter(wave == "All" | wave == Wave))$new_name
+  
+  sprintf("%s/ALDA/week_3_purrr/data/example_4/T%s.csv", data_path, Wave) %>%
+    read_csv() %>%
+    select(old.names) %>%
+    setNames(new.names) %>%
+    gather(key = item, value = value, -SID)
+}
+
+codebook <- sprintf("%s/ALDA/week_3_purrr/data/codebook_ex4.csv", data_path) %>% read_csv
+
+df4 <- tibble(wave = 1:7) %>%
+  mutate(data = map(wave, read_fun)) %>%
+  unnest(data) %>%
+  unite(tmp, item, wave, sep = ".") %>%
+  spread(tmp, value) %>%
+  gather(key = item, value = value, -SID, -contains("Dem")) %>%
+  separate(item, c("item", "wave"), sep = "[.]") %>%
+  spread(item, value) 
+```
+
+## Multiple Waves, Multiple Files for Same Variables (Example 5)  
+In other cases, we may have multiple types of files for different waves. Across waves, those variables may be the same or different, but we'll focus on the case when we largely want the same variables. 
+
+```{r read data ex5, eval = F, echo = F}
+codebook <- sprintf("%s/ALDA/week_3_purrr/data/codebook_ex6.csv", data_path) %>%
+  read_csv %>%
+  mutate(old_name = str_to_lower(old_name))
+path <- "~/Box/network/other projects/PCLE Replication/data/sav_files"
+ref <- sprintf("%s/cirdef.sav", path) %>% haven::read_sav(.) %>% select(hhnr, rgroup20)
+read_fun <- function(Year){
+  vars <- (codebook %>% filter(year == Year | year == 0))$old_name
+  set <- (codebook %>% filter(year == Year))$dataset[1]
+  sprintf("%s/%s.sav", path, set) %>% haven::read_sav(.) %>%
+    full_join(ref) %>%
+    filter(rgroup20 > 10) %>%
+    select(one_of(vars)) %>%
+    write.csv(., file = sprintf("~/Documents/Github/R-tutorials/ALDA/week_3_purrr/data/example_6/%s.csv", set), row.names = F)
+}
+
+vars <- (codebook %>% filter(year == 0))$old_name
+sprintf("%s/ppfad.sav", path) %>% 
+  haven::read_sav(.) %>%
+  full_join(ref) %>%
+  filter(rgroup20 > 10) %>%
+  select(vars) %>%
+  write.csv(., file = "~/Documents/Github/R-tutorials/ALDA/week_3_purrr/data/example_6/dem.csv", row.names = F)
+  
+  
+tibble(year = c(2005:2015)) %>%
+  mutate(data = map(year, read_fun))
+```
+
+
+
+# Running Models  
+Another really powerful feature of `purrr` is keeping your data, models, tables, plots, etc all conveniently indexed together. Often we need to do this for multiple DV's or predictors, and you may end up with an environment that looks something like `E_fit1`, `A_fit1`, `E_fit2`, `A_fit2` and so on. There's nothing wrong with this. But eventually you'll want to pull out coefficients, plot results, etc., and it's easy to make a copy and paste error or name different types of objects inconsistently, which can be difficult both for future you or someone else using your code.  
+
+Before we can learn how to use `purrr` for this, we need to understand what a nested data frame is. If you've ever worked with a list in R, you are halfway there. Basically a nested data frame takes the normal data frame you are probably familiar with and adds some new features. It still has columns, rows, and cells, but what makes up those cells isn't restrictred to numbers, strings, or logicals. Instead, you can put essentially anything you want: lists, models, data frames, plots, etc! 
+
+If this sounds scary, it will hopefully become clearer if we use our read in data from above to run, table, and plot some basic longitudinal models of our data.  
+
+## Read in Data  
+```{r read data ex6}
+codebook <- sprintf("%s/ALDA/week_3_purrr/data/codebook_ex6.csv", data_path) %>%
+  read_csv %>%
+  mutate(old_name = str_to_lower(old_name))
+
+read_fun <- function(Year){
+  old.names <- (codebook %>% filter(year == Year | year == 0))$old_name
+  new.names <- (codebook %>% filter(year == Year | year == 0))$new_name
+  set <- (codebook %>% filter(year == Year))$dataset[1]
+  sprintf("%s/ALDA/week_3_purrr/data/example_6/%s.csv", data_path, set) %>%
+    read_csv %>%
+    select(old.names) %>%
+    setNames(new.names)
+}
+
+(df6 <- tibble(year = 2005:2015) %>%
+  mutate(data = map(year, read_fun)) %>%
+  select(-year) %>%
+  unnest(data) )
+```
+
+## Clean Data  
+
+Now the data are all loaded in and have been given informative variable names, but we still need to do some data cleaning for the personality data.  
+
+We'll start by selecting only the personality variables and reverse-scoring them. Then we'll create composites. To do so, we'll again use our codebook.  
+
+```{r clean data ex6}
+# reverse code
+(df6_long <- df6 %>%
+  select(Procedural__SID, contains("Big 5")) %>%
+  gather(key = item, value = value, -Procedural__SID, na.rm = T) %>%
+  left_join(codebook %>% select(item = new_name, reverse, mini, maxi)) %>%
+  mutate(value = ifelse(reverse == 1, value, 
+                        reverse.code(-1, value, mini = mini, maxi = maxi))))
+
+# create compoistes  
+(df6_long <- df6_long %>%
+  mutate(item = str_remove(item, "Big 5__")) %>%
+  separate(item, c("trait", "item"), sep = "_") %>%
+  separate(item, c("item", "year"), sep = "[.]") %>%
+  group_by(Procedural__SID, trait, year) %>%
+  summarize(value = mean(value, na.rm = T)) %>%
+  ungroup())
+```
+
+## Descriptives  
+```{r, echo=F}
+levs <- paste(rep(c("E", "A", "C", "N", "O"), each = 3), rep(c("M", "SD", "N"), times=5), sep = ".")
+df6_long %>% 
+  group_by(year,  trait) %>%
+  summarize(M = mean(value, na.rm = T),
+            SD = sd(value, na.rm = T),
+            N = n()) %>%
+  gather(key = est, value = value, M:N) %>%
+  unite(tmp, trait,  est, sep = ".") %>%
+  mutate(tmp = factor(tmp, levels = levs)) %>%
+  spread(tmp, value) %>%
+  kable(., "html", digits = 2, booktabs = T,
+        col.names = c("Year", rep(c("M", "SD", "N"), times = 5)),
+        caption = "Descriptive Statistics of Study Variables") %>%
+  kable_styling(full_width = F) %>%
+  add_header_above(c(" " = 1, "Extraversion" = 3, "Agreeablness" = 3, 
+                     "Conscientiousness" = 3, "Neuroticism" = 3, "Openness" = 3))
+  
+```
+
+
+## Coding Time  
+
+It's important to remember how we code time. There are several ways we can do it. For now, for simplicity, we will create a new wave variable where 2005 = 0, 2009 = 1, and 2013 = 3, but we could make a lot of other choices depending on our goals.  
+
+```{r wave var ex6}
+(df6_long <- df6_long %>%
+  mutate(wave = as.numeric(mapvalues(year, from = seq(2005, 2013, 4), to = seq(0, 2, 1)))))
+```
+
+It's going to get mad later when I run growth models if I keep people with only one wave, so we're going to remove them now.  
+
+```{r filter people ex6}
+(df6_long <- df6_long %>%
+  group_by(trait, Procedural__SID) %>%
+  filter(n() > 1) %>%
+  ungroup())
+```
+
+
+## Fit Unconditional Models  
+Now, here we could run separate unconditional growth models for each of the Big 5 like this: 
+
+```{r fit ex6}
+fit0_E <- lmer(value ~ 1 + (1 | Procedural__SID), data = df6_long %>% filter(trait == "E"))
+summary(fit0_E)
+```
+
+But this would be tedious and prone to error. So instead we will use list columns to do it. We'll start by using the `group_by()` and `nest()` functions from `dplyr` and `tidyr` to put the data for each trait into a cell of our data frame:  
+
+```{r nest ex6}
+(df6_nested <- df6_long %>%
+  group_by(trait) %>%
+  nest())
+```
+
+Now, our data frame is 5 x 2, with the elements in the second column each containing the data frame that corresponds to that trait. This makes it really easy to run our models using the `map()` family of unctions from `purrr`.  
+
+Below, we will add a new column to our data frame that will contain the unconditional model  for each trait. 
+
+```{r fit0 ex6}
+(df6_nested <- df6_nested %>%
+  mutate(fit0 = map(data, ~lmer(value ~ 1 + (1 | Procedural__SID), data = .))))
+```
+
+Now we can see we have a new list column in our data frame called fit0 that contains an  S4 class lmerMod, which simply means your growth model. To understand model, I personally find it easiest to visualize it. What this model is telling us is the mean across all observations as well as the between-person variability in that estimate. I find it easiest to plot this. We'll go over the code for it next week.  
+
+```{r unc plot ex6, echo = F}
+pred_fun <- function(m){
+  coef(m)[[1]] %>% data.frame %>% rownames_to_column("SID")
+}
+
+df6_nested %>%
+  mutate(est = map(fit0, pred_fun)) %>%
+  select(trait, est) %>% 
+  unnest(est) %>%
+  ggplot(aes(y = trait, x = X.Intercept., fill = trait)) +
+    ggridges::geom_density_ridges() +
+    tidybayes::geom_halfeyeh() +
+    labs(x = "Person-Level Mean", y =  NULL) +
+    theme_classic() +
+    theme(legend.position = "none")
+```
+
+
+## ICC  
+
+If you remember, what we're often intersted in with the unconditional model is the ICC (relative between v. within variance), so let's extract that from the models using the `ICC()` function from the `reghelper` package. In this case, we will use a version of `map()` called `map_dbl` because we want our result to be a regular numeric column, not a list column. 
+
+```{r ICC ex6}
+(df6_nested <- df6_nested %>%
+  mutate(ICC = map_dbl(fit0, reghelper::ICC)))
+```
+
+## Fit Growth Models  
+
+What we're starting to see is that we still have a tidy working environment, but we're still holding onto a lot of info that we can access with relative ease.  
+
+But before we get to things like pulling info from our models, let's go ahead and run our basic growth model with and without a random slope.  
+
+```{r fit12 ex6}
+(df6_nested <- df6_nested %>%
+  mutate(fit1 = map(data, ~lmer(value ~ 1 + wave + (1 | Procedural__SID), data = .)),
+         fit2 = map(data, ~lmer(value ~ 1 + wave + (wave | Procedural__SID), data = .))))
+```
+
+Our data frame has expanded to have two more columns.  
+
+Let's visualize the difference between these two models.   
+
+```{r}
+pred_fun <- function(m){
+  crossing(wave = seq(0, 2, .5), 
+           Procedural__SID = m@frame$Procedural__SID) %>%
+    mutate(pred = predict(m, newdata = .))
+}
+
+subs <- sample(df6_nested$fit1[[1]]@frame$Procedural__SID, 50)
+df6_nested %>%
+  select(trait, fit1, fit2) %>%
+  gather(model, fit, fit1, fit2) %>%
+  mutate(model = mapvalues(model, c("fit1", "fit2"), c("Random Intercept", "Random Intercept + Slope")),
+         pred = map(fit, pred_fun)) %>%
+  select(trait, model, pred) %>%
+  unnest(pred) %>%
+  mutate(Procedural__SID = as.character(Procedural__SID)) %>%
+  filter(Procedural__SID %in% subs) %>%
+  ggplot(aes(x = wave, y = pred, color = Procedural__SID, group = Procedural__SID)) + 
+    geom_line(alpha = .5, size = .25) +
+    facet_grid(model ~ trait) +
+    theme_classic() +
+    theme(legend.position = "none")
+```
+
+
+## Model Comparisons
+
+To decide if we should have a random slope, we typically do nested model comparisons. We can do that here, too. Here, we need to use both fit1 and fit2, so we'll use the `map2()` function from `purrr` to take 2 inputs and use the `anova()` function to compare them.  
+
+```{r  mcomp ex6}
+(df6_nested <- df6_nested %>%
+  mutate(anova1 = map2(fit1, fit2, anova)))
+```
+
+To see the results, we can do the following: 
+
+```{r print anova ex6}
+df6_nested$anova1
+```
+
+## Tabling Values
+
+Looks like we have enough slope variance for all traits but Agreeableness to proceed with the random slope models. We're going to proceed with the random slope models for all traits for consistency.  
+
+The next thing we want to do is actually examine the model coefficients. To do that, I prefer to use the `tidy()` function from the `broom.mixed` package.  
+
+```{r tidy ex6}
+(df6_nested <- df6_nested %>%
+  mutate(tidy = map(fit2, ~tidy(., conf.int = T))))
+```
+
+Now we have a new column called tidy that contains a data frame. But we want to be able to see those values. This is where `purrr` will really shine once again, especially when coupled with the `unnest()` from `tidyr`.  Watch:  
+
+```{r unnest ex6}
+df6_nested %>%
+  select(trait, tidy) %>%
+  unnest(tidy)
+```
+
+This is fine, but kind of ugly (I can't publish this table, and it should be clear right now that I do not like copying and pasting). 
+
+The code below is going to clean this up a bit. See if you can figure out what's going on: 
+
+```{r table ex6}
+terms <- tibble(old = c("(Intercept)", "wave", "sd__(Intercept)", "sd__wave",
+                        "cor__(Intercept).wave", "sd__Observation"),
+                new = c("Intercept", "Slope", "SD Intercept", "SD Slope", "Intercept-Slope Correlation", "SD Residual"))
+
+(tab <- df6_nested %>%
+  select(trait, tidy) %>%
+  unnest(tidy) %>% 
+  mutate(term = mapvalues(term, from = terms$old, to = terms$new)) %>%
+  select(trait, effect, term, estimate, conf.low, conf.high))
+```
+
+We extracted some elements, but we still aren't quite ready for publication. Let's do some reshaping so that we have different rows for terms and different columns for traits.  
+
+```{r reshape tab ex6}
+levs <- paste(rep(c("E", "A", "C", "N", "O"), each = 2), rep(c("b", "CI"), 5), sep = ".")
+(tab <- tab %>%
+  mutate(sig = ifelse(sign(conf.low) == sign(conf.high), "sig", "ns")) %>%
+  mutate_at(vars(estimate:conf.high), ~sprintf("%.2f", .)) %>%
+  mutate_at(vars(conf.low, conf.high), ~ifelse(. == "NA", "", .)) %>%
+  mutate(CI = ifelse(effect == "fixed", sprintf("[%s, %s]", conf.low, conf.high), "")) %>%
+  mutate_at(vars(estimate, CI), ~ifelse(is.na(sig), .,
+              ifelse(sig == "sig", sprintf("<strong>%s</strong>", .), .))) %>%
+  select(trait:term, b = estimate, CI) %>%
+  gather(key = est, value = value, b, CI) %>%
+  unite(tmp, trait, est, sep = ".") %>%
+  mutate(tmp = factor(tmp, levels = levs)) %>%
+  spread(tmp, value))
+```
+
+Now we have it formatted, but let's make it pretty using the `kable()` function  from the `knitr` package and the `kableExtra` package.  
+
+```{r kable ex6}
+tab %>%
+  mutate(effect = mapvalues(effect, c("fixed", "ran_pars"), c("Fixed", "Random"))) %>%
+  kable(., "html", escape = F, booktabs = T, 
+        col.names = c("Effect", "Term", rep(c("b", "CI"), times = 5)),
+        align = c("r", "r", rep("c",10)),
+        caption = "Growth Model Terms for the Big 5") %>%
+  kable_styling(full_width = F) %>%
+  collapse_rows(1, valign = "top") %>%
+  add_header_above(c(" " = 2, "Extraversion" = 2, "Agreeablness" = 2, 
+                     "Conscientiousness" = 2, "Neuroticism" = 2, "Openness" = 2))
+```
+
+
+
+
