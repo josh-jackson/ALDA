@@ -21,6 +21,15 @@ output:
 
 # purrr
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F, error = F)
+```
+
+<a href="https://raw.githubusercontent.com/emoriebeck/R-tutorials/master/ALDA/week_3_purrr/week_3_purrr.Rmd" download>Download .Rmd (won't work in Safari or IE)</a>  
+<a href="https://github.com/emoriebeck/R-tutorials/tree/master/ALDA/week_3_purrr" target="_blank">See GitHub Repository</a>  
+
+#`purrr`  
 In my opinion, `purrr` is one of the most underrated and under-utilized `R` packages. It has completely revolutionized my own efficiency and workspace organization, particularly as someone who works with super messy data that comes in a variety of forms.  
 
 In this tutorial, we are going to cover a number of what I believe are the most functional and important applications of `purrr` in psychological research. Given the audience, in the first half of the tutorial, I will focus on working with the diverse forms of data that many of you work with, providing examples of how to load, clean, and merge data using `purrr`. In the second half, I will focus on how we can use `purrr` with longitudinal data analysis when we are working with multiple predictors and outcomes.  
@@ -593,6 +602,7 @@ tab %>%
   add_header_above(c(" " = 2, "Extraversion" = 2, "Agreeablness" = 2, 
                      "Conscientiousness" = 2, "Neuroticism" = 2, "Openness" = 2))
 ```
+
 
 
 
