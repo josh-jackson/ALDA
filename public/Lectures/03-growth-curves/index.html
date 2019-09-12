@@ -416,17 +416,7 @@
 <li><a href="#calculation-of-individual-level-random-effects">Calculation of individual level random effects</a></li>
 <li><a href="#how-are-these-random-effects-calculated">How are these random effects calculated?</a></li>
 <li><a href="#random-effect-decomposition">Random effect decomposition</a></li>
-<li><a href="#random-effects-and-residual-standard-assumptions">Random effects and residual (standard) assumptions</a></li>
 </ul></li>
-<li><a href="#data-generating-process-dgp">Data generating process (DGP)</a></li>
-<li><a href="#estimation">Estimation</a></li>
-<li><a href="#testing-significance-adapted-from-ben-bolker">Testing significance (adapted from Ben Bolker)</a><ul>
-<li><a href="#quick-aside-p-values-are-not-included">Quick aside: P values are not included</a></li>
-<li><a href="#likelihood-ratio-test">Likelihood ratio test</a></li>
-<li><a href="#likelihood-tests-for-random-effects">Likelihood tests for random effects</a></li>
-<li><a href="#aic-and-bic">AIC and BIC</a></li>
-</ul></li>
-<li><a href="#coefficient-of-determination-equivalents">Coefficient of determination equivalents</a></li>
 </ul></li>
 </ul>
 </div>
@@ -446,12 +436,12 @@ example$ID &lt;- as.factor(example$ID)
 # you can find the data on my github at: https://github.com/josh-jackson/ALDA/example%20copy.csv</code></pre>
 <p>Lets look at some data. These data examine older adults who came into a study up to six times over a six year period. Multiple cognitive, psychiatric and imaging assessments were done. Let’s look at functional connectivity network called SMN7.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1           ✔ dplyr   0.8.3      
 ## ✔ tibble  2.1.3           ✔ stringr 1.4.0      
 ## ✔ tidyr   0.8.99.9000     ✔ forcats 0.4.0      
 ## ✔ purrr   0.3.2</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ───────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(ggplot2)
@@ -642,93 +632,6 @@ Level 2:<br />
 <p>Creating a random slopes model takes the Level 1 residual variance and creates a new “pile” of explained or accounted for variance.</p>
 <p>We can then further explain the variance or reduce the pile by predictors at level 1 and level 2. Our goal isn’t necessarily to explain all of the variance but it is helpful to reduce the unexplained variance <span class="math inline">\(\varepsilon_{ij}\)</span> to improve model fit.</p>
 </div>
-<div id="random-effects-and-residual-standard-assumptions" class="section level3">
-<h3>Random effects and residual (standard) assumptions</h3>
-<ol style="list-style-type: decimal">
-<li>Joint normal distribution of random effects (Do we expect this to hold?)<br />
-</li>
-<li>Normally distributed residual<br />
-</li>
-<li>Constant variance over time<br />
-</li>
-<li>Random effects <span class="math inline">\(\pm U_{0j}\)</span> and residual <span class="math inline">\(\varepsilon_{ij}\)</span> are uncorrelated and have a mean of zero</li>
-</ol>
-</div>
-</div>
-<div id="data-generating-process-dgp" class="section level2">
-<h2>Data generating process (DGP)</h2>
-<p>Our standard assumption is that the DV comes from a data generating process that results in normal distributions. This does not mean that it needs to result in an observed normal distribution. Instead, the default of assuming an Gaussian DGP is practical: it is robust against violations and the alternatives are sometimes harder to justify.</p>
-<p>If you think you have a non-Gaussian DGP (like a Poisson or a negative binomial if you are using some sort of count data) you will need to use a different estimation technique. You can do this somewhat with the package we will be working with primarily, lme4. However, the BRMS package – which uses Bayesian estimation – has many more possibilities: geometric, log normal, weibull, exponential, gamma, Beta, hurdle Poisson/gamma/negative binomial, zero inflated beta/Poisson/negative binomial, cumulative. We will fit some of these later in the semester. Currently, however, assume we are working with <span class="math inline">\({Y}_{ij} \sim \mathcal{N}(0, \sigma^{2})\)</span></p>
-</div>
-<div id="estimation" class="section level2">
-<h2>Estimation</h2>
-<p>Maximum likelihood estimation. Uses a likelihood function that describes the probability of observing the sample data as a function of the parameters. Attempts to maximize the function through an iterative process. Because it is iterative, it might fail.</p>
-<p>There are fixed effects as well as random effects we need to count for. Maximum likelihood takes our assumptions about the model (normally distributed residuals, etc) and creates probability densities for each parameters. For example, based on certain fixed effects and sd of random effects, how likely is it that person x has a slope of z? The algorithm looks at the full sample to see how likely different parameters are, spits back the most likely, and gives you a number to show how likely they are (compared to others). This is akin to saying you rolled 10 dice, 5 came up as 2s. How likely is this dice fair? But instead of fair vs not fair it gives a likelihood to certain possibilities (e.g., a 2 comes up at 25%, 50% 75% rates).</p>
-<p>Restricted maximum likelihood (REML) vs Full Maximum likelihood (ML). Will give you similar parameters, the differences are in the standard errors. REML is similar to dividing by N - 1 for SE whereas ML is similar to dividing by N.</p>
-<p>Differences account for the fact that fixed effects are being estimated simultaneously with the variance parameters in ML. Estimates of the variance parameters assume that the fixed effects estimates are known and thus does not account for uncertainty in these estimates.</p>
-<p>REML accounts for uncertainty in the fixed effects before estimating residual variance. REML attempts to maximize the likelihood of the residuals whereas ML maximizes the sample data. REML can be thought of as an unbiased estimate of the residual variance.</p>
-<p>REML is good for small sample size both N and group. However, if you use REML you should be careful in testing fixed effects against each other (more down below). Deviances tests for fixed effects should be done with ML, but only random effects with REML. ML can also look at random effects too.</p>
-</div>
-<div id="testing-significance-adapted-from-ben-bolker" class="section level2">
-<h2>Testing significance (adapted from Ben Bolker)</h2>
-<p>4 Methods for testing single parameters
-From worst to best:</p>
-<ol style="list-style-type: decimal">
-<li><p>Wald Z-tests.</p></li>
-<li><p>Wald t-tests</p></li>
-</ol>
-<p>Easy to compute - test statistic over standard error However, they are asymptotic standard error approximations, assuming both that (1) the sampling distributions of the parameters are multivariate normal and that (2) the sampling distribution of the log-likelihood is (proportional to) χ2.</p>
-<p>The above two are okay to do for single parameter estimates of fixed effects. But beware that a) degrees of freedom calculations are not straightforward and b) the assumptions for random effects are be hard to meet.</p>
-<div id="quick-aside-p-values-are-not-included" class="section level3">
-<h3>Quick aside: P values are not included</h3>
-<p>Authors of the package we will be using first lme4 are not convinced of the utility of the general approach of testing with reference to an approximate null distribution. In general, it is not clear that the null distribution of the computed ratio of sums of squares is really an F distribution, for any choice of denominator degrees of freedom. While this is true for special cases that correspond to classical experimental designs (nested, split-plot, randomized block, etc.), it is apparently not true for more complex designs (unbalanced, GLMMs, temporal or spatial correlation, etc.).</p>
-<p>tl;dr: it gets messy with more complex models.</p>
-<p>If you really want p values</p>
-<pre class="r"><code># library(lmerTest)</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li><p>Likelihood ratio test (also called deviance test).</p></li>
-<li><p>Markov chain Monte Carlo (MCMC) or parametric bootstrap confidence intervals ( we will get to this later)</p></li>
-</ol>
-</div>
-<div id="likelihood-ratio-test" class="section level3">
-<h3>Likelihood ratio test</h3>
-<p>Used for model comparisons (often multiparameter comparisons) and for tests of random effects. REML can only be used if model compared have the same fixed parts and only differ in random. Otherwise ML must be used.</p>
-<p>How much more likely the data is under a more complex model than under the simpler model (these models need to be nested to compare this).</p>
-<p>Log Likelihood (LL) is derived from ML estimation. Logs are used because they are computationally simpler; logs of multiplications are reduced to adding the logs together.</p>
-<p>Larger the LL the better the fit.</p>
-<p>Deviance compares two LLs. Current model and a saturated model (that fits data perfectly). Asks how much worse the current model is to the best possible model. Deviance = -2[LL current - LL saturated]</p>
-<p>LL saturated = 1 for MLMs (probability it will perfectly recapture data). log of 1 is 0. So this term drops out. Deviance = -2(LL current model). AKA -2logL or -2LL</p>
-<p>Can compare two models via subtraction, often referred to as a full and reduced model. Differences is distributed as a chi square with a df equal to how many “constraints” are included. Constraints can be thought of as forcing a parameter to be zero ie removing it.</p>
-<p>Comparing 2 models is called a likelihood ratio test. Need to have:
-1. same data
-2. nested models (think of constraining a parameter to zero)</p>
-<p>Why work with deviances and not just log likelihoods? Why -2? Why a ratio test when you subtract deviances? Maths. Working with deviances allows us to subtract two from one another, which is equivalent to taking the ratio of likelihoods.</p>
-<p>You can test in r using the same procedure we would to test different regression models.</p>
-<pre class="r"><code>anova(mod.2, mod.2r)</code></pre>
-</div>
-<div id="likelihood-tests-for-random-effects" class="section level3">
-<h3>Likelihood tests for random effects</h3>
-<p>Not listed in the output because it is harder to do this with variances. Remember variances do not have values below zero and thus the distributions get a wonky quickly. Needs mixture distributions (Cannot be easily done with chi square, for example)</p>
-<p>Can technically do anova comparisons for random effects, though that falls to many similar problems as trying to do a Wald test.</p>
-<p>The sampling distribution of variance estimates is in general strongly asymmetric: the standard error may be a poor characterization of the uncertainty. Thus the best way to handle is to do bootstrapped estimates.</p>
-</div>
-<div id="aic-and-bic" class="section level3">
-<h3>AIC and BIC</h3>
-<p>Used when you want to compare non-nested data. Need to have the same data, however.</p>
-<p>AIC (Akaike’s Information Criterion) and the BIC (Bayesian Information Criterion) where “smaller is better.” This is the opposite of LL. As with the other types, these may give you wonky findings depending on some factors as they are related to LLs.</p>
-<p>AIC = 2(number of parameters) + (−2LL)
-BIC = ln(n)(number of parameters) + (−2LL)</p>
-<p>BIC penalizes models with more parameters more than AIC does.</p>
-</div>
-</div>
-<div id="coefficient-of-determination-equivalents" class="section level2">
-<h2>Coefficient of determination equivalents</h2>
-<p>You want to get a model fit estimate. BIC and AIC are good to compare nested models but they aren’t standardized and thus make comparison across non nested models difficult.</p>
-<p>With MLM models we cannot directly compute R2. Instead we will use pseudo R2. Pseudo R2 is similar to R2 in that it can be thought of as the correlation between your predicted and actual scores. For example, assume we have three waves of data. The intercept is 1, the slope is 2 and time is coded 0,1,2. The predicted scores are: 1, 3, 5. We would then correlate everyone’s first, second and third wave scores with these predicted scores. This correlation squared is pseudo R2, telling us how much variance time explains in our DV.</p>
-<p>Yes, we typically think of this as a measure of variance explained divided by total variance. This is where things get tricky: should you include or exclude variation of different random-effects terms? These are error, but they are modeled in the sense that they are not unexplained. Is the effect size wanted after you are “controlling for” or do you want to talk about total variation. There are similarities here with regards to Eta and Partial Eta squared.</p>
-<p>The general idea is to be upfront about what you are comparing and what is included. Typically this is done with comparing models, much like a hierarchical regression. Taking the difference in variance between model 1 and model 2 and dividing it by model 1 makes it explicit what you are looking at and what you are including or not including.</p>
-<p>E.g,. residual variance in varying intercept model subtracted from growth model divided by intercept only model. This can tell you how much unexplained variance is explained by time.</p>
-<pre class="r"><code>(sigma(mod.1) - sigma(mod.2)) / sigma(mod.1)</code></pre>
 </div>
 </div>
 
@@ -769,6 +672,13 @@ BIC = ln(n)(number of parameters) + (−2LL)</p>
     <div class="article-widget">
       
 <div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/lectures/2019-08-14-lecture-3-test/" rel="next">Week 3</a>
+  </div>
   
   
   
