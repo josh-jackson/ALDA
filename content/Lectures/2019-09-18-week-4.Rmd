@@ -1,0 +1,543 @@
+---
+title: Week 4
+date: '2019-09-18'
+slug: week-4
+categories: []
+tags: []
+summary: " Cond cont + nonlinear models "
+author: "Josh Jackson"
+type: post
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+# Review from last time
+
+## Interpretation
+Looked at between person predictors
+
+Can you to interpret each fixed and random effect? 
+
+What do these different models look like graphically? 
+
+level 1: 
+$$ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \varepsilon_{ij} $$
+
+Level 2: 
+$$ {\beta}_{0j} = \gamma_{00} + \gamma_{01}Exercise_{j} +  \gamma_{02}Intervention_{j} +   U_{0j}$$  
+
+$$ {\beta}_{1j} = \gamma_{10} + \gamma_{11}Intervention_{j} + U_{1j} $$  
+
+
+
+# Estimation
+
+Now that we are able to build and visualize models, how do we test the parameters of interest? 
+
+Maximum likelihood estimation. Uses a likelihood function that describes the probability of observing the sample data as a function of the parameters. Attempts to maximize the function through an iterative process. Because it is iterative, it might fail.  
+
+There are fixed effects as well as random effects we need to count for. Maximum likelihood takes our assumptions about the model (normally distributed residuals, etc) and creates probability densities for each parameters. For example, based on certain fixed effects and sd of random effects, how likely is it that person x has a slope of z? The algorithm looks at the full sample to see how likely different parameters are, spits back the most likely, and gives you a number to show how likely they are (compared to others). This is akin to saying you rolled 10 dice, 5 came up as 2s. How likely is this dice fair? But instead of fair vs not fair it gives a likelihood to certain possibilities (e.g., a 2 comes up at 25%, 50% 75% rates). 
+
+Restricted maximum likelihood (REML) vs Full Maximum likelihood (ML). Will give you similar parameters, the differences are in the standard errors. REML is similar to dividing by N - 1 for SE whereas ML is similar to dividing by N. 
+
+Differences account for the fact that fixed effects are being estimated simultaneously with the variance parameters in ML. Estimates of the variance parameters assume that the fixed effects estimates are known and thus does not account for uncertainty in these estimates. 
+
+REML accounts for uncertainty in the fixed effects before estimating residual variance. REML attempts to maximize the likelihood of the residuals whereas ML maximizes the sample data. REML can be thought of as an unbiased estimate of the residual variance. 
+
+REML is good for small sample size both N and group. However, if you use REML you should be careful in testing fixed effects against each other (more down below). Deviance tests for fixed effects should be done with ML, but only random effects with REML. ML can also look at random effects too. 
+
+
+# Testing significance (adapted from Ben Bolker)
+4 Methods for testing single parameters
+From worst to best:
+
+1. Wald Z-tests. 
+
+2. Wald t-tests
+
+Easy to compute - test statistic over standard error However, they are asymptotic standard error approximations, assuming both that (1) the sampling distributions of the parameters are multivariate normal and that (2) the sampling distribution of the log-likelihood is (proportional to) χ2.
+
+The above two are okay to do for single parameter estimates of fixed effects. But beware that  a) degrees of freedom calculations are not straightforward and b) the assumptions for random effects are be hard to meet. 
+
+## Quick aside: P values are not included
+
+Authors of the package we will be using first lme4 are not convinced of the utility of the general approach of testing with reference to an approximate null distribution. In general, it is not clear that the null distribution of the computed ratio of sums of squares is really an F distribution, for any choice of denominator degrees of freedom. While this is true for special cases that correspond to classical experimental designs (nested, split-plot, randomized block, etc.), it is apparently not true for more complex designs (unbalanced, GLMMs, temporal or spatial correlation, etc.).
+
+tl;dr: it gets messy with more complex models.  
+
+If you really want p values
+```{r, eval = FALSE}
+# library(lmerTest)
+```
+
+
+3. Likelihood ratio test (also called deviance test).  
+
+4. Markov chain Monte Carlo (MCMC) or parametric bootstrap confidence intervals ( we will get to this later)
+
+
+## Likelihood ratio test
+Used for model comparisons (often multiparameter comparisons) and for tests of random effects. REML can only be used if model compared have the same fixed parts and only differ in random. Otherwise ML must be used. 
+
+How much more likely the data is under a more complex model than under the simpler model (these models need to be nested to compare this).
+
+Log Likelihood (LL) is derived from ML estimation. Logs are used because they are computationally simpler; logs of multiplications are reduced to adding the logs together. 
+
+Larger the LL the better the fit. 
+
+Deviance compares two LLs. Current model and a saturated model (that fits data perfectly). Asks how much worse the current model is to the best possible model. Deviance = -2[LL current - LL saturated]
+
+LL saturated = 1 for MLMs (probability it will perfectly recapture data). log of 1 is 0. So this term drops out. Deviance = -2(LL current model). AKA -2logL or -2LL 
+
+Can compare two models via subtraction, often referred to as a full and reduced model. Differences is distributed as a chi square with a df equal to how many "constraints" are included. Constraints can be thought of as forcing a parameter to be zero ie removing it.  
+
+Comparing 2 models is called a likelihood ratio test. Need to have: 
+1. same data
+2. nested models (think of constraining a parameter to zero)
+
+Why work with deviances and not just log likelihoods? Why -2? Why a ratio test when you subtract deviances? Maths. Working with deviances allows us to subtract two from one another, which is equivalent to taking the ratio of likelihoods. 
+
+You can test in r using the same procedure we would to test different regression models.
+
+```{r, eval = FALSE}
+anova(mod.2, mod.2r)
+```
+
+
+## Likelihood tests for random effects
+Not listed in the output because it is harder to do this with variances. Remember variances do not have values below zero and thus the distributions get a wonky quickly. Needs mixture distributions (Cannot be easily done with chi square, for example)
+
+Can technically do anova comparisons for random effects, though that falls to many similar problems as trying to do a Wald test. 
+
+The sampling distribution of variance estimates is in general strongly asymmetric: the standard error may be a poor characterization of the uncertainty. Thus the best way to handle is to do bootstrapped estimates. 
+
+## AIC and BIC
+Used when you want to compare non-nested data. Need to have the same data, however. 
+
+AIC (Akaike’s Information Criterion) and the BIC (Bayesian Information Criterion) where “smaller is better.” This is the opposite of LL. As with the other types, these may give you wonky findings depending on some factors as they are related to LLs. 
+
+AIC = 2(number of parameters) + (−2LL)
+BIC = ln(n)(number of parameters) + (−2LL)
+
+BIC penalizes models with more parameters more than AIC does. 
+
+## Coefficient of determination equivalents
+You want to get a model fit estimate. BIC and AIC are good to compare nested models but they aren't standardized and thus make comparison across non nested models difficult. 
+
+With MLM models we cannot directly compute R2. Instead we will use pseudo R2. Pseudo R2 is similar to R2 in that it can be thought of as the correlation between your predicted and actual scores. For example, assume we have three waves of data. The intercept is 1, the slope is 2 and time is coded 0,1,2. The predicted scores are: 1, 3, 5. We would then correlate everyone's first, second and third wave scores with these predicted scores. This correlation squared is pseudo R2, telling us how much variance time explains in our DV. 
+
+Yes, we typically think of this as a measure of variance explained divided by total variance. This is where things get tricky: should you include or exclude variation of different random-effects terms? These are error, but they are modeled in the sense that they are not unexplained. Is the effect size wanted after you are "controlling for" or do you want to talk about total variation. There are similarities here with regards to Eta and Partial Eta squared. 
+
+The general idea is to be upfront about what you are comparing and what is included. Typically this is done with comparing models, much like a hierarchical regression. Taking the difference in variance between model 1 and model 2 and dividing it by model 1 makes it explicit what you are looking at and what you are including or not including. 
+
+E.g,. residual variance in varying intercept model subtracted from growth model divided by intercept only model. This can tell you how much unexplained variance is explained by time. 
+
+```{r, eval = FALSE}
+(sigma(mod.1) - sigma(mod.2)) / sigma(mod.1)
+```
+
+# Level 1 predictors AKA Time-varying covariates (TVCs)
+Thus far we have been talking about level 2, between person predictors. But we can extend this to level 1, within person, repeated measures as predictors and covariates. 
+
+These are predictors that are assessed at level 1, which repeat. Note that there are some variables that are inherently level 2 (e.g. handedness), some that make sense more as a level 1 (e.g., mood) and some that could be considered either depending on your research question and/or your data (e.g. income). The latter type could conceivably change across time (And thus be appropriate for a level 1 variable; tvc) but may not change at the rate of your construct or not be important.
+
+What do level 1 predictors look like in your dataset? 
+
+
+Consider health across time predicted by a level 1 exercise variable (1 = yes, exercised). Note that we had a similar model presented at the end of last class, but exercise was a level 2 predictor. Be comfortable with how these differ. 
+
+level 1: 
+$$ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}Exercise_{ij} + \varepsilon_{ij} $$
+
+Level 2: 
+$$ {\beta}_{0j} = \gamma_{00} +   U_{0j}$$  
+
+
+$$ {\beta}_{1j} = \gamma_{10} +  U_{1j} $$  
+
+$$ {\beta}_{2j} = \gamma_{20} $$  
+
+Combined: 
+
+$$ {Health}_{ij} =  [\gamma_{00} +   \gamma_{10}Time_{ij}   + \gamma_{20}Exercise_{ij}] + [ U_{0j}  + U_{1j}Time_{ij}+ \varepsilon_{ij}] $$
+
+
+Two things to keep in mind: 
+
+1. These can be treated as another predictor with the effect of "controlling" for some TVC. Thus the regression coefficients in the model are conditional on this covariate. 
+
+$  \gamma_{10} $ is the average rate of change in health, controlling for exercise
+
+$\gamma_{20}$ is the average difference in health when exercising and when not. Ie the difference in health trajectory. 
+
+$\gamma_{00}$ is the average health at Time = 0 for those that do not exercise. Ie when both predictors are at zero.  
+
+
+How would you visualize the fixed effects for varying combinations of exercise? 
+
+
+## Introducing a random slope for a TVC
+Person specific residuals make the interpretation of parameters a little more difficult as the model says that the gap between exercise and not exercise is the same for everyone. Should we allow it to be this way? 
+
+
+level 1: 
+$$ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}Exercise_{ij} + \varepsilon_{ij} $$
+
+Level 2: 
+$$ {\beta}_{0j} = \gamma_{00} +   U_{0j}$$  
+
+
+$$ {\beta}_{1j} = \gamma_{10} +  U_{1j} $$  
+
+$$ {\beta}_{2j} = \gamma_{20} +  U_{2j} $$  
+
+Level 2 variance-covariance matrix: 
+
+$$ \begin{pmatrix} {U}_{0j} \\ {U}_{1j} \\ {U}_{2j} \end{pmatrix}
+\sim \mathcal{N} \begin{pmatrix} 
+  0,  &  \tau_{0}^{2} & \tau_{01}   & \tau_{02}   \\ 
+  0, & \tau_{10} & \tau_{1}^{2} & \tau_{12}  \\
+  0, & \tau_{20} & \tau_{21} & \tau_{2}^{2}
+\end{pmatrix} $$
+
+
+
+Residual variance at level 1
+
+$$ {R}_{ij} \sim \mathcal{N}(0, \sigma^{2})  $$
+
+Compared to time invariant (level 2) predictors, tvc/level 1 predictors are likely to explain variance level 1 and level 2 variance terms as they differ between and within. Typically level 2 predictors tend to only reduce level 2 variance. It is possible, however, that including a level 1 predictor will increase the variance in level 2 variance components.  
+
+
+## Interactions among level 1 variables
+
+Couldn't exercise levels influence the slope of health? The previous models constrained the slopes to be the same, saying that people differ on level when exercising vs not but not on rate of change. 
+
+
+$$ {Health}_{ij} =  [\gamma_{00} +   \gamma_{10}Time_{ij}   + \gamma_{20}Exercise_{ij} + \gamma_{30}TimeXExercise_{ij}]] + [ U_{0j}  + U_{1j}Time_{ij}+ \varepsilon_{ij}] $$
+
+How could you visualize this model? 
+
+How do you interpret each of the terms (knowing what you know about interactions)?
+
+How would all of this change if our level 1 variable was continuous? 
+
+## Centering redux
+
+Especially when you are working with level 1 interactions, centering is important to interpret your lower order terms. How would $ \gamma_{10}$ be interpreted in the above if exercise was centered vs not? Also, be clear about what you mean by centering. Is it the person average or the grand mean average. These will differ in interpretation. Do you want to model a person's average exercise or the grand mean exercise? 
+
+Typically for level 1 we will want to within person-mean center. 
+
+However, this gets rid of all mean level information for a person. The question at hand is not whether you exercise more or less it is compared to your typical levels, what happens when you exercise more or less. This is a within-person question and may be quite important for your theoretical tests. 
+
+However, if you are including a level 1 person centered variable in the model, note that 1) the average level of exercise is not controlled for and 2) the variation around the level will likely be related to the persons mean score. In other words, the within and between person variance of exercise is not neatly decomposed. To do so, we will have to create a new variable out of the existing level 1 variable, a person mean. 
+
+
+Level 1: 
+$$ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}(Exercise_{ij}-\overline{Exercise_{j}}) + \varepsilon_{ij} $$
+
+Level 2: 
+$$ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}$$  
+
+
+$$ {\beta}_{1j} = \gamma_{10} +  U_{1j} $$  
+
+$$ {\beta}_{2j} = \gamma_{20} +  U_{2j} $$
+
+## lagged predictors
+
+We will set these up more in the following weeks. But it is possible to predict Health, using time - 1 previous assessments of exercise. Why might these lagged predictors be helpful?
+
+
+
+
+# Flexible time metrics
+
+Thus far we have been talking about time relatively naively, assuming that time is fixed on equal assessments for everyone ie wave. This  treatment of time can be made more complex in two ways. 
+
+
+## Categorical (structured) vs continuous (unstructured) 
+
+Our repeated assessments are often collected based on some sort of structure. You have enough funding for three waves of data, and you proceed to call participants. These three waves may be specified to occur every 6 months, for example. However, it rarely works out that nicely. People don't show up, people reschedule, your team is in holiday. The resulting time in between assessments thus differs between and within a person. What to do? 
+
+Well, we could ignore the timing differences. Do we think that a few weeks difference will make or break your general conclusions? Sticking with wave is seen as treating time as categorical. 
+
+We could also treat it as continuous. This is usually preferred because why get rid of meaningful information? Within MLMs there is practically no downside to doing so. 
+
+Treating time as categorical, however, is standard with SEM based longitudinal methods. 
+
+
+## Balanced vs unbalanced
+
+Balanced for longitudinal models means that everyone has the same number of repeated assessments. As with ANOVA/experimental designs, balance makes the math easier. In terms of interpretation of the results after  doing said maths, there is no difference. In longitudinal designs especially, it is important is where this unbalance comes from. Does the unbalance occur because of dumb luck or is it systematically related to some variable e.g., attrition via death/health. 
+
+The downfalls from unbalanced designs come from difficulties in convergence and interpretation. This is especially true when time is categorical rather than continuous (as continuous time makes estimation of variance components easier as it is more likely to be separated from the fixed effects).
+
+If you have less than 2 repeated measures for a person, they still can be used. They will be used to estimate relevant fixed effects that can be estimated (as they are similar to standard regression coefficients), but likely not the variance estimates. The slopes for these people will be based on their observed values and the model based trajectory (ie uses partial pooling/shrinkage). However, a number of these individuals will lead to convergence issues. 
+
+# Convergence issues or other warnings
+
+If you have convergence issues it is likely because you have a) too few data points, b) too much imbalance in your repeated measures (ie missing data), c) too many parameters to estimate or d) a combination of all of the above. 
+
+We will talk about fitting a "maximal model" -- one that has as many variance components as possible. However, this may be asking too much of the data. Instead, we may have to get rid of some of these random terms to reduce model complexity. 
+
+
+
+
+
+
+
+# Polynomial and Splines
+
+##Polynomials
+level 1: 
+$$ {Y}_{ij} = \beta_{0j}  + \beta_{1j}(Time_{ij} - \bar{X)} + \beta_{2j}(Time_{ij} - \bar{X)}^2 + \varepsilon_{ij} $$
+
+
+Level 2: 
+$$ {\beta}_{0j} = \gamma_{00} +   U_{0j}$$  
+$$ {\beta}_{1j} = \gamma_{10} +  U_{1j} $$ 
+$$ {\beta}_{2j} = \gamma_{20} +  U_{2j} $$ 
+
+
+
+## polynomial example
+```{r}
+
+rm(list = ls())
+
+library(readr)
+cdrs <- read_csv("~/Box/5165 Applied Longitudinal Data Analysis/Longitudinal/cdrs.csv")
+
+personality <- read_csv("~/Box/5165 Applied Longitudinal Data Analysis/Longitudinal/Subject_personality.csv")
+
+
+library(ggplot2) 
+
+
+gg1 <- ggplot(personality,
+   aes(x = neodate, y = neuroticism, group = mapid)) + geom_line()  
+gg1
+```
+
+```{r}
+library(tidyverse) 
+personality<- personality %>% 
+  group_by(mapid) %>%
+  arrange(neodate) %>% 
+  mutate(wave = seq_len(n())) 
+```
+
+```{r}
+gg2 <- ggplot(personality,
+   aes(x = wave, y = neuroticism, group = mapid)) + geom_line()  
+gg2
+```
+
+
+```{r}
+personality$neodate <- as.Date(personality$neodate, origin = "1900-01-01")
+
+gg3 <- ggplot(personality,
+   aes(x = neodate, y = neuroticism, group = mapid)) + geom_line()  
+gg3
+
+```
+
+
+```{r}
+## convert to days from first assessment
+
+personality.wide <- personality %>% 
+  dplyr::select(mapid, wave, neodate) %>% 
+  spread(wave, neodate) 
+
+personality.wide$wave_1 <- personality.wide$'1'
+personality.wide$wave_2 <- personality.wide$'2'
+personality.wide$wave_3 <- personality.wide$'3'
+personality.wide$wave_4 <- personality.wide$'4'
+personality.wide$wave_5 <- personality.wide$'5'
+
+personality.wide <- personality.wide %>% 
+mutate (w_1 = (wave_1 - wave_1)/365,
+          w_2 = (wave_2 - wave_1)/365,
+          w_3 = (wave_3 - wave_1)/365,
+          w_4 = (wave_4 - wave_1)/365,
+        w_5 = (wave_5 - wave_1)/365)
+
+personality.long <- personality.wide %>% 
+  dplyr::select(mapid, w_1:w_5) %>% 
+  gather(wave, year, -mapid) %>% 
+  separate(wave, c('weeks', 'wave' ), sep="_") %>% 
+ dplyr::select(-weeks) 
+
+personality.long$wave <-  as.numeric(personality.long$wave)
+
+
+personality <- personality %>% 
+   left_join(personality.long, by = c('mapid', 'wave' )) 
+
+```
+
+
+```{r}
+gg4 <- ggplot(personality,
+   aes(x = year, y = neuroticism, group = mapid)) + geom_line()  
+gg4
+```
+
+
+
+```{r}
+library(lme4)
+
+p1 <- lmer(neuroticism ~ year + (1 | mapid), data=personality)
+summary(p1)
+
+```
+
+
+
+
+```{r}
+library(lme4)
+personality.s <- personality %>% 
+  group_by(mapid) %>% 
+  tally() %>% 
+   filter(n >=2) 
+
+ personality <- personality %>% 
+   filter(mapid %in% personality.s$mapid)
+
+p2 <- lmer(neuroticism ~ year + (1 | mapid), data=personality)
+summary(p2)
+
+```
+
+
+```{r}
+p3 <- lmer(neuroticism ~ year + (year | mapid), data=personality)
+summary(p3)
+```
+### importance of centering
+```{r}
+
+personality$year <- as.numeric(personality$year)
+  
+p4 <- lmer(neuroticism ~ year + I(year^2) + (year | mapid), data=personality)
+summary(p4)
+# woah, how do I interpret this? WHy all of a sudden non-sig? 
+# what would happen if I changed my time metric? 
+```
+
+```{r}
+library(psych)
+describe(personality$year)
+
+personality$year.c <- personality$year - 3.1
+
+p5 <- lmer(neuroticism ~ year.c + I(year.c^2) + (year.c | mapid), data=personality)
+summary(p5)
+```
+
+### random terms
+fitting a random slope plus a random quadratic leads to difficulties ie non-convergence. What does this model say? 
+```{r}
+p6 <- lmer(neuroticism ~ year + I(year^2) + ( I(year^2) | mapid), data=personality)
+summary(p6)
+```
+
+## Splines aka piecewise
+Fit more than 1 trajectory. Best to use when we have a reason for a qualitative difference at some identified time point. For example, before your health event you may have a different trajectory than after it and thus you would want to model two separate trajectories. Splines allow you to do this in a single model. You can do this in simple regression and the logic follows for growth models. 
+
+We simply replace time with dummy variables that represent different segments we wish to model. The point of separation is called a knot. You can have as many as you want and these can be pre-specified (usually for our case) or in more advanced treatments have the data specify it for you.   
+
+### separate curves
+The most common is to create different trajectories that change across knots. The easiest example is to take your time variable and transform it into a Time1 and time2, that represent the different time periods. This is easiest to see if we choose our wave variable as our time metric, though you do not have to necessarily do it this way. 
+
+
+```{r}
+t1 <- tribble(
+  ~time, ~t0, ~t1,~t2,~t3,~t4,~t5,
+  "time 1", 0, 1,2,2,2,2,
+  "time 2", 0, 0,0,1,2,3
+)
+t1
+```
+
+
+The idea is that once you hit the knot your value stays the same. Same logic for the second knot, until you get to that knot you don't have a trajectory. 
+
+###incremental curves
+This can be contrasted with a different type of coding, called incremental. Here the first trajectory keeps going, whereas the second trajectory starts at the position of the knot. 
+
+```{r}
+t2 <- tribble(
+  ~time, ~t0, ~t1,~t2,~t3,~t4,~t5,
+  "time 1", 0, 1,2,3,4,5,
+  "time 2", 0, 0,0,1,2,3
+)
+t2
+```
+
+The two coding schemes propose the same type of trajectory, the only thing that differs is the interpretation of the coefficients. 
+
+In the first, the two slope coefficients represent the actual slope in the respective time period. 
+
+In the second, the coefficient for time 2 represents the deviation from the slope in period 1. The positive of this second method is you can easily test whether these two slopes are different from one another. 
+
+level 1: 
+
+$$ {Y}_{ij} = \beta_{0j}  + \beta_{1j}Time1_{ij} + \beta_{2j}Time2_{ij} + \varepsilon_{ij} $$
+
+
+
+
+Level 2: 
+$$ {\beta}_{0j} = \gamma_{00} +  U_{0j} $$  
+
+$$ {\beta}_{1j} = \gamma_{10} +  U_{1j} $$ 
+$$ {\beta}_{2j} = \gamma_{20} +  U_{2j} $$ 
+
+
+
+###splines example
+```{r}
+
+personality$time1 <- recode(personality$wave, '1' = 0 , '2' = 1,  '3' = 1, '4' = 1,'5' = 1)      
+personality$time2 <- recode(personality$wave, '1' = 0 , '2' = 0,  '3' = 1, '4' = 2,'5' = 3) 
+
+
+```
+
+
+
+
+```{r}
+p7 <- lmer(conscientiousness ~ time1 + time2 + (time1   | mapid) , data=personality)
+summary(p7)
+```
+
+```{r}
+
+gg5 <- ggplot(personality, aes(x = wave, y = conscientiousness, group = mapid)) +  stat_smooth(method = 'lm', formula = y ~ poly(x,2, raw = TRUE),data = personality, aes(x = wave, y = conscientiousness, group=1)) + scale_y_continuous(limits = c(30, 40))
+gg5
+
+
+```
+
+
+## splines + polynomial = polynomial piecewise
+
+
+$$ {Y}_{ij} = \beta_{0j}  + \beta_{1j}Time1_{ij} +  \beta_{2j}Time1_{ij}^2 + \beta_{3j}Time2_{ij} + \varepsilon_{ij} $$
+
+Level 2: 
+$$ {\beta}_{0j} = \gamma_{00} +  U_{0j} $$  
+
+$$ {\beta}_{1j} = \gamma_{10} +  U_{1j} $$ 
+$$ {\beta}_{2j} = \gamma_{20} +  U_{2j} $$
+$$ {\beta}_{3j} = \gamma_{30} +  U_{3j}$$ 
+
+
