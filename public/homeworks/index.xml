@@ -17,19 +17,17 @@
       <link>/homeworks/homework-2/</link>
       <pubDate>Fri, 20 Sep 2019 00:00:00 +0000</pubDate>
       <guid>/homeworks/homework-2/</guid>
-      <description>&lt;p&gt;Using example data set 4 from workshop #3 (Multiple Waves, Different Variables ), to answer the following questions. There are 7 waves of data. There are five different types of repeated measures variables, all from &amp;ldquo;the Big Five&amp;rdquo; of personality. Each of these five constructs have 9 items associated with them.&lt;/p&gt;
+      <description>
 
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;Create composites of each of the 5 constructs and run a growth model with varying intercept and slopes for each of the five. Bonus points for doing so in purrr. Interpret each of the parameters for 1 of the models that you are interested in.&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;Introduce age and sex as predictors to the slope and intercept to the same model you used in #1. Interpret each of the parameters.&lt;/p&gt;&lt;/li&gt;
-
+&lt;p&gt;Submit homework Rmd and pdf file to: &lt;a href=&#34;mailto:Homewor.c9u2tv5bm4mb6nbs@u.box.com&#34; class=&#34;email&#34;&gt;Homewor.c9u2tv5bm4mb6nbs@u.box.com&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Using example data set 4 from workshop #3 (Multiple Waves, Different Variables ), to answer the following questions. There are 7 waves of data. There are five different types of repeated measures variables, all from “the Big Five” of personality. Each of these five constructs have 9 items associated with them. See codebook for more details.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Create composites of each of the 5 constructs and run growth models on each of these composite constructs. Include varying intercept and slopes for each of the five models. Bonus points for doing so in purrr. Interpret the parameters for 1 of the models that you are interested in.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Introduce age and sex as predictors to the slope and intercept to the same model you interpreted in #1. Interpret each of the parameters.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Use the output to create a table, suitable for publication in a journal.&lt;/p&gt;&lt;/li&gt;
-
 &lt;li&gt;&lt;p&gt;Plot the predicted fixed effects along with the random effects on the same plot.&lt;/p&gt;&lt;/li&gt;
-
 &lt;li&gt;&lt;p&gt;Introduce one of the remaining 4 repeated measures as a time varying covariate (tvc) at level 1. First, run the model where the time varying covariate is constrained to be equal for everyone. Interpret the parameters of your model.&lt;/p&gt;&lt;/li&gt;
-
 &lt;li&gt;&lt;p&gt;Run a second tvc model where the new repeated measure is allowed to vary randomly across people. Interpret. Then compare this one with the one where it is constrained to be equal using a likelihood ratio test. Interpret.&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 </description>
