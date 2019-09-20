@@ -1,0 +1,587 @@
+---
+title: 'Workshop #4'
+author: Emorie D Beck"
+date: '2019-09-19'
+summary: "plotting"
+slug: workshop-2
+categories: []
+tags: []
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: post
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#workspace">Workspace</a><ul>
+<li><a href="#packages">Packages</a></li>
+<li><a href="#read-in-data">Read in Data</a></li>
+<li><a href="#restructure-data">Restructure Data</a></li>
+</ul></li>
+<li><a href="#the-basic-growth-model">The Basic Growth Model</a><ul>
+<li><a href="#predicted-values">Predicted Values</a></li>
+<li><a href="#plot">Plot</a></li>
+</ul></li>
+<li><a href="#two-level-categorical-moderator">Two-Level Categorical Moderator</a><ul>
+<li><a href="#three-level-categorical-moderator">Three-Level Categorical Moderator</a></li>
+<li><a href="#continuous-time-invariant-moderator">Continuous Time-Invariant Moderator</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p><a href="https://raw.githubusercontent.com/emoriebeck/R-tutorials/master/ALDA/week_4_plotting/week_4_plotting.Rmd" download>Download .Rmd (won’t work in Safari or IE)</a><br />
+<a href="https://github.com/emoriebeck/R-tutorials/tree/master/ALDA/week_4_plotting" target="_blank">See GitHub Repository</a></p>
+<p>For a much more exhaustive tutorial, see <a href="https://raw.githubusercontent.com/emoriebeck/R-tutorials/master/mlm/Conditional_Models_doc.Rmd" download>this</a>.</p>
+<div id="workspace" class="section level1">
+<h1>Workspace</h1>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<p>First let’s load in our packages. We’re going to load in a couple of extras (<code>brms</code> and <code>tidybayes</code>) that we haven’t used before. These will let us make some pretty plots later.</p>
+<pre class="r"><code>library(psych)
+library(knitr)
+library(kableExtra)
+library(lme4)
+library(broom.mixed)
+library(brms)
+library(tidybayes)
+library(plyr)
+library(tidyverse)
+
+data_path &lt;- &quot;https://github.com/emoriebeck/R-tutorials/raw/master&quot;</code></pre>
+</div>
+<div id="read-in-data" class="section level2">
+<h2>Read in Data</h2>
+<p>The National Longitudinal Study of Youths 1979 Child and Young Adult Sample (NLSYCYA) is a longitudinal study conducted by the National Bureau of Labor Statistics. The sample includes the children of the original 1979 sample, of which we will use a small subset. Here, we are going to use a subset of the more than 11,000 variables available that include the following:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Item Name</th>
+<th>Description</th>
+<th>Time-Varying?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>PROC_CID</td>
+<td>Participant ID</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Dem_DOB</td>
+<td>Year of Date of Birth</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>groups</td>
+<td>Jail, Community Service, None</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>DemPWeight</td>
+<td>Weight Percentile at age 10</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>age</td>
+<td>Age of participant</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Year</td>
+<td>Year of Survey</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>age0</td>
+<td>Age of participant (centered)</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>SensSeek</td>
+<td>Sensation-Seeking Composite</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>CESD</td>
+<td>CESD Depression Composite</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>load(url(sprintf(&quot;%s/ALDA/week_4_plotting/data/sample.RData&quot;, data_path)))
+
+sample_dat</code></pre>
+<pre><code>## # A tibble: 2,084 x 8
+##    PROC_CID   age  year  age0 groups    CESD SensSeek DemPweight
+##       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;    &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;
+##  1     1601    16  2006     2 CommServ 0.429     3.67     0.816 
+##  2     1601    18  2008     4 CommServ 2         3        0.816 
+##  3     9102    16  2012     2 None     0.182     3.33     0.671 
+##  4     9501    14  2000     0 Jail     0.5       3        0.548 
+##  5     9501    18  2004     4 Jail     0.429     3        0.548 
+##  6     9501    22  2008     8 Jail     0.429     3        0.548 
+##  7     9502    14  2002     0 Jail     0.143     3        0.421 
+##  8     9502    16  2004     2 Jail     0.286     3        0.421 
+##  9     9502    20  2008     6 Jail     0         3        0.421 
+## 10     9503    16  2004     2 Jail     1.71      3        0.0314
+## # … with 2,074 more rows</code></pre>
+</div>
+<div id="restructure-data" class="section level2">
+<h2>Restructure Data</h2>
+<p>These data are already largely cleaned as that is not our focus today. We just need to do a little bit of restructuring.</p>
+<p>To run our models using <code>purrr</code>, we need to restrucutre the data to long. While we’re at it, we need to create a time variable centered at zero, so we can interpret our moderators later.</p>
+<pre class="r"><code>(df1_long &lt;- sample_dat %&gt;%
+  gather(key = trait, value = value, CESD, SensSeek, na.rm = T) %&gt;%
+   mutate(wave = year - 1996,
+          age0 = age-16)) </code></pre>
+<pre><code>## # A tibble: 4,168 x 9
+##    PROC_CID   age  year  age0 groups   DemPweight trait value  wave
+##       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1     1601    16  2006     0 CommServ     0.816  CESD  0.429    10
+##  2     1601    18  2008     2 CommServ     0.816  CESD  2        12
+##  3     9102    16  2012     0 None         0.671  CESD  0.182    16
+##  4     9501    14  2000    -2 Jail         0.548  CESD  0.5       4
+##  5     9501    18  2004     2 Jail         0.548  CESD  0.429     8
+##  6     9501    22  2008     6 Jail         0.548  CESD  0.429    12
+##  7     9502    14  2002    -2 Jail         0.421  CESD  0.143     6
+##  8     9502    16  2004     0 Jail         0.421  CESD  0.286     8
+##  9     9502    20  2008     4 Jail         0.421  CESD  0        12
+## 10     9503    16  2004     0 Jail         0.0314 CESD  1.71      8
+## # … with 4,158 more rows</code></pre>
+</div>
+</div>
+<div id="the-basic-growth-model" class="section level1">
+<h1>The Basic Growth Model</h1>
+<p>We’ll start with the basic growth model (just looking at change in a single variable over time).</p>
+<p>we will use list columns to do it. We’ll start by using the <code>group_by()</code> and <code>nest()</code> functions from <code>dplyr</code> and <code>tidyr</code> to put the data for each trait into a cell of our data frame:</p>
+<pre class="r"><code>(df1_nested &lt;- df1_long %&gt;%
+  group_by(trait) %&gt;%
+  nest())</code></pre>
+<pre><code>## # A tibble: 2 x 2
+## # Groups:   trait [2]
+##   trait              data
+##   &lt;chr&gt;    &lt;list&lt;df[,8]&gt;&gt;
+## 1 CESD        [2,084 × 8]
+## 2 SensSeek    [2,084 × 8]</code></pre>
+<p>Now, our data frame is 2 x 2, with the elements in the second column each containing the data frame that corresponds to that trait. This makes it really easy to run our models using the <code>map()</code> family of unctions from <code>purrr</code>.</p>
+<p>Before we fit the full growth model, we will first fit the unconditional model. Below, we will add a new column to our data frame that will contain the unconditional model for each trait.</p>
+In this case the model will be in the form of:
+<ul>
+<li>
+<strong>Level 1:</strong> <span class="math inline">\(Y_{ij} = \beta_{0j} + \varepsilon{ij}\)</span>
+</li>
+<li>
+<strong>Level 2:</strong>
+</li>
+<ul>
+<li>
+<span class="math inline">\(\beta_{0j} = \gamma_{00} + U_{0j}\)</span>
+</li>
+</ul>
+</ul>
+<pre class="r"><code>(df1_nested &lt;- df1_nested %&gt;%
+  mutate(fit0 = map(data, ~lmer(value ~ 1 + (1 | PROC_CID), data = .))))</code></pre>
+<pre><code>## # A tibble: 2 x 3
+## # Groups:   trait [2]
+##   trait              data fit0     
+##   &lt;chr&gt;    &lt;list&lt;df[,8]&gt;&gt; &lt;list&gt;   
+## 1 CESD        [2,084 × 8] &lt;lmerMod&gt;
+## 2 SensSeek    [2,084 × 8] &lt;lmerMod&gt;</code></pre>
+<p>Now we can see we have a new list column in our data frame called fit0 that contains an S4 class lmerMod, which simply means your growth model. To understand model, I personally find it easiest to visualize it. What this model is telling us is the mean across all observations as well as the between-person variability in that estimate.</p>
+<p>Now, moving on to the growth model:</p>
+In this case the model will be in the form of:
+<ul>
+<li>
+<strong>Level 1:</strong> <span class="math inline">\(Y_{ij} = \beta_{0j} + \beta_{1j}*time_{ij} + \varepsilon{ij}\)</span>
+</li>
+<li>
+<strong>Level 2:</strong>
+</li>
+<ul>
+<li>
+<span class="math inline">\(\beta_{0j} = \gamma_{00} + U_{0j}\)</span>
+</li>
+<li>
+<span class="math inline">\(\beta_{1j} = \gamma_{10} + U_{1j}\)</span>
+</li>
+</ul>
+</ul>
+<pre class="r"><code>(df1_nested &lt;- df1_nested %&gt;%
+  mutate(fit2 = map(data, ~lmer(value ~ 1 + age0 + (age0 | PROC_CID), data = .))))</code></pre>
+<pre><code>## # A tibble: 2 x 4
+## # Groups:   trait [2]
+##   trait              data fit0      fit2     
+##   &lt;chr&gt;    &lt;list&lt;df[,8]&gt;&gt; &lt;list&gt;    &lt;list&gt;   
+## 1 CESD        [2,084 × 8] &lt;lmerMod&gt; &lt;lmerMod&gt;
+## 2 SensSeek    [2,084 × 8] &lt;lmerMod&gt; &lt;lmerMod&gt;</code></pre>
+<p>Now that we’ve run our model, we are ready to plot the results.</p>
+<p>To do so, we’ll write a short function that will get the predicted values both for group level effects, as well as for individual-level estimates. There’s also a hidden function for getting standard errors of our pointwise estimates that we’ll use to create confidence bands in our plots. Don’t worry about that.</p>
+<div id="predicted-values" class="section level2">
+<h2>Predicted Values</h2>
+<p>Now we’ll use the predict function to get predicted values and the function I created to get pointwise standard errors for the fixed effects.</p>
+<pre class="r"><code># function to get fixed effects
+fixed_pred_fun &lt;- function(m){
+  frame &lt;- tibble(Intercept = 1, age0 = seq(0, 8, .1)) %&gt;%
+    mutate(fixed_pred = predict(m, newdata = ., re.form = NA),
+           age = age0 + 16)
+  frame$SE &lt;- pv_fun(frame %&gt;% select(Intercept, age0), m)
+  frame %&gt;% select(-Intercept)
+}
+
+# function to get random effects predictions  
+ran_pred_fun &lt;- function(m){
+  crossing(age0 = seq(0, 8, 1),
+         PROC_CID = m@frame$PROC_CID) %&gt;%
+    mutate(ran_pred = predict(m, newdata = .),
+           age = age0 + 16)
+}
+
+# get fixed and random efects, and also combine them.
+(df1_nested &lt;- df1_nested %&gt;%
+  mutate(fixed_pred = map(fit2, fixed_pred_fun),
+         ran_pred = map(fit2, ran_pred_fun),
+         combined_pred = map2(fixed_pred, ran_pred, full_join)))</code></pre>
+<pre><code>## # A tibble: 2 x 7
+## # Groups:   trait [2]
+##   trait          data fit0   fit2   fixed_pred   ran_pred    combined_pred 
+##   &lt;chr&gt;  &lt;list&lt;df[,8&gt; &lt;list&gt; &lt;list&gt; &lt;list&gt;       &lt;list&gt;      &lt;list&gt;        
+## 1 CESD    [2,084 × 8] &lt;lmer… &lt;lmer… &lt;tibble [81… &lt;tibble [8… &lt;tibble [8,38…
+## 2 SensS…  [2,084 × 8] &lt;lmer… &lt;lmer… &lt;tibble [81… &lt;tibble [8… &lt;tibble [8,38…</code></pre>
+</div>
+<div id="plot" class="section level2">
+<h2>Plot</h2>
+<p>Now let’s</p>
+<pre class="r"><code>df1_nested %&gt;%
+  select(trait, combined_pred) %&gt;%
+  unnest(combined_pred) %&gt;%
+  ggplot(aes(x = age)) +
+    geom_line(aes(y = ran_pred, color = trait, group = PROC_CID), size = .25, alpha = .5) +
+    geom_line(aes(y = fixed_pred), size = 2) +
+    lims(y = c(0,4)) +
+    labs(x = &quot;Age&quot;, y = &quot;Composite Rating&quot;,
+         title = &quot;Simple Growth Models&quot;) +
+    facet_grid(~trait) +
+    theme_classic() +
+    theme(axis.text = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          axis.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.position = &quot;none&quot;,
+          plot.title = element_text(face = &quot;bold&quot;, size = rel(1.2), hjust = .5))</code></pre>
+<p><img src="/Workshops/2019-09-20-week-4-workshop_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>And with confidence bands:</p>
+<pre class="r"><code>df1_nested %&gt;% 
+  mutate(df = map_dbl(fit2, df.residual)) %&gt;%
+  select(trait, fixed_pred, df) %&gt;%
+  unnest(fixed_pred) %&gt;%
+  ggplot(aes(x = age, y = fixed_pred, fill = trait)) +
+    geom_ribbon(aes(ymin=fixed_pred-1.96*SE,ymax=fixed_pred+1.96*SE),alpha=0.2,fill=&quot;blue&quot;) +  
+    geom_line(size = 2) +
+    facet_grid(~trait) +
+    theme_classic() +
+    theme(axis.text = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          axis.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.position = &quot;none&quot;,
+          plot.title = element_text(face = &quot;bold&quot;, size = rel(1.2), hjust = .5))</code></pre>
+<p><img src="/Workshops/2019-09-20-week-4-workshop_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>df1_nested %&gt;% 
+  mutate(df = map_dbl(fit2, df.residual)) %&gt;%
+  select(trait, fixed_pred, df) %&gt;%
+  unnest(fixed_pred) %&gt;%
+  ggplot(aes(x = age, y = fixed_pred, fill = trait)) +
+    stat_dist_lineribbon(
+      aes(dist = &quot;student_t&quot;, arg1 = unique(df), arg2 = fixed_pred, arg3 = SE),
+      alpha = 1/4
+    ) +
+    facet_grid(~trait) +
+    theme_classic() +
+    theme(axis.text = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          axis.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.position = &quot;none&quot;,
+          plot.title = element_text(face = &quot;bold&quot;, size = rel(1.2), hjust = .5))</code></pre>
+<p><img src="/Workshops/2019-09-20-week-4-workshop_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+</div>
+<div id="two-level-categorical-moderator" class="section level1">
+<h1>Two-Level Categorical Moderator</h1>
+<p>Let’s start with the basic syntax:</p>
+<ul>
+<li>
+<strong>Level 1:</strong> <span class="math inline">\(Y_{ij} = \beta_{0j} + \beta_{1j}*time_{1j} + \varepsilon{ij}\)</span>
+</li>
+<li>
+<strong>Level 2:</strong>
+</li>
+<ul>
+<li>
+<span class="math inline">\(\beta_{0j} = \gamma_{00} + \gamma_{01}*X_{2j} + U_{0j}\)</span>
+</li>
+<li>
+<span class="math inline">\(\beta_{1j} = \gamma_{10} + \gamma_{11}*X_{2j} + U_{1j}\)</span>
+</li>
+</ul>
+</ul>
+<p>Now let’s swap that out for a 2 group sample from the present data:</p>
+<ul>
+<li>
+<strong>Level 1:</strong> <span class="math inline">\(Y_{ij} = \beta_{0j} + \beta_{1j}*age0_{ij} + \varepsilon{ij}\)</span>
+</li>
+<li>
+<strong>Level 2:</strong>
+</li>
+<ul>
+<li>
+<span class="math inline">\(\beta_{0j} = \gamma_{00} + \gamma_{01}*groupsNone + U_{0j}\)</span>
+</li>
+<li>
+<span class="math inline">\(\beta_{1j} = \gamma_{10} + \gamma_{11}*groupsNone + U_{1j}\)</span>
+</li>
+</ul>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>D1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Jail</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>None</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>df1_nested &lt;- df1_nested %&gt;%
+  mutate(data_2g = map(data, function(x) x %&gt;% filter(groups != &quot;CommServ&quot;)),
+         fit3 = map(data_2g, ~lmer(value ~ 1 + age0*groups + (age0 | PROC_CID), data = .)))</code></pre>
+<p>When we plot these, we are plotting the simple slopes. Subbing 1 and 0 into the equations above we end up with the following for the groups.</p>
+<p>None: <span class="math inline">\(Y_{ij} = \gamma_{00} + \gamma_{10}*age\)</span><br />
+Jail: <span class="math inline">\(Y_{ij} = \gamma_{00} + \gamma_{01} + (\gamma_{10} + \gamma_{11})*age\)</span></p>
+<pre class="r"><code>fixed_pred_fun &lt;- function(m){
+  frame &lt;- crossing(Intercept = 1, age0 = seq(0, 8, .1),
+           groups = c(&quot;Jail&quot;, &quot;None&quot;)) %&gt;%
+    mutate(fixed_pred = predict(m, newdata = ., re.form = NA),
+           age = age0 + 16,
+           groupsn = as.numeric(mapvalues(groups, unique(groups), c(1,0))),
+           Int = age0*groupsn)
+  frame$SE &lt;- pv_fun(frame %&gt;% select(Intercept, age0, groupsn, Int), m)
+  frame %&gt;% select(-Intercept, -groupsn, -Int)
+}
+
+fixed_pred_fun &lt;- function(m){
+  crossing(age0 = seq(0, 8, 1),
+           groups = c(&quot;Jail&quot;, &quot;None&quot;)) %&gt;%
+    mutate(fixed_pred = predict(m, newdata = ., re.form = NA),
+           age = age0 + 16)
+}
+
+ran_pred_fun &lt;- function(m){
+  crossing(age0 = seq(0, 8, 1),
+         PROC_CID = m@frame$PROC_CID) %&gt;%
+    left_join(m@frame %&gt;% tbl_df %&gt;% select(PROC_CID, groups)) %&gt;%
+    distinct() %&gt;%
+    mutate(ran_pred = predict(m, newdata = .),
+           age = age0 + 16)
+}
+
+(df1_nested &lt;- df1_nested %&gt;%
+  mutate(fixed_pred3 = map(fit3, fixed_pred_fun),
+         ran_pred3 = map(fit3, ran_pred_fun),
+         combined_pred3 = map2(fixed_pred3, ran_pred3, full_join)))</code></pre>
+<pre><code>## # A tibble: 2 x 12
+## # Groups:   trait [2]
+##   trait        data fit0  fit2  fixed_pred ran_pred combined_pred data_2g
+##   &lt;chr&gt; &lt;list&lt;df[,&gt; &lt;lis&gt; &lt;lis&gt; &lt;list&gt;     &lt;list&gt;   &lt;list&gt;        &lt;list&gt; 
+## 1 CESD  [2,084 × 8] &lt;lme… &lt;lme… &lt;tibble [… &lt;tibble… &lt;tibble [8,3… &lt;tibbl…
+## 2 Sens… [2,084 × 8] &lt;lme… &lt;lme… &lt;tibble [… &lt;tibble… &lt;tibble [8,3… &lt;tibbl…
+## # … with 4 more variables: fit3 &lt;list&gt;, fixed_pred3 &lt;list&gt;,
+## #   ran_pred3 &lt;list&gt;, combined_pred3 &lt;list&gt;</code></pre>
+<pre class="r"><code>df1_nested %&gt;%
+  select(trait, combined_pred3) %&gt;%
+  unnest(combined_pred3) %&gt;%
+  ggplot(aes(x = age)) +
+    scale_color_manual(values = c(&quot;blue&quot;, &quot;red&quot;)) +
+    geom_line(aes(y = ran_pred, color = groups, group = PROC_CID), size = .25, alpha = .1) +
+    geom_line(aes(y = fixed_pred, color = groups), size = 2) +
+    lims(y = c(0,4)) +
+    labs(x = &quot;Age&quot;, y = &quot;Composite Rating&quot;,
+         title = &quot;Simple Growth Models&quot;) +
+    facet_grid(~trait) +
+    theme_classic() +
+    theme(axis.text = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          axis.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.position = &quot;none&quot;,
+          plot.title = element_text(face = &quot;bold&quot;, size = rel(1.2), hjust = .5))</code></pre>
+<p><img src="/Workshops/2019-09-20-week-4-workshop_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<div id="three-level-categorical-moderator" class="section level2">
+<h2>Three-Level Categorical Moderator</h2>
+<ul>
+<li>
+<strong>Level 1:</strong> <span class="math inline">\(Y_{ij} = \beta_{0j} + \beta_{1j}*age0_{ij} + \varepsilon{ij}\)</span>
+</li>
+<li>
+<strong>Level 2:</strong>
+</li>
+<ul>
+<li>
+<span class="math inline">\(\beta_{0j} = \gamma_{00} + \gamma_{01}*D1 + \gamma_{02}*D2 + U_{0j}\)</span>
+</li>
+<li>
+<span class="math inline">\(\beta_{1j} = \gamma_{10} + \gamma_{11}*D1 + \gamma_{12}*D2 + U_{1j}\)</span>
+</li>
+</ul>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>D1</th>
+<th>D2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Jail</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>None</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>CommServ</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>df1_nested &lt;- df1_nested %&gt;%
+  mutate(fit4 = map(data, ~lmer(value ~ 1 + age0*groups + (age0 | PROC_CID), data = .)))</code></pre>
+<p>When we plot these, we are plotting the simple slopes. Subbing 1 and 0 into the equations above we end up with the following for the groups.</p>
+<p>None: <span class="math inline">\(Y_{ij} = \gamma_{00} + \gamma_{10}*age\)</span><br />
+Jail: <span class="math inline">\(Y_{ij} = \gamma_{00} + \gamma_{01} + (\gamma_{10} + \gamma_{11})*age\)</span><br />
+Community Service: <span class="math inline">\(Y_{ij} = \gamma_{00} + \gamma_{02} + (\gamma_{10} + \gamma_{12})*age\)</span></p>
+<pre class="r"><code>fixed_pred_fun &lt;- function(m){
+  crossing(age0 = seq(0, 8, 1),
+           groups = c(&quot;Jail&quot;, &quot;None&quot;, &quot;CommServ&quot;)) %&gt;%
+    mutate(fixed_pred = predict(m, newdata = ., re.form = NA),
+           age = age0 + 16)
+}
+
+ran_pred_fun &lt;- function(m){
+  crossing(age0 = seq(0, 8, 1),
+         PROC_CID = m@frame$PROC_CID) %&gt;%
+    left_join(m@frame %&gt;% tbl_df %&gt;% select(PROC_CID, groups)) %&gt;%
+    distinct() %&gt;%
+    mutate(ran_pred = predict(m, newdata = .),
+           age = age0 + 16)
+}
+
+(df1_nested &lt;- df1_nested %&gt;%
+  mutate(fixed_pred4 = map(fit4, fixed_pred_fun),
+         ran_pred4 = map(fit4, ran_pred_fun),
+         combined_pred4 = map2(fixed_pred4, ran_pred4, full_join)))</code></pre>
+<pre><code>## # A tibble: 2 x 16
+## # Groups:   trait [2]
+##   trait        data fit0  fit2  fixed_pred ran_pred combined_pred data_2g
+##   &lt;chr&gt; &lt;list&lt;df[,&gt; &lt;lis&gt; &lt;lis&gt; &lt;list&gt;     &lt;list&gt;   &lt;list&gt;        &lt;list&gt; 
+## 1 CESD  [2,084 × 8] &lt;lme… &lt;lme… &lt;tibble [… &lt;tibble… &lt;tibble [8,3… &lt;tibbl…
+## 2 Sens… [2,084 × 8] &lt;lme… &lt;lme… &lt;tibble [… &lt;tibble… &lt;tibble [8,3… &lt;tibbl…
+## # … with 8 more variables: fit3 &lt;list&gt;, fixed_pred3 &lt;list&gt;,
+## #   ran_pred3 &lt;list&gt;, combined_pred3 &lt;list&gt;, fit4 &lt;list&gt;,
+## #   fixed_pred4 &lt;list&gt;, ran_pred4 &lt;list&gt;, combined_pred4 &lt;list&gt;</code></pre>
+<pre class="r"><code>df1_nested %&gt;%
+  select(trait, combined_pred4) %&gt;%
+  unnest(combined_pred4) %&gt;%
+  ggplot(aes(x = age)) +
+    scale_color_manual(values = c(&quot;blue&quot;, &quot;red&quot;, &quot;black&quot;)) +
+    geom_line(aes(y = ran_pred, color = groups, group = PROC_CID), size = .25, alpha = .1) +
+    geom_line(aes(y = fixed_pred, color = groups), size = 2) +
+    lims(y = c(0,4)) +
+    labs(x = &quot;Age&quot;, y = &quot;Composite Rating&quot;,
+         title = &quot;Simple Growth Models&quot;) +
+    facet_grid(~trait) +
+    theme_classic() +
+    theme(axis.text = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          axis.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.position = &quot;none&quot;,
+          plot.title = element_text(face = &quot;bold&quot;, size = rel(1.2), hjust = .5))</code></pre>
+<p><img src="/Workshops/2019-09-20-week-4-workshop_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="continuous-time-invariant-moderator" class="section level2">
+<h2>Continuous Time-Invariant Moderator</h2>
+<pre class="r"><code>df1_nested &lt;- df1_nested %&gt;%
+  mutate(fit5 = map(data, ~lmer(value ~ 1 + age0*DemPweight + (age0 | PROC_CID), data = .)))</code></pre>
+<pre class="r"><code>fixed_pred_fun &lt;- function(m){
+  desc &lt;- Rmisc::summarySE(m@frame, measurevar = &quot;DemPweight&quot;)
+    crossing(age0 = seq(0, 8, 1),
+           DemPweight = c(desc$DemPweight - desc$sd, 
+                          desc$DemPweight, 
+                          desc$DemPweight + desc$sd)) %&gt;%
+    mutate(fixed_pred = predict(m, newdata = ., re.form = NA),
+           age = age0 + 16,
+           Weight = factor(DemPweight, levels = unique(DemPweight), labels = c(&quot;-1SD&quot;, &quot;0SD&quot;, &quot;1SD&quot;)))
+}
+
+ran_pred_fun &lt;- function(m){
+  crossing(age0 = seq(0, 8, 1),
+         PROC_CID = m@frame$PROC_CID) %&gt;%
+    left_join(m@frame %&gt;% tbl_df %&gt;% select(PROC_CID, DemPweight)) %&gt;%
+    distinct() %&gt;%
+    mutate(ran_pred = predict(m, newdata = .),
+           age = age0 + 16)
+}
+
+(df1_nested &lt;- df1_nested %&gt;%
+  mutate(fixed_pred5 = map(fit5, fixed_pred_fun),
+         ran_pred5 = map(fit5, ran_pred_fun),
+         combined_pred5 = map2(fixed_pred5, ran_pred5, full_join)))</code></pre>
+<pre><code>## # A tibble: 2 x 20
+## # Groups:   trait [2]
+##   trait        data fit0  fit2  fixed_pred ran_pred combined_pred data_2g
+##   &lt;chr&gt; &lt;list&lt;df[,&gt; &lt;lis&gt; &lt;lis&gt; &lt;list&gt;     &lt;list&gt;   &lt;list&gt;        &lt;list&gt; 
+## 1 CESD  [2,084 × 8] &lt;lme… &lt;lme… &lt;tibble [… &lt;tibble… &lt;tibble [8,3… &lt;tibbl…
+## 2 Sens… [2,084 × 8] &lt;lme… &lt;lme… &lt;tibble [… &lt;tibble… &lt;tibble [8,3… &lt;tibbl…
+## # … with 12 more variables: fit3 &lt;list&gt;, fixed_pred3 &lt;list&gt;,
+## #   ran_pred3 &lt;list&gt;, combined_pred3 &lt;list&gt;, fit4 &lt;list&gt;,
+## #   fixed_pred4 &lt;list&gt;, ran_pred4 &lt;list&gt;, combined_pred4 &lt;list&gt;,
+## #   fit5 &lt;list&gt;, fixed_pred5 &lt;list&gt;, ran_pred5 &lt;list&gt;,
+## #   combined_pred5 &lt;list&gt;</code></pre>
+<pre class="r"><code>df1_nested %&gt;%
+  select(trait, combined_pred5) %&gt;%
+  unnest(combined_pred5) %&gt;%
+  ggplot(aes(x = age)) +
+    scale_color_manual(values = c(&quot;blue&quot;, &quot;red&quot;, &quot;black&quot;)) +
+    # geom_line(aes(y = ran_pred, group = PROC_CID), size = .25, alpha = .1) +
+    geom_line(aes(y = fixed_pred, color = Weight), size = 1) +
+    lims(y = c(0,4)) +
+    labs(x = &quot;Age&quot;, y = &quot;Composite Rating&quot;,
+         title = &quot;Simple Growth Models&quot;) +
+    facet_wrap(~trait, scales = &quot;free_y&quot;) +
+    theme_classic() +
+    theme(axis.text = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          axis.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.title = element_text(face = &quot;bold&quot;, size = rel(1.2)),
+          legend.position = &quot;none&quot;,
+          plot.title = element_text(face = &quot;bold&quot;, size = rel(1.2), hjust = .5))</code></pre>
+<p><img src="/Workshops/2019-09-20-week-4-workshop_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+</div>
