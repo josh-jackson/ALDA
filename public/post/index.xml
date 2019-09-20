@@ -5,12 +5,21 @@
     <link>/post/</link>
       <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     <description>Posts</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 06 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 20 Sep 2019 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/img/icon-192.png</url>
       <title>Posts</title>
       <link>/post/</link>
     </image>
+    
+    <item>
+      <title>Homework #2 is live</title>
+      <link>/post/homework-2-is-live/</link>
+      <pubDate>Fri, 20 Sep 2019 00:00:00 +0000</pubDate>
+      <guid>/post/homework-2-is-live/</guid>
+      <description>&lt;p&gt;Hw#2 is posted. Please try to complete by next Thursday&amp;rsquo;s class. If you need extra time or questions answered,  reach out.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Homework is posted! </title>
