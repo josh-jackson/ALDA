@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.4.0">
+
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+  
+  
+    
+  
+  <meta name="description" content="purrr Tutorial">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/workshops/workshop-3/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="rgb(0, 136, 204)">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light" disabled>
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark">
+        
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.301ab7eca2ca7d1311ed71a9afa2cc4f.css">
+
+  
+
+  
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon-32.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/workshops/workshop-3/">
+
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="twitter:site" content="@jackson_josh_">
+  <meta property="twitter:creator" content="@jackson_josh_">
+  
+  <meta property="og:site_name" content="Applied Longitudinal Data Analysis">
+  <meta property="og:url" content="/workshops/workshop-3/">
+  <meta property="og:title" content="Workshop #3 | Applied Longitudinal Data Analysis">
+  <meta property="og:description" content="purrr Tutorial"><meta property="og:image" content="/img/icon-192.png">
+  <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2019-09-10T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2019-09-10T00:00:00&#43;00:00">
+  
+
+  
+
+
+  
+
+
+
+
+
+  <title>Workshop #3 | Applied Longitudinal Data Analysis</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="dark">
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/">Applied Longitudinal Data Analysis</a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav mr-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/lectures"><span>Lectures</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/workshops"><span>Workshops</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/homeworks"><span>Homeworks</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+      
+      </ul>
+      <ul class="navbar-nav ml-auto">
+      
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1 itemprop="name">Workshop #3</h1>
+
+  
+
+  
+    
+
+
+
+<meta content="2019-09-10 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+<meta content="2019-09-10 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    <time>Sep 10, 2019</time>
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+
+  
+  
+
+  
+    
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#purrr">purrr</a></li>
+<li><a href="#background-iteration">Background: Iteration</a></li>
+<li><a href="#data-reading">Data Reading</a><ul>
+<li><a href="#many-subjects-same-variables-example-1">Many Subjects, Same Variables (Example 1)</a></li>
+<li><a href="#many-subjects-different-variables-example-2">Many Subjects, Different Variables (Example 2)</a></li>
+<li><a href="#multiple-waves-same-variables-example-3">Multiple Waves, Same Variables (Example 3)</a></li>
+<li><a href="#multiple-waves-different-variables-example-4">Multiple Waves, Different Variables (Example 4)</a></li>
+<li><a href="#multiple-waves-multiple-files-for-same-variables-example-5">Multiple Waves, Multiple Files for Same Variables (Example 5)</a></li>
+</ul></li>
+<li><a href="#running-models">Running Models</a><ul>
+<li><a href="#read-in-data">Read in Data</a></li>
+<li><a href="#clean-data">Clean Data</a></li>
+<li><a href="#descriptives">Descriptives</a></li>
+<li><a href="#coding-time">Coding Time</a></li>
+<li><a href="#fit-unconditional-models">Fit Unconditional Models</a></li>
+<li><a href="#icc">ICC</a></li>
+<li><a href="#fit-growth-models">Fit Growth Models</a></li>
+<li><a href="#model-comparisons">Model Comparisons</a></li>
+<li><a href="#tabling-values">Tabling Values</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="purrr" class="section level1">
+<h1>purrr</h1>
+<p><a href="https://raw.githubusercontent.com/emoriebeck/R-tutorials/master/ALDA/week_3_purrr/week_3_purrr.Rmd" download>Download .Rmd (won’t work in Safari or IE)</a><br />
+<a href="https://github.com/emoriebeck/R-tutorials/tree/master/ALDA/week_3_purrr" target="_blank">See GitHub Repository</a></p>
+<p>#<code>purrr</code><br />
+In my opinion, <code>purrr</code> is one of the most underrated and under-utilized <code>R</code> packages. It has completely revolutionized my own efficiency and workspace organization, particularly as someone who works with super messy data that comes in a variety of forms.</p>
+<p>In this tutorial, we are going to cover a number of what I believe are the most functional and important applications of <code>purrr</code> in psychological research. Given the audience, in the first half of the tutorial, I will focus on working with the diverse forms of data that many of you work with, providing examples of how to load, clean, and merge data using <code>purrr</code>. In the second half, I will focus on how we can use <code>purrr</code> with longitudinal data analysis when we are working with multiple predictors and outcomes.</p>
+</div>
+<div id="background-iteration" class="section level1">
+<h1>Background: Iteration</h1>
+<p>Before we get there, though, I think it’s useful to think about when and where we would use <code>purrr</code>.</p>
+<p>Iteration is everywhere. It underpins much of mathematics and statistics. If you’ve ever seen the <span class="math inline">\(\Sigma\)</span> symbol, then you’ve seen (and probably used) iteration.</p>
+<p>It’s also incredibly useful. Anytime you have to repeat some sort of action many times, iteration is your best friend. In psychology, this often means reading in a bunch of individual data files from an experiment, repeating an analysis with a series of different predictors or outcomes, or creating a series of figures.</p>
+<pre class="r"><code>library(psych)
+library(knitr)
+library(kableExtra)
+library(lme4)
+library(broom.mixed)
+library(plyr)
+library(tidyverse)</code></pre>
+<p>Enter <code>for</code> loops. <code>for</code> loops are the “OG” form of iteration in computer science. The basic syntax is below. Basically, we can use a for loop to loop through and print a series of things.</p>
+<pre class="r"><code>for(i in letters[1:5]){
+  print(i)
+}</code></pre>
+<pre><code>## [1] &quot;a&quot;
+## [1] &quot;b&quot;
+## [1] &quot;c&quot;
+## [1] &quot;d&quot;
+## [1] &quot;e&quot;</code></pre>
+<p>The code above “loops” through 5 times, printing the iteration letter.</p>
+<p>Essentially, like the <code>apply()</code>, <code>lapply()</code>, <code>sapply()</code>, and <code>mapply()</code> family of functions, <code>purrr</code> is meant to be an alternative to iteration (i.e. <code>for</code> loops) in <code>R</code>. <code>for</code> loops are great, but they aren’t as great in <code>R</code> as they are in other programming languages. In <code>R</code>, you’re better off vectorizing or building in C++ backends.</p>
+<p>There are a lot of functions in the <code>purrr</code> package that I encourage you to check out. Today, though, we’ll focus on the <code>map()</code> family of functions. The breakdown of map functions is pretty intuitive. The basic map function wants two things as input – a list or vector and a function. So the <code>purrr</code> equivalent of the example above would be:</p>
+<pre class="r"><code>map(letters[1:5], print)</code></pre>
+<pre><code>## [1] &quot;a&quot;
+## [1] &quot;b&quot;
+## [1] &quot;c&quot;
+## [1] &quot;d&quot;
+## [1] &quot;e&quot;</code></pre>
+<pre><code>## [[1]]
+## [1] &quot;a&quot;
+## 
+## [[2]]
+## [1] &quot;b&quot;
+## 
+## [[3]]
+## [1] &quot;c&quot;
+## 
+## [[4]]
+## [1] &quot;d&quot;
+## 
+## [[5]]
+## [1] &quot;e&quot;</code></pre>
+<p>Note that this returns a list, which we may not always want. With <code>purrr</code>, we can change the kind of output of <code>map()</code> by adding a predicate, like <code>lgl</code>, <code>dbl</code>, <code>chr</code>, and <code>df</code>. So in the example above, we may have wanted just the characters to print. To do that we’d call <code>map_chr()</code>:</p>
+<pre class="r"><code>map_chr(letters[1:5], print)</code></pre>
+<pre><code>## [1] &quot;a&quot;
+## [1] &quot;b&quot;
+## [1] &quot;c&quot;
+## [1] &quot;d&quot;
+## [1] &quot;e&quot;</code></pre>
+<pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot; &quot;e&quot;</code></pre>
+<p>Note that it also returns the concatenated character vector as well as printing each letter individually (i.e. iteratively).</p>
+<p><code>map()</code> functions can also hand multiple inputs. Often we may need to input multiple pieces of information to a function, similarly to how we work with nested <code>for</code> loops. In this case, we have <code>map2()</code> and <code>pmap()</code> that take additional arguments. <code>map2()</code> shockingly takes two inputs and <code>pmap()</code> takes p arguments that you feed in as list (e.g. <code>pmap(list(a, b, c, d), my_fun))</code>. A simple printing example would be:</p>
+<pre class="r"><code>map2_chr(letters[1:5], 1:5, paste)</code></pre>
+<pre><code>## [1] &quot;a 1&quot; &quot;b 2&quot; &quot;c 3&quot; &quot;d 4&quot; &quot;e 5&quot;</code></pre>
+<p>Note here that we can use <code>map2()</code> and <code>pmap()</code> with the predicates from above.</p>
+<p>This likely makes little sense at this point, and that’s fine. The examples in the rest of this tutorial should elucidate their usage. The last note I’ll make is that thinking about the structure of your data is going to be very important when using <code>purrr</code>. To use it effectively, you’ll need your data in specific forms, which will often require data manipulations. It just takes practice.</p>
+<p>Regardless of the programmatic form, iteration is everywhere. It underpins much of mathematics and statistics. If you’ve ever seen the <span class="math inline">\(\Sigma\)</span> symbol, then you’ve seen (and probably used) iteration.</p>
+<p>It’s also incredibly useful. Anytime you have to repeat some sort of action many times, iteration is your best friend. In psychology, this could mean reading in a bunch of separate data files (with separate files for different people, variables, waves, etc.) or performing a number of regressions or other statistical tests.</p>
+</div>
+<div id="data-reading" class="section level1">
+<h1>Data Reading</h1>
+<p>To demonstrate the first case in which I find <code>purrr</code> useful, we are going to consider a five cases that, in my experience, capture many of the challenges we often face in working with psychological data. In each of these cases, we will use a codebook of the form we discussed in the previous tutorial on codebooks.</p>
+<p>All of these share a similar feature: multiple files. There are a variety of other techniques you could use to get your data into a usable form, such as those below:</p>
+<ol>
+<li>
+Writing code to load in each file separately (not good).
+</li>
+<li>
+Copying each data file into one larger data set in Excel (worse)
+</li>
+</ol>
+<p>But let’s not do that. Let’s use iteration to make our process efficient and transparent.</p>
+<div id="many-subjects-same-variables-example-1" class="section level2">
+<h2>Many Subjects, Same Variables (Example 1)</h2>
+<p>We will start with a data storage format that is very common in experimental studies in various fields of psychology as well as in observational studies of repeated assessments of individuals (i.e. ESM, EMA, etc.).</p>
+<p>For this first example, I’ll show you how this would look with a <code>for</code> loop before I show you how it looks with <code>purrr</code>.</p>
+<p>Assuming you have all the data in a single folder and the format is reasonably similar, you have the following basic syntax:</p>
+<pre class="r"><code>data_path &lt;- &quot;&quot;
+files &lt;- list.files(data_path)
+data &lt;- list()
+for(i in files){
+  data[[i]] &lt;- read.csv(i, stringsAsFactors = F)
+}
+data &lt;- combine(data)</code></pre>
+<p>This works fine in this simple case, but where <code>purrr</code> really shines in when you need to make modifications to your data before combining, whether this be recoding, removing missing cases, or renaming variables.</p>
+<p>But first, the simple case of reading data.</p>
+<pre class="r"><code>data_path &lt;- &quot;~/Documents/week_3_purrr&quot;
+df1 &lt;- tibble(ID = list.files(sprintf(&quot;%s/data/example_1&quot;, data_path))) %&gt;%
+  mutate(path = sprintf(&quot;%s/data/example_1/%s&quot;, data_path, ID),
+         data = map(path, read_csv),
+         ID = str_remove(ID, &quot;.csv&quot;)) %&gt;%
+  unnest(data) %&gt;%
+  select(-path)</code></pre>
+<p>The code above creates a list of ID’s from the data path (files named for each person), reads the data in using the <code>map()</code> function from <code>purrr</code>, removes the “.csv” from the ID variable, then unnests the data, resulting in a data frame for each person.</p>
+<p>But often, we have variable names that aren’t super informative, so we want to rename them. In this case, we need to use our codebook to give them more informative variable names.</p>
+<p>In this case, where all people have the same variables, it’s easiest to just rename them after unnesting, so the full code would look like this:</p>
+<pre class="r"><code>data_path &lt;- &quot;https://github.com/emoriebeck/R-tutorials/raw/master&quot;
+(codebook &lt;- sprintf(&quot;%s/ALDA/week_3_purrr/data/codebook_ex1.csv&quot;, data_path) %&gt;% read_csv)</code></pre>
+<pre><code>## # A tibble: 15 x 2
+##    new_name   old_name
+##    &lt;chr&gt;      &lt;chr&gt;   
+##  1 O_AesSens  O_1     
+##  2 E_Assert   E_1     
+##  3 N_Depr     N_1     
+##  4 N_EmoVol   N_2     
+##  5 O_IntCur   O_2     
+##  6 C_Org      C_1     
+##  7 A_Rspct    A_1     
+##  8 C_Rspnbl   C_2     
+##  9 A_Cmpn     A_2     
+## 10 O_CrtvImag O_3     
+## 11 E_EnerLev  E_2     
+## 12 C_Prdctv   C_3     
+## 13 A_Trust    A_3     
+## 14 N_Anxty    N_3     
+## 15 E_Scblty   E_3</code></pre>
+<pre class="r"><code>old.names &lt;- codebook$old_name
+new.names &lt;- codebook$new_name
+df1 &lt;- tibble(ID = list.files(sprintf(&quot;%s/data/example_1&quot;, data_path))) %&gt;%
+  mutate(path = sprintf(&quot;%s/data/example_1/%s&quot;, data_path, ID),
+         data = map(path, read_csv),
+         ID = str_remove(ID, &quot;.csv&quot;))%&gt;%
+  unnest(data) %&gt;%
+  select(ID, old.names) %&gt;%
+  setNames(c(&quot;ID&quot;, new.names))</code></pre>
+</div>
+<div id="many-subjects-different-variables-example-2" class="section level2">
+<h2>Many Subjects, Different Variables (Example 2)</h2>
+<p>In some cases, participants may have different variables. This could be do to a skip rule in a study or intentionally different variable collection (e.g. in between-person experiments or idiographic work like I do). In this case, we might need to filter or rename variables within our iterative loop.</p>
+<p>In this case, all participants have the same set of core variables but were randomly assigned to complete one additional scale.</p>
+<pre class="r"><code>df2 &lt;- tibble(ID = list.files(sprintf(&quot;%s/data/example_2&quot;, data_path))) %&gt;%
+  mutate(path = sprintf(&quot;%s/data/example_2/%s&quot;, data_path, ID),
+         data = map(path, read_csv),
+         ID = str_remove(ID, &quot;.csv&quot;))%&gt;%
+  unnest(data) </code></pre>
+</div>
+<div id="multiple-waves-same-variables-example-3" class="section level2">
+<h2>Multiple Waves, Same Variables (Example 3)</h2>
+<p>In some cases, instead of multiple files for each participant, we collect a single file for all participants across different waves (e.g. using Qualtrics). In this case, we need to index the files a little differently. Instead of reading in files for participants, we need to read in files for waves, which may be named in a variety of ways.</p>
+<p>Here, I’ll start with a simple example of data that were well-managed and nicely named the same except for wave content. This is a good practice to do. I’m in general against modifying data, but I am a fan of changing file <em>names</em> because I think this actually helps with data management and prevents the need to actually go in and modify information within files.</p>
+<p>These data come from a longitudinal study of personality. We have seven waves, and the variable names for all items are consistent across waves. In this case, our code is almost identical to reading in multiple files for each participant, except that now we have wave info and will need to toss out part of the file names at the end.</p>
+<pre class="r"><code>codebook &lt;- sprintf(&quot;%s/ALDA/week_3_purrr/data/codebook_ex3.csv&quot;, data_path) %&gt;% read_csv
+old.names &lt;- str_remove_all(codebook$old_name, &quot;[ ]&quot;)
+new.names &lt;- codebook$new_name
+
+df3 &lt;- tibble(wave = paste(&quot;T&quot;, 1:7, sep = &quot;&quot;),
+              path = sprintf(&quot;%s/ALDA/week_3_purrr/data/example_3/%s.csv&quot;, data_path, wave)) %&gt;%
+  mutate(data = map(path, read_csv),
+         wave = as.numeric(str_extract_all(wave, &quot;[0-9]&quot;))) %&gt;%
+  select(-path) %&gt;%
+  unnest(data) %&gt;%
+  select(old.names) %&gt;%
+  setNames(new.names)</code></pre>
+<p>The only change from the code for reading in multiple files for participants is that we have “wave” as a variable instead of “ID” and we use the <code>str_extract_all()</code> function from the <code>stringr</code> package (part of <code>tidyverse</code>) to get rid of everything except the numeric wave value.</p>
+</div>
+<div id="multiple-waves-different-variables-example-4" class="section level2">
+<h2>Multiple Waves, Different Variables (Example 4)</h2>
+<p>Oftentimes, however, we do not have the same variables across waves or they do have the same names across waves. In those cases, we’ll have to do a little extra work to get our data into a form where we can <code>unnest()</code> them – that is where shared column names will actually be shared.</p>
+<p>We’ll start with the case where we have some additional information (e.g. demographics) in the first wave.</p>
+<p>These data are the same as we used in the previous example except that I changed the names and added demographic information for this example. This means that we have slightly different information in wave one and need a way to match the same variables across waves. We’ll use our codebook to achieve this with little issue!</p>
+<p>However, because of this, we’ll need to use a function that take the year as input, so that we pull the correct variables from the codebook.</p>
+<pre class="r"><code>read_fun &lt;- function(Wave){
+  old.names &lt;- str_remove_all((codebook %&gt;% filter(wave == &quot;All&quot; | wave == Wave))$old_name, &quot;[ ]&quot;)
+  new.names &lt;- (codebook %&gt;% filter(wave == &quot;All&quot; | wave == Wave))$new_name
+  
+  sprintf(&quot;%s/ALDA/week_3_purrr/data/example_4/T%s.csv&quot;, data_path, Wave) %&gt;%
+    read_csv() %&gt;%
+    select(old.names) %&gt;%
+    setNames(new.names) %&gt;%
+    gather(key = item, value = value, -SID)
+}
+
+codebook &lt;- sprintf(&quot;%s/ALDA/week_3_purrr/data/codebook_ex4.csv&quot;, data_path) %&gt;% read_csv
+
+df4 &lt;- tibble(wave = 1:7) %&gt;%
+  mutate(data = map(wave, read_fun)) %&gt;%
+  unnest(data) %&gt;%
+  unite(tmp, item, wave, sep = &quot;.&quot;) %&gt;%
+  spread(tmp, value) %&gt;%
+  gather(key = item, value = value, -SID, -contains(&quot;Dem&quot;)) %&gt;%
+  separate(item, c(&quot;item&quot;, &quot;wave&quot;), sep = &quot;[.]&quot;) %&gt;%
+  spread(item, value) </code></pre>
+</div>
+<div id="multiple-waves-multiple-files-for-same-variables-example-5" class="section level2">
+<h2>Multiple Waves, Multiple Files for Same Variables (Example 5)</h2>
+<p>In other cases, we may have multiple types of files for different waves. Across waves, those variables may be the same or different, but we’ll focus on the case when we largely want the same variables.</p>
+</div>
+</div>
+<div id="running-models" class="section level1">
+<h1>Running Models</h1>
+<p>Another really powerful feature of <code>purrr</code> is keeping your data, models, tables, plots, etc all conveniently indexed together. Often we need to do this for multiple DV’s or predictors, and you may end up with an environment that looks something like <code>E_fit1</code>, <code>A_fit1</code>, <code>E_fit2</code>, <code>A_fit2</code> and so on. There’s nothing wrong with this. But eventually you’ll want to pull out coefficients, plot results, etc., and it’s easy to make a copy and paste error or name different types of objects inconsistently, which can be difficult both for future you or someone else using your code.</p>
+<p>Before we can learn how to use <code>purrr</code> for this, we need to understand what a nested data frame is. If you’ve ever worked with a list in R, you are halfway there. Basically a nested data frame takes the normal data frame you are probably familiar with and adds some new features. It still has columns, rows, and cells, but what makes up those cells isn’t restrictred to numbers, strings, or logicals. Instead, you can put essentially anything you want: lists, models, data frames, plots, etc!</p>
+<p>If this sounds scary, it will hopefully become clearer if we use our read in data from above to run, table, and plot some basic longitudinal models of our data.</p>
+<div id="read-in-data" class="section level2">
+<h2>Read in Data</h2>
+<pre class="r"><code>codebook &lt;- sprintf(&quot;%s/ALDA/week_3_purrr/data/codebook_ex6.csv&quot;, data_path) %&gt;%
+  read_csv %&gt;%
+  mutate(old_name = str_to_lower(old_name))
+
+read_fun &lt;- function(Year){
+  old.names &lt;- (codebook %&gt;% filter(year == Year | year == 0))$old_name
+  new.names &lt;- (codebook %&gt;% filter(year == Year | year == 0))$new_name
+  set &lt;- (codebook %&gt;% filter(year == Year))$dataset[1]
+  sprintf(&quot;%s/ALDA/week_3_purrr/data/example_6/%s.csv&quot;, data_path, set) %&gt;%
+    read_csv %&gt;%
+    select(old.names) %&gt;%
+    setNames(new.names)
+}
+
+(df6 &lt;- tibble(year = 2005:2015) %&gt;%
+  mutate(data = map(year, read_fun)) %&gt;%
+  select(-year) %&gt;%
+  unnest(data) )</code></pre>
+<pre><code>## # A tibble: 256,663 x 151
+##    Procedural__SID Procedural__hou… `Big 5__C_thoro… `Big 5__E_commu…
+##              &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+##  1             901               94                6                4
+##  2            1202              124                7                6
+##  3            2301              230                7                6
+##  4            2304              230                5                7
+##  5            2302              230                6                5
+##  6            4601              469                6                6
+##  7            4701              477                6                6
+##  8            4901              493                5                7
+##  9            5201              523                7                5
+## 10            5202              523                6                5
+## # … with 256,653 more rows, and 147 more variables: `Big
+## #   5__A_coarse.2005` &lt;dbl&gt;, `Big 5__O_original.2005` &lt;dbl&gt;, `Big
+## #   5__N_worry.2005` &lt;dbl&gt;, `Big 5__A_forgive.2005` &lt;dbl&gt;, `Big
+## #   5__C_lazy.2005` &lt;dbl&gt;, `Big 5__E_sociable.2005` &lt;dbl&gt;, `Big
+## #   5__O_artistic.2005` &lt;dbl&gt;, `Big 5__N_nervous.2005` &lt;dbl&gt;, `Big
+## #   5__C_efficient.2005` &lt;dbl&gt;, `Big 5__E_reserved.2005` &lt;dbl&gt;, `Big
+## #   5__A_friendly.2005` &lt;dbl&gt;, `Big 5__O_imagin.2005` &lt;dbl&gt;, `Big
+## #   5__N_dealStress.2005` &lt;dbl&gt;, `Life Event__ChldBrth.2005` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2005` &lt;dbl&gt;, `Life Event__Divorce.2005` &lt;dbl&gt;, `Life
+## #   Event__DadDied.2005` &lt;dbl&gt;, `Life Event__Married.2005` &lt;dbl&gt;, `Life
+## #   Event__MomDied.2005` &lt;dbl&gt;, `Life Event__MoveIn.2005` &lt;dbl&gt;, `Life
+## #   Event__PartDied.2005` &lt;dbl&gt;, `Life Event__SepPart.2005` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2006` &lt;dbl&gt;, `Life Event__ChldMvOut.2006` &lt;dbl&gt;, `Life
+## #   Event__Divorce.2006` &lt;dbl&gt;, `Life Event__DadDied.2006` &lt;dbl&gt;, `Life
+## #   Event__Married.2006` &lt;dbl&gt;, `Life Event__MomDied.2006` &lt;dbl&gt;, `Life
+## #   Event__MoveIn.2006` &lt;dbl&gt;, `Life Event__PartDied.2006` &lt;dbl&gt;, `Life
+## #   Event__SepPart.2006` &lt;dbl&gt;, `Life Event__ChldBrth.2007` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2007` &lt;dbl&gt;, `Life Event__Divorce.2007` &lt;dbl&gt;, `Life
+## #   Event__DadDied.2007` &lt;dbl&gt;, `Life Event__Married.2007` &lt;dbl&gt;, `Life
+## #   Event__MomDied.2007` &lt;dbl&gt;, `Life Event__MoveIn.2007` &lt;dbl&gt;, `Life
+## #   Event__PartDied.2007` &lt;dbl&gt;, `Life Event__SepPart.2007` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2008` &lt;dbl&gt;, `Life Event__ChldMvOut.2008` &lt;dbl&gt;, `Life
+## #   Event__Divorce.2008` &lt;dbl&gt;, `Life Event__DadDied.2008` &lt;dbl&gt;, `Life
+## #   Event__Married.2008` &lt;dbl&gt;, `Life Event__MomDied.2008` &lt;dbl&gt;, `Life
+## #   Event__MoveIn.2008` &lt;dbl&gt;, `Life Event__PartDied.2008` &lt;dbl&gt;, `Life
+## #   Event__SepPart.2008` &lt;dbl&gt;, `Big 5__C_thorough.2009` &lt;dbl&gt;, `Big
+## #   5__E_communic.2009` &lt;dbl&gt;, `Big 5__A_coarse.2009` &lt;dbl&gt;, `Big
+## #   5__O_original.2009` &lt;dbl&gt;, `Big 5__N_worry.2009` &lt;dbl&gt;, `Big
+## #   5__A_forgive.2009` &lt;dbl&gt;, `Big 5__C_lazy.2009` &lt;dbl&gt;, `Big
+## #   5__E_sociable.2009` &lt;dbl&gt;, `Big 5__O_artistic.2009` &lt;dbl&gt;, `Big
+## #   5__N_nervous.2009` &lt;dbl&gt;, `Big 5__C_efficient.2009` &lt;dbl&gt;, `Big
+## #   5__E_reserved.2009` &lt;dbl&gt;, `Big 5__A_friendly.2009` &lt;dbl&gt;, `Big
+## #   5__O_imagin.2009` &lt;dbl&gt;, `Big 5__N_dealStress.2009` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2009` &lt;dbl&gt;, `Life Event__ChldMvOut.2009` &lt;dbl&gt;, `Life
+## #   Event__Divorce.2009` &lt;dbl&gt;, `Life Event__DadDied.2009` &lt;dbl&gt;, `Life
+## #   Event__Married.2009` &lt;dbl&gt;, `Life Event__MomDied.2009` &lt;dbl&gt;, `Life
+## #   Event__MoveIn.2009` &lt;dbl&gt;, `Life Event__PartDied.2009` &lt;dbl&gt;, `Life
+## #   Event__SepPart.2009` &lt;dbl&gt;, `Life Event__ChldBrth.2010` &lt;dbl&gt;, `Life
+## #   Event__ChldMvOut.2010` &lt;dbl&gt;, `Life Event__Divorce.2010` &lt;dbl&gt;, `Life
+## #   Event__DadDied.2010` &lt;dbl&gt;, `Life Event__Married.2010` &lt;dbl&gt;, `Life
+## #   Event__MomDied.2010` &lt;dbl&gt;, `Life Event__MoveIn.2010` &lt;dbl&gt;, `Life
+## #   Event__PartDied.2010` &lt;dbl&gt;, `Life Event__SepPart.2010` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2011` &lt;dbl&gt;, `Life Event__ChldMvOut.2011` &lt;dbl&gt;, `Life
+## #   Event__Divorce.2011` &lt;dbl&gt;, `Life Event__DadDied.2011` &lt;dbl&gt;, `Life
+## #   Event__NewPart.2011` &lt;dbl&gt;, `Life Event__Married.2011` &lt;dbl&gt;, `Life
+## #   Event__MomDied.2011` &lt;dbl&gt;, `Life Event__MoveIn.2011` &lt;dbl&gt;, `Life
+## #   Event__PartDied.2011` &lt;dbl&gt;, `Life Event__SepPart.2011` &lt;dbl&gt;, `Life
+## #   Event__ChldBrth.2012` &lt;dbl&gt;, `Life Event__ChldMvOut.2012` &lt;dbl&gt;, `Life
+## #   Event__Divorce.2012` &lt;dbl&gt;, `Life Event__DadDied.2012` &lt;dbl&gt;, `Life
+## #   Event__NewPart.2012` &lt;dbl&gt;, `Life Event__Married.2012` &lt;dbl&gt;, `Life
+## #   Event__MomDied.2012` &lt;dbl&gt;, `Life Event__MoveIn.2012` &lt;dbl&gt;, …</code></pre>
+</div>
+<div id="clean-data" class="section level2">
+<h2>Clean Data</h2>
+<p>Now the data are all loaded in and have been given informative variable names, but we still need to do some data cleaning for the personality data.</p>
+<p>We’ll start by selecting only the personality variables and reverse-scoring them. Then we’ll create composites. To do so, we’ll again use our codebook.</p>
+<pre class="r"><code># reverse code
+(df6_long &lt;- df6 %&gt;%
+  select(Procedural__SID, contains(&quot;Big 5&quot;)) %&gt;%
+  gather(key = item, value = value, -Procedural__SID, na.rm = T) %&gt;%
+  left_join(codebook %&gt;% select(item = new_name, reverse, mini, maxi)) %&gt;%
+  mutate(value = ifelse(reverse == 1, value, 
+                        reverse.code(-1, value, mini = mini, maxi = maxi))))</code></pre>
+<pre><code>## # A tibble: 544,830 x 6
+##    Procedural__SID item                   value reverse  mini  maxi
+##              &lt;dbl&gt; &lt;chr&gt;                  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1             901 Big 5__C_thorough.2005     6       1     1     8
+##  2            1202 Big 5__C_thorough.2005     7       1     1     8
+##  3            2301 Big 5__C_thorough.2005     7       1     1     8
+##  4            2304 Big 5__C_thorough.2005     5       1     1     8
+##  5            2302 Big 5__C_thorough.2005     6       1     1     8
+##  6            4601 Big 5__C_thorough.2005     6       1     1     8
+##  7            4701 Big 5__C_thorough.2005     6       1     1     8
+##  8            4901 Big 5__C_thorough.2005     5       1     1     8
+##  9            5201 Big 5__C_thorough.2005     7       1     1     8
+## 10            5202 Big 5__C_thorough.2005     6       1     1     8
+## # … with 544,820 more rows</code></pre>
+<pre class="r"><code># create compoistes  
+(df6_long &lt;- df6_long %&gt;%
+  mutate(item = str_remove(item, &quot;Big 5__&quot;)) %&gt;%
+  separate(item, c(&quot;trait&quot;, &quot;item&quot;), sep = &quot;_&quot;) %&gt;%
+  separate(item, c(&quot;item&quot;, &quot;year&quot;), sep = &quot;[.]&quot;) %&gt;%
+  group_by(Procedural__SID, trait, year) %&gt;%
+  summarize(value = mean(value, na.rm = T)) %&gt;%
+  ungroup())</code></pre>
+<pre><code>## # A tibble: 181,610 x 4
+##    Procedural__SID trait year  value
+##              &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+##  1             901 A     2005   5   
+##  2             901 A     2009   5.33
+##  3             901 A     2013   5   
+##  4             901 C     2005   5.33
+##  5             901 C     2009   3.33
+##  6             901 C     2013   6   
+##  7             901 E     2005   4   
+##  8             901 E     2009   4   
+##  9             901 E     2013   4   
+## 10             901 N     2005   4   
+## # … with 181,600 more rows</code></pre>
+</div>
+<div id="descriptives" class="section level2">
+<h2>Descriptives</h2>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-2">Table 1: </span>Descriptive Statistics of Study Variables
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hidden" colspan="1">
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Extraversion
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Agreeablness
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Conscientiousness
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Neuroticism
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Openness
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Year
+</th>
+<th style="text-align:right;">
+M
+</th>
+<th style="text-align:right;">
+SD
+</th>
+<th style="text-align:right;">
+N
+</th>
+<th style="text-align:right;">
+M
+</th>
+<th style="text-align:right;">
+SD
+</th>
+<th style="text-align:right;">
+N
+</th>
+<th style="text-align:right;">
+M
+</th>
+<th style="text-align:right;">
+SD
+</th>
+<th style="text-align:right;">
+N
+</th>
+<th style="text-align:right;">
+M
+</th>
+<th style="text-align:right;">
+SD
+</th>
+<th style="text-align:right;">
+N
+</th>
+<th style="text-align:right;">
+M
+</th>
+<th style="text-align:right;">
+SD
+</th>
+<th style="text-align:right;">
+N
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+2005
+</td>
+<td style="text-align:right;">
+5.14
+</td>
+<td style="text-align:right;">
+1.17
+</td>
+<td style="text-align:right;">
+10451
+</td>
+<td style="text-align:right;">
+5.78
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+10451
+</td>
+<td style="text-align:right;">
+6.21
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+10451
+</td>
+<td style="text-align:right;">
+4.72
+</td>
+<td style="text-align:right;">
+1.23
+</td>
+<td style="text-align:right;">
+10451
+</td>
+<td style="text-align:right;">
+4.46
+</td>
+<td style="text-align:right;">
+1.28
+</td>
+<td style="text-align:right;">
+10451
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2009
+</td>
+<td style="text-align:right;">
+5.09
+</td>
+<td style="text-align:right;">
+1.17
+</td>
+<td style="text-align:right;">
+10327
+</td>
+<td style="text-align:right;">
+5.66
+</td>
+<td style="text-align:right;">
+1.01
+</td>
+<td style="text-align:right;">
+10327
+</td>
+<td style="text-align:right;">
+6.13
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+10327
+</td>
+<td style="text-align:right;">
+4.85
+</td>
+<td style="text-align:right;">
+1.23
+</td>
+<td style="text-align:right;">
+10327
+</td>
+<td style="text-align:right;">
+4.36
+</td>
+<td style="text-align:right;">
+1.28
+</td>
+<td style="text-align:right;">
+10327
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2013
+</td>
+<td style="text-align:right;">
+3.71
+</td>
+<td style="text-align:right;">
+2.08
+</td>
+<td style="text-align:right;">
+15544
+</td>
+<td style="text-align:right;">
+4.04
+</td>
+<td style="text-align:right;">
+2.27
+</td>
+<td style="text-align:right;">
+15544
+</td>
+<td style="text-align:right;">
+4.30
+</td>
+<td style="text-align:right;">
+2.46
+</td>
+<td style="text-align:right;">
+15544
+</td>
+<td style="text-align:right;">
+5.98
+</td>
+<td style="text-align:right;">
+1.64
+</td>
+<td style="text-align:right;">
+15544
+</td>
+<td style="text-align:right;">
+0.88
+</td>
+<td style="text-align:right;">
+4.75
+</td>
+<td style="text-align:right;">
+15544
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="coding-time" class="section level2">
+<h2>Coding Time</h2>
+<p>It’s important to remember how we code time. There are several ways we can do it. For now, for simplicity, we will create a new wave variable where 2005 = 0, 2009 = 1, and 2013 = 3, but we could make a lot of other choices depending on our goals.</p>
+<pre class="r"><code>(df6_long &lt;- df6_long %&gt;%
+  mutate(wave = as.numeric(mapvalues(year, from = seq(2005, 2013, 4), to = seq(0, 2, 1)))))</code></pre>
+<pre><code>## # A tibble: 181,610 x 5
+##    Procedural__SID trait year  value  wave
+##              &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1             901 A     2005   5        0
+##  2             901 A     2009   5.33     1
+##  3             901 A     2013   5        2
+##  4             901 C     2005   5.33     0
+##  5             901 C     2009   3.33     1
+##  6             901 C     2013   6        2
+##  7             901 E     2005   4        0
+##  8             901 E     2009   4        1
+##  9             901 E     2013   4        2
+## 10             901 N     2005   4        0
+## # … with 181,600 more rows</code></pre>
+<p>It’s going to get mad later when I run growth models if I keep people with only one wave, so we’re going to remove them now.</p>
+<pre class="r"><code>(df6_long &lt;- df6_long %&gt;%
+  group_by(trait, Procedural__SID) %&gt;%
+  filter(n() &gt; 1) %&gt;%
+  ungroup())</code></pre>
+<pre><code>## # A tibble: 110,935 x 5
+##    Procedural__SID trait year  value  wave
+##              &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1             901 A     2005   5        0
+##  2             901 A     2009   5.33     1
+##  3             901 A     2013   5        2
+##  4             901 C     2005   5.33     0
+##  5             901 C     2009   3.33     1
+##  6             901 C     2013   6        2
+##  7             901 E     2005   4        0
+##  8             901 E     2009   4        1
+##  9             901 E     2013   4        2
+## 10             901 N     2005   4        0
+## # … with 110,925 more rows</code></pre>
+</div>
+<div id="fit-unconditional-models" class="section level2">
+<h2>Fit Unconditional Models</h2>
+<p>Now, here we could run separate unconditional growth models for each of the Big 5 like this:</p>
+<pre class="r"><code>fit0_E &lt;- lmer(value ~ 1 + (1 | Procedural__SID), data = df6_long %&gt;% filter(trait == &quot;E&quot;))
+summary(fit0_E)</code></pre>
+<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
+## Formula: value ~ 1 + (1 | Procedural__SID)
+##    Data: df6_long %&gt;% filter(trait == &quot;E&quot;)
+## 
+## REML criterion at convergence: 62339.1
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -5.8959 -0.4997  0.0144  0.5498  3.3758 
+## 
+## Random effects:
+##  Groups          Name        Variance Std.Dev.
+##  Procedural__SID (Intercept) 0.7865   0.8868  
+##  Residual                    0.5308   0.7286  
+## Number of obs: 22187, groups:  Procedural__SID, 8592
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)  5.11572    0.01078   474.6</code></pre>
+<p>But this would be tedious and prone to error. So instead we will use list columns to do it. We’ll start by using the <code>group_by()</code> and <code>nest()</code> functions from <code>dplyr</code> and <code>tidyr</code> to put the data for each trait into a cell of our data frame:</p>
+<pre class="r"><code>(df6_nested &lt;- df6_long %&gt;%
+  group_by(trait) %&gt;%
+  nest())</code></pre>
+<pre><code>## # A tibble: 5 x 2
+## # Groups:   trait [5]
+##   trait           data
+##   &lt;chr&gt; &lt;list&lt;df[,4]&gt;&gt;
+## 1 A       [22,187 × 4]
+## 2 C       [22,187 × 4]
+## 3 E       [22,187 × 4]
+## 4 N       [22,187 × 4]
+## 5 O       [22,187 × 4]</code></pre>
+<p>Now, our data frame is 5 x 2, with the elements in the second column each containing the data frame that corresponds to that trait. This makes it really easy to run our models using the <code>map()</code> family of unctions from <code>purrr</code>.</p>
+<p>Below, we will add a new column to our data frame that will contain the unconditional model for each trait.</p>
+<pre class="r"><code>(df6_nested &lt;- df6_nested %&gt;%
+  mutate(fit0 = map(data, ~lmer(value ~ 1 + (1 | Procedural__SID), data = .))))</code></pre>
+<pre><code>## # A tibble: 5 x 3
+## # Groups:   trait [5]
+##   trait           data fit0     
+##   &lt;chr&gt; &lt;list&lt;df[,4]&gt;&gt; &lt;list&gt;   
+## 1 A       [22,187 × 4] &lt;lmerMod&gt;
+## 2 C       [22,187 × 4] &lt;lmerMod&gt;
+## 3 E       [22,187 × 4] &lt;lmerMod&gt;
+## 4 N       [22,187 × 4] &lt;lmerMod&gt;
+## 5 O       [22,187 × 4] &lt;lmerMod&gt;</code></pre>
+<p>Now we can see we have a new list column in our data frame called fit0 that contains an S4 class lmerMod, which simply means your growth model. To understand model, I personally find it easiest to visualize it. What this model is telling us is the mean across all observations as well as the between-person variability in that estimate. I find it easiest to plot this. We’ll go over the code for it next week.</p>
+<p><img src="/Workshops/week_3_purrr_files/figure-html/unc%20plot%20ex6-1.png" width="672" /></p>
+</div>
+<div id="icc" class="section level2">
+<h2>ICC</h2>
+<p>If you remember, what we’re often intersted in with the unconditional model is the ICC (relative between v. within variance), so let’s extract that from the models using the <code>ICC()</code> function from the <code>reghelper</code> package. In this case, we will use a version of <code>map()</code> called <code>map_dbl</code> because we want our result to be a regular numeric column, not a list column.</p>
+<pre class="r"><code>(df6_nested &lt;- df6_nested %&gt;%
+  mutate(ICC = map_dbl(fit0, reghelper::ICC)))</code></pre>
+<pre><code>## # A tibble: 5 x 4
+## # Groups:   trait [5]
+##   trait           data fit0        ICC
+##   &lt;chr&gt; &lt;list&lt;df[,4]&gt;&gt; &lt;list&gt;    &lt;dbl&gt;
+## 1 A       [22,187 × 4] &lt;lmerMod&gt; 0.484
+## 2 C       [22,187 × 4] &lt;lmerMod&gt; 0.490
+## 3 E       [22,187 × 4] &lt;lmerMod&gt; 0.597
+## 4 N       [22,187 × 4] &lt;lmerMod&gt; 0.543
+## 5 O       [22,187 × 4] &lt;lmerMod&gt; 0.545</code></pre>
+</div>
+<div id="fit-growth-models" class="section level2">
+<h2>Fit Growth Models</h2>
+<p>What we’re starting to see is that we still have a tidy working environment, but we’re still holding onto a lot of info that we can access with relative ease.</p>
+<p>But before we get to things like pulling info from our models, let’s go ahead and run our basic growth model with and without a random slope.</p>
+<pre class="r"><code>(df6_nested &lt;- df6_nested %&gt;%
+  mutate(fit1 = map(data, ~lmer(value ~ 1 + wave + (1 | Procedural__SID), data = .)),
+         fit2 = map(data, ~lmer(value ~ 1 + wave + (wave | Procedural__SID), data = .))))</code></pre>
+<pre><code>## # A tibble: 5 x 6
+## # Groups:   trait [5]
+##   trait           data fit0        ICC fit1      fit2     
+##   &lt;chr&gt; &lt;list&lt;df[,4]&gt;&gt; &lt;list&gt;    &lt;dbl&gt; &lt;list&gt;    &lt;list&gt;   
+## 1 A       [22,187 × 4] &lt;lmerMod&gt; 0.484 &lt;lmerMod&gt; &lt;lmerMod&gt;
+## 2 C       [22,187 × 4] &lt;lmerMod&gt; 0.490 &lt;lmerMod&gt; &lt;lmerMod&gt;
+## 3 E       [22,187 × 4] &lt;lmerMod&gt; 0.597 &lt;lmerMod&gt; &lt;lmerMod&gt;
+## 4 N       [22,187 × 4] &lt;lmerMod&gt; 0.543 &lt;lmerMod&gt; &lt;lmerMod&gt;
+## 5 O       [22,187 × 4] &lt;lmerMod&gt; 0.545 &lt;lmerMod&gt; &lt;lmerMod&gt;</code></pre>
+<p>Our data frame has expanded to have two more columns.</p>
+<p>Let’s visualize the difference between these two models.</p>
+<pre class="r"><code>pred_fun &lt;- function(m){
+  crossing(wave = seq(0, 2, .5), 
+           Procedural__SID = m@frame$Procedural__SID) %&gt;%
+    mutate(pred = predict(m, newdata = .))
+}
+
+subs &lt;- sample(df6_nested$fit1[[1]]@frame$Procedural__SID, 50)
+df6_nested %&gt;%
+  select(trait, fit1, fit2) %&gt;%
+  gather(model, fit, fit1, fit2) %&gt;%
+  mutate(model = mapvalues(model, c(&quot;fit1&quot;, &quot;fit2&quot;), c(&quot;Random Intercept&quot;, &quot;Random Intercept + Slope&quot;)),
+         pred = map(fit, pred_fun)) %&gt;%
+  select(trait, model, pred) %&gt;%
+  unnest(pred) %&gt;%
+  mutate(Procedural__SID = as.character(Procedural__SID)) %&gt;%
+  filter(Procedural__SID %in% subs) %&gt;%
+  ggplot(aes(x = wave, y = pred, color = Procedural__SID, group = Procedural__SID)) + 
+    geom_line(alpha = .5, size = .25) +
+    facet_grid(model ~ trait) +
+    theme_classic() +
+    theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="/Workshops/week_3_purrr_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="model-comparisons" class="section level2">
+<h2>Model Comparisons</h2>
+<p>To decide if we should have a random slope, we typically do nested model comparisons. We can do that here, too. Here, we need to use both fit1 and fit2, so we’ll use the <code>map2()</code> function from <code>purrr</code> to take 2 inputs and use the <code>anova()</code> function to compare them.</p>
+<pre class="r"><code>(df6_nested &lt;- df6_nested %&gt;%
+  mutate(anova1 = map2(fit1, fit2, anova)))</code></pre>
+<pre><code>## # A tibble: 5 x 7
+## # Groups:   trait [5]
+##   trait           data fit0        ICC fit1      fit2      anova1          
+##   &lt;chr&gt; &lt;list&lt;df[,4]&gt;&gt; &lt;list&gt;    &lt;dbl&gt; &lt;list&gt;    &lt;list&gt;    &lt;list&gt;          
+## 1 A       [22,187 × 4] &lt;lmerMod&gt; 0.484 &lt;lmerMod&gt; &lt;lmerMod&gt; &lt;df[,8] [2 × 8]&gt;
+## 2 C       [22,187 × 4] &lt;lmerMod&gt; 0.490 &lt;lmerMod&gt; &lt;lmerMod&gt; &lt;df[,8] [2 × 8]&gt;
+## 3 E       [22,187 × 4] &lt;lmerMod&gt; 0.597 &lt;lmerMod&gt; &lt;lmerMod&gt; &lt;df[,8] [2 × 8]&gt;
+## 4 N       [22,187 × 4] &lt;lmerMod&gt; 0.543 &lt;lmerMod&gt; &lt;lmerMod&gt; &lt;df[,8] [2 × 8]&gt;
+## 5 O       [22,187 × 4] &lt;lmerMod&gt; 0.545 &lt;lmerMod&gt; &lt;lmerMod&gt; &lt;df[,8] [2 × 8]&gt;</code></pre>
+<p>To see the results, we can do the following:</p>
+<pre class="r"><code>df6_nested$anova1</code></pre>
+<pre><code>## [[1]]
+## Data: .
+## Models:
+## .x[[1L]]: value ~ 1 + wave + (1 | Procedural__SID)
+## .y[[1L]]: value ~ 1 + wave + (wave | Procedural__SID)
+##          Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&gt;Chisq)
+## .x[[1L]]  4 58533 58565 -29263    58525                         
+## .y[[1L]]  6 58535 58583 -29261    58523 2.8338      2     0.2425
+## 
+## [[2]]
+## Data: .
+## Models:
+## .x[[1L]]: value ~ 1 + wave + (1 | Procedural__SID)
+## .y[[1L]]: value ~ 1 + wave + (wave | Procedural__SID)
+##          Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&gt;Chisq)   
+## .x[[1L]]  4 57394 57426 -28693    57386                            
+## .y[[1L]]  6 57389 57437 -28688    57377 9.3688      2   0.009238 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## [[3]]
+## Data: .
+## Models:
+## .x[[1L]]: value ~ 1 + wave + (1 | Procedural__SID)
+## .y[[1L]]: value ~ 1 + wave + (wave | Procedural__SID)
+##          Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&gt;Chisq)   
+## .x[[1L]]  4 62305 62337 -31149    62297                            
+## .y[[1L]]  6 62298 62346 -31143    62286 11.531      2   0.003134 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## [[4]]
+## Data: .
+## Models:
+## .x[[1L]]: value ~ 1 + wave + (1 | Procedural__SID)
+## .y[[1L]]: value ~ 1 + wave + (wave | Procedural__SID)
+##          Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&gt;Chisq)    
+## .x[[1L]]  4 66171 66203 -33081    66163                             
+## .y[[1L]]  6 66146 66194 -33067    66134 28.585      2  6.207e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## [[5]]
+## Data: .
+## Models:
+## .x[[1L]]: value ~ 1 + wave + (1 | Procedural__SID)
+## .y[[1L]]: value ~ 1 + wave + (wave | Procedural__SID)
+##          Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&gt;Chisq)    
+## .x[[1L]]  4 67780 67812 -33886    67772                             
+## .y[[1L]]  6 67766 67814 -33877    67754 18.507      2  9.579e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="tabling-values" class="section level2">
+<h2>Tabling Values</h2>
+<p>Looks like we have enough slope variance for all traits but Agreeableness to proceed with the random slope models. We’re going to proceed with the random slope models for all traits for consistency.</p>
+<p>The next thing we want to do is actually examine the model coefficients. To do that, I prefer to use the <code>tidy()</code> function from the <code>broom.mixed</code> package.</p>
+<pre class="r"><code>(df6_nested &lt;- df6_nested %&gt;%
+  mutate(tidy = map(fit2, ~tidy(., conf.int = T))))</code></pre>
+<pre><code>## # A tibble: 5 x 8
+## # Groups:   trait [5]
+##   trait           data fit0      ICC fit1    fit2    anova1      tidy      
+##   &lt;chr&gt; &lt;list&lt;df[,4]&gt;&gt; &lt;list&gt;  &lt;dbl&gt; &lt;list&gt;  &lt;list&gt;  &lt;list&gt;      &lt;list&gt;    
+## 1 A       [22,187 × 4] &lt;lmerM… 0.484 &lt;lmerM… &lt;lmerM… &lt;df[,8] [2… &lt;tibble […
+## 2 C       [22,187 × 4] &lt;lmerM… 0.490 &lt;lmerM… &lt;lmerM… &lt;df[,8] [2… &lt;tibble […
+## 3 E       [22,187 × 4] &lt;lmerM… 0.597 &lt;lmerM… &lt;lmerM… &lt;df[,8] [2… &lt;tibble […
+## 4 N       [22,187 × 4] &lt;lmerM… 0.543 &lt;lmerM… &lt;lmerM… &lt;df[,8] [2… &lt;tibble […
+## 5 O       [22,187 × 4] &lt;lmerM… 0.545 &lt;lmerM… &lt;lmerM… &lt;df[,8] [2… &lt;tibble […</code></pre>
+<p>Now we have a new column called tidy that contains a data frame. But we want to be able to see those values. This is where <code>purrr</code> will really shine once again, especially when coupled with the <code>unnest()</code> from <code>tidyr</code>. Watch:</p>
+<pre class="r"><code>df6_nested %&gt;%
+  select(trait, tidy) %&gt;%
+  unnest(tidy)</code></pre>
+<pre><code>## # A tibble: 30 x 9
+## # Groups:   trait [5]
+##    trait effect group term  estimate std.error statistic conf.low conf.high
+##    &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 A     fixed  &lt;NA&gt;  (Int…   5.77     0.0107     539.     5.75      5.79  
+##  2 A     fixed  &lt;NA&gt;  wave   -0.0576   0.00646     -8.91  -0.0702   -0.0449
+##  3 A     ran_p… Proc… sd__…   0.701   NA           NA     NA        NA     
+##  4 A     ran_p… Proc… sd__…   0.107   NA           NA     NA        NA     
+##  5 A     ran_p… Proc… cor_…  -0.121   NA           NA     NA        NA     
+##  6 A     ran_p… Resi… sd__…   0.707   NA           NA     NA        NA     
+##  7 C     fixed  &lt;NA&gt;  (Int…   6.22     0.0105     592.     6.20      6.24  
+##  8 C     fixed  &lt;NA&gt;  wave   -0.0461   0.00633     -7.29  -0.0586   -0.0337
+##  9 C     ran_p… Proc… sd__…   0.699   NA           NA     NA        NA     
+## 10 C     ran_p… Proc… sd__…   0.143   NA           NA     NA        NA     
+## # … with 20 more rows</code></pre>
+<p>This is fine, but kind of ugly (I can’t publish this table, and it should be clear right now that I do not like copying and pasting).</p>
+<p>The code below is going to clean this up a bit. See if you can figure out what’s going on:</p>
+<pre class="r"><code>terms &lt;- tibble(old = c(&quot;(Intercept)&quot;, &quot;wave&quot;, &quot;sd__(Intercept)&quot;, &quot;sd__wave&quot;,
+                        &quot;cor__(Intercept).wave&quot;, &quot;sd__Observation&quot;),
+                new = c(&quot;Intercept&quot;, &quot;Slope&quot;, &quot;SD Intercept&quot;, &quot;SD Slope&quot;, &quot;Intercept-Slope Correlation&quot;, &quot;SD Residual&quot;))
+
+(tab &lt;- df6_nested %&gt;%
+  select(trait, tidy) %&gt;%
+  unnest(tidy) %&gt;% 
+  mutate(term = mapvalues(term, from = terms$old, to = terms$new)) %&gt;%
+  select(trait, effect, term, estimate, conf.low, conf.high))</code></pre>
+<pre><code>## # A tibble: 30 x 6
+## # Groups:   trait [5]
+##    trait effect   term                        estimate conf.low conf.high
+##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;                          &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 A     fixed    Intercept                     5.77     5.75      5.79  
+##  2 A     fixed    Slope                        -0.0576  -0.0702   -0.0449
+##  3 A     ran_pars SD Intercept                  0.701   NA        NA     
+##  4 A     ran_pars SD Slope                      0.107   NA        NA     
+##  5 A     ran_pars Intercept-Slope Correlation  -0.121   NA        NA     
+##  6 A     ran_pars SD Residual                   0.707   NA        NA     
+##  7 C     fixed    Intercept                     6.22     6.20      6.24  
+##  8 C     fixed    Slope                        -0.0461  -0.0586   -0.0337
+##  9 C     ran_pars SD Intercept                  0.699   NA        NA     
+## 10 C     ran_pars SD Slope                      0.143   NA        NA     
+## # … with 20 more rows</code></pre>
+<p>We extracted some elements, but we still aren’t quite ready for publication. Let’s do some reshaping so that we have different rows for terms and different columns for traits.</p>
+<pre class="r"><code>levs &lt;- paste(rep(c(&quot;E&quot;, &quot;A&quot;, &quot;C&quot;, &quot;N&quot;, &quot;O&quot;), each = 2), rep(c(&quot;b&quot;, &quot;CI&quot;), 5), sep = &quot;.&quot;)
+(tab &lt;- tab %&gt;%
+  mutate(sig = ifelse(sign(conf.low) == sign(conf.high), &quot;sig&quot;, &quot;ns&quot;)) %&gt;%
+  mutate_at(vars(estimate:conf.high), ~sprintf(&quot;%.2f&quot;, .)) %&gt;%
+  mutate_at(vars(conf.low, conf.high), ~ifelse(. == &quot;NA&quot;, &quot;&quot;, .)) %&gt;%
+  mutate(CI = ifelse(effect == &quot;fixed&quot;, sprintf(&quot;[%s, %s]&quot;, conf.low, conf.high), &quot;&quot;)) %&gt;%
+  mutate_at(vars(estimate, CI), ~ifelse(is.na(sig), .,
+              ifelse(sig == &quot;sig&quot;, sprintf(&quot;&lt;strong&gt;%s&lt;/strong&gt;&quot;, .), .))) %&gt;%
+  select(trait:term, b = estimate, CI) %&gt;%
+  gather(key = est, value = value, b, CI) %&gt;%
+  unite(tmp, trait, est, sep = &quot;.&quot;) %&gt;%
+  mutate(tmp = factor(tmp, levels = levs)) %&gt;%
+  spread(tmp, value))</code></pre>
+<pre><code>## # A tibble: 6 x 12
+##   effect  term  E.b   E.CI  A.b   A.CI  C.b   C.CI  N.b   N.CI  O.b   O.CI 
+##   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 fixed   Inte… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str…
+## 2 fixed   Slope &lt;str… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str… &lt;str…
+## 3 ran_pa… Inte… -0.20 &quot;&quot;    -0.12 &quot;&quot;    -0.19 &quot;&quot;    -0.28 &quot;&quot;    -0.16 &quot;&quot;   
+## 4 ran_pa… SD I… 0.91  &quot;&quot;    0.70  &quot;&quot;    0.70  &quot;&quot;    0.94  &quot;&quot;    0.95  &quot;&quot;   
+## 5 ran_pa… SD R… 0.71  &quot;&quot;    0.71  &quot;&quot;    0.68  &quot;&quot;    0.79  &quot;&quot;    0.83  &quot;&quot;   
+## 6 ran_pa… SD S… 0.16  &quot;&quot;    0.11  &quot;&quot;    0.14  &quot;&quot;    0.22  &quot;&quot;    0.20  &quot;&quot;</code></pre>
+<p>Now we have it formatted, but let’s make it pretty using the <code>kable()</code> function from the <code>knitr</code> package and the <code>kableExtra</code> package.</p>
+<pre class="r"><code>tab %&gt;%
+  mutate(effect = mapvalues(effect, c(&quot;fixed&quot;, &quot;ran_pars&quot;), c(&quot;Fixed&quot;, &quot;Random&quot;))) %&gt;%
+  kable(., &quot;html&quot;, escape = F, booktabs = T, 
+        col.names = c(&quot;Effect&quot;, &quot;Term&quot;, rep(c(&quot;b&quot;, &quot;CI&quot;), times = 5)),
+        align = c(&quot;r&quot;, &quot;r&quot;, rep(&quot;c&quot;,10)),
+        caption = &quot;Growth Model Terms for the Big 5&quot;) %&gt;%
+  kable_styling(full_width = F) %&gt;%
+  collapse_rows(1, valign = &quot;top&quot;) %&gt;%
+  add_header_above(c(&quot; &quot; = 2, &quot;Extraversion&quot; = 2, &quot;Agreeablness&quot; = 2, 
+                     &quot;Conscientiousness&quot; = 2, &quot;Neuroticism&quot; = 2, &quot;Openness&quot; = 2))</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+(#tab:kable ex6)Growth Model Terms for the Big 5
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hidden" colspan="2">
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Extraversion
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Agreeablness
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Conscientiousness
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Neuroticism
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Openness
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:right;">
+Effect
+</th>
+<th style="text-align:right;">
+Term
+</th>
+<th style="text-align:center;">
+b
+</th>
+<th style="text-align:center;">
+CI
+</th>
+<th style="text-align:center;">
+b
+</th>
+<th style="text-align:center;">
+CI
+</th>
+<th style="text-align:center;">
+b
+</th>
+<th style="text-align:center;">
+CI
+</th>
+<th style="text-align:center;">
+b
+</th>
+<th style="text-align:center;">
+CI
+</th>
+<th style="text-align:center;">
+b
+</th>
+<th style="text-align:center;">
+CI
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;vertical-align: top !important;" rowspan="2">
+Fixed
+</td>
+<td style="text-align:right;">
+Intercept
+</td>
+<td style="text-align:center;">
+<strong>5.15</strong>
+</td>
+<td style="text-align:center;">
+<strong>[5.13, 5.18]</strong>
+</td>
+<td style="text-align:center;">
+<strong>5.77</strong>
+</td>
+<td style="text-align:center;">
+<strong>[5.75, 5.79]</strong>
+</td>
+<td style="text-align:center;">
+<strong>6.22</strong>
+</td>
+<td style="text-align:center;">
+<strong>[6.20, 6.24]</strong>
+</td>
+<td style="text-align:center;">
+<strong>4.74</strong>
+</td>
+<td style="text-align:center;">
+<strong>[4.72, 4.77]</strong>
+</td>
+<td style="text-align:center;">
+<strong>4.46</strong>
+</td>
+<td style="text-align:center;">
+<strong>[4.44, 4.49]</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Slope
+</td>
+<td style="text-align:center;">
+<strong>-0.04</strong>
+</td>
+<td style="text-align:center;">
+<strong>[-0.05, -0.03]</strong>
+</td>
+<td style="text-align:center;">
+<strong>-0.06</strong>
+</td>
+<td style="text-align:center;">
+<strong>[-0.07, -0.04]</strong>
+</td>
+<td style="text-align:center;">
+<strong>-0.05</strong>
+</td>
+<td style="text-align:center;">
+<strong>[-0.06, -0.03]</strong>
+</td>
+<td style="text-align:center;">
+<strong>0.08</strong>
+</td>
+<td style="text-align:center;">
+<strong>[0.07, 0.10]</strong>
+</td>
+<td style="text-align:center;">
+<strong>-0.04</strong>
+</td>
+<td style="text-align:center;">
+<strong>[-0.06, -0.03]</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;vertical-align: top !important;" rowspan="4">
+Random
+</td>
+<td style="text-align:right;">
+Intercept-Slope Correlation
+</td>
+<td style="text-align:center;">
+-0.20
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.12
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.19
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.28
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.16
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+SD Intercept
+</td>
+<td style="text-align:center;">
+0.91
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.70
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.70
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.94
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.95
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+SD Residual
+</td>
+<td style="text-align:center;">
+0.71
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.71
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.68
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.79
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.83
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+SD Slope
+</td>
+<td style="text-align:center;">
+0.16
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.11
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.14
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.22
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.20
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+    
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+  
+  
+
+
+
+
+
+
+
+      
+      
+    
+
+    
+    <div class="article-widget">
+      
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/workshops/workshop-4/" rel="next">Workshop #4</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/workshops/workshop-2/" rel="prev">Workshop #2</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+    
+    <script src="/js/mathjax-config.js"></script>
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.min.js" integrity="sha256-0w92bcB21IY5+rGI84MGj52jNfHNbXVeQLrZ0CGdjNY=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+      
+
+      
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML-full" integrity="sha256-GhM+5JHb6QUzOQPXSJLEWP7R73CbkisjzK5Eyij4U9w=" crossorigin="anonymous" async></script>
+      
+    
+
+    
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/index.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'results': "results found",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.16bbb3750feb7244c9bc409a5a4fe678.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+  <p class="powered-by">
+    
+      <a href="/privacy/">Privacy Policy</a>
+    
+    
+       &middot; 
+      <a href="/terms/">Terms</a>
+        
+  </p>
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

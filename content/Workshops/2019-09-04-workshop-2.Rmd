@@ -6,7 +6,6 @@ summary: "tidyr and lmer"
 slug: workshop-2
 categories: []
 tags: []
-lastmod: '2019-09-04T12:00:19-05:00'
 featured: no
 image:
   caption: ''

@@ -6,7 +6,6 @@ summary: "tidyr and lmer"
 slug: workshop-2
 categories: []
 tags: []
-lastmod: '2019-09-04T12:00:19-05:00'
 featured: no
 image:
   caption: ''
@@ -826,17 +825,17 @@ head(random_params)</code></pre>
 <pre><code>## Working directory is /Users/jackson/Box/5165 Applied Longitudinal Data Analysis/ALDA/content/Workshops</code></pre>
 <pre class="r"><code>FEsim(mod.2)</code></pre>
 <pre><code>##          term         mean       median          sd
-## 1 (Intercept) 0.1044275974 0.1042850907 0.005457383
-## 2        year 0.0004525177 0.0005027204 0.001772442</code></pre>
+## 1 (Intercept) 0.1049025608 0.1051183677 0.005295477
+## 2        year 0.0007514429 0.0008749235 0.002054281</code></pre>
 <pre class="r"><code>re.sim &lt;- REsim(mod.2)
 head(re.sim)</code></pre>
 <pre><code>##   groupFctr groupID        term         mean       median         sd
-## 1        ID       6 (Intercept) -0.057295077 -0.056703757 0.01673668
-## 2        ID      29 (Intercept) -0.007118853 -0.006761198 0.02127223
-## 3        ID      34 (Intercept) -0.009140396 -0.011494305 0.02064953
-## 4        ID      36 (Intercept) -0.006757163 -0.006690657 0.02246798
-## 5        ID      37 (Intercept) -0.010541813 -0.011421794 0.01927731
-## 6        ID      48 (Intercept)  0.037802717  0.037069177 0.01862808</code></pre>
+## 1        ID       6 (Intercept) -0.054039874 -0.054006147 0.01849033
+## 2        ID      29 (Intercept) -0.005934701 -0.004010852 0.02089182
+## 3        ID      34 (Intercept) -0.006448982 -0.007406987 0.01989969
+## 4        ID      36 (Intercept) -0.006238323 -0.006724604 0.02380377
+## 5        ID      37 (Intercept) -0.008978693 -0.008864176 0.02005051
+## 6        ID      48 (Intercept)  0.038832930  0.037810554 0.01781832</code></pre>
 <p>This can be used to create CIs for each individual random effect (and fixed effect). What is the confidence interval around person 6’s intercept estimate compared to person 2000 who has 25 repeated measurements?</p>
 <div id="caterpillar-plots" class="section level3">
 <h3>Caterpillar plots</h3>
@@ -928,13 +927,13 @@ then:
 
 PI &lt;- predictInterval(merMod = mod.2, newdata = example, level = 0.9, n.sims = 100, stat = &quot;median&quot;, include.resid.var = TRUE)
 head(PI)</code></pre>
-<pre><code>##          fit        upr          lwr
-## 1 0.05212247 0.12016506 -0.003495031
-## 2 0.04395705 0.10841778 -0.001844454
-## 3 0.04556779 0.09733971 -0.012021541
-## 4 0.08374825 0.15930450  0.042491501
-## 5 0.09235429 0.16304766  0.023800414
-## 6 0.11114066 0.16009238  0.043252164</code></pre>
+<pre><code>##          fit       upr         lwr
+## 1 0.05637403 0.1097137 -0.01587163
+## 2 0.04308280 0.1112285 -0.01217230
+## 3 0.02906342 0.1003347 -0.02107285
+## 4 0.08963131 0.1538768  0.02283071
+## 5 0.09504809 0.1510902  0.03936437
+## 6 0.10191796 0.1657385  0.02358774</code></pre>
 <p>Nice for bringing in confidence bands around your prediction (And we might use this later)</p>
 <p>Broom offers the fitted (predicted) values already if you just want to plot your trajectory. But note that these are not typical prediction intervals (what happens if you get a new participant with a certain value of X). The bands fit in ggplot are for predicted <span class="math inline">\(\mu\)</span>|X</p>
 <p>Broom offers the fitted (predicted) values already if you just want to plot your trajectory. But note that these are not typical prediction intervals (what happens if you get a new participant with a certain value of X). The bands fit in ggplot are for predicted <span class="math inline">\(\mu\)</span>|X</p>
