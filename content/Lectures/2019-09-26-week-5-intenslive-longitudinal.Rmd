@@ -1,0 +1,126 @@
+---
+title: 'week 5 intenslive longitudinal'
+author: 'Josh Jackson'
+date: '2019-09-26'
+slug: week-5-intenslive-longitudinal
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2019-09-26T14:59:01-05:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+# Intensive Longitudinal Designs
+
+Often we are not interested in looking at trajectories across time. Instead we are interested in using time as a means to look at fluctuations in our DV. Fluctuations are especially helpful to understand within person processes versus between person processes. 
+
+Typically, the focus of these sorts of analyses are with level 1 (time varying) covariates ie variables you have assessed more than once. The questions that can be answered with this design are many, but some examples: Are there associations between variation in X and variation in Y; is X associated with greater levels of Y; does X relate to later levels of Y; Does X relate to later levels of Y after accounting for concurent levels of X. Notice how all of these have the flavor of standard regression interpretations rather than the models we have been working with. The reason is that that intensive longitudinal designs are less likely to focus on time as a meaningful metric. Instead the focus on accounting for time, or the processes that unfold across time, not time per se.  
+
+# Within versus between person processes
+
+Get comfortable with playing around between these two levels. Does doing more homework lead to better grades? Can ask this at a between person and a within peson level. Between: do people who on average study more tend to get higher grades? Within: When I study more do I get a higher grade? The answers are not necessarily the same. 
+
+
+```{r}
+library(tidyverse)
+simp<- tribble(
+  ~ID, ~group,  ~test.score, ~study,
+1,1,5,1,
+2,1,7,3,
+3,2,4,1,
+4,2,6,4,
+5,3,3,3,
+6,3,5,5,
+7,4,2,4,
+8,4,4,6,
+9,5,1,5,
+10,5,3,7)
+
+ggplot(simp, aes(x=study, y=test.score, group = group)) +
+    geom_point() +   
+    geom_smooth(method=lm,  
+                se=FALSE) 
+```
+
+
+Also the relationship between a within person association and a between person association are likely correlated with one another. Someone who studies a lot on average may be more or less likely to study for a particular test. 
+
+Take another example: affect. Those who feel happy have more friends. How would you answer this? Well it is actually two questions. First, a between person one where those that are happier in general tend to have more friends. Second, if I go and get more friends do I become happier? These sorts of questions are useful to ask when, for example, you are thinking about interventions. 
+
+
+# Accounting for time
+
+Usually time is not an important factor for studies that last for weeks. What happens to the time variable? Two options: 
+
+1. Ignore it. 
+
+2. Use it to control, but mostly disregard. 
+ 
+ 
+Level 1: 
+
+$$ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}(Exercise_{ij}-\overline{Exercise_{j}}) + \varepsilon_{ij} $$
+
+
+
+
+Level 2: 
+$$ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}$$ 
+
+
+$$ {\beta}_{1j} = \gamma_{10} + \gamma_{11}\overline{Exercise_{j}} + U_{1j} $$  
+
+$$ {\beta}_{2j} = \gamma_{20}  $$ 
+ 
+ 
+# The importance of centering.  
+
+$$ {Health}_{ij} =  [\gamma_{00} +   \gamma_{10}Time_{ij}   + \gamma_{20}(Exercise_{ij}-\overline{Exercise_{j}}) + \gamma_{30}Mood_{ij} +\gamma_{40}(Mood*(Exercise_{ij}-\overline{Exercise_{j}}))_{ij} ] + [ U_{0j}  + U_{1j}Time_{ij}+ \varepsilon_{ij}] $$
+ 
+ What happens if we want to add a level 2 predictor? 
+ 
+ $$ {Health}_{ij} =  [\gamma_{00} +   \gamma_{10}Time_{ij}   + \gamma_{20}(Exercise_{ij}-\overline{Exercise_{j}}) + \gamma_{30}Mood_{ij} +\gamma_{31}(Mood*\overline{Exercise_{j}})_{j}  +\gamma_{40}(Mood*(Exercise_{ij}-\overline{Exercise_{j}}))_{ij} ] + [ U_{0j}  + U_{1j}Time_{ij}+ \varepsilon_{ij}] $$
+ 
+# Lagged associations
+
+What if I want to predict something in the future? Such that my excercise today is associated with future health gains. 
+
+Level 1
+$$ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}(Exercise_{(i-t)j}-\overline{Exercise_{j}}) + \varepsilon_{ij} $$
+
+
+
+
+Level 2: 
+$$ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}$$ 
+
+
+$$ {\beta}_{1j} = \gamma_{10} + \gamma_{11}\overline{Exercise_{j}} + U_{1j} $$  
+
+$$ {\beta}_{2j} = \gamma_{20}  $$ 
+
+ 
+ Do I need to account for t also? 
+ 
+ 
+# Within person mediation
+
+
+
+# Modeling Residual Correlation
+
+Typically we model error assuming that there is $ {\varepsilon}_{ij} \sim \mathcal{N}(0, \sigma^{2})  $ such that there is no correlation among residuals. This is likely met when we have small number of repeated measures, as a linear trajectory likely captures the data well, and all of the deviations from that trajectory are likely noise. However, when we have a lot of repeated measures (and where we not be modeling time systematically) there is more likelihood that we will have correlated residuals. This is problematic. We got rid of a similar concern of correlated errors by fitting MLMs in the first place (ie nesting overvations within person), but this different.  
+
+This is hard to do within 'lme4' but we can do it easier within Bayesian frameworks
+
+

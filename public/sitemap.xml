@@ -4,7 +4,13 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2019-09-26T13:03:35-05:00</lastmod>
+    <lastmod>2019-09-26T14:59:01-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/lectures/</loc>
+    <lastmod>2019-09-26T14:59:01-05:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -12,6 +18,11 @@
     <loc>/workshops/</loc>
     <lastmod>2019-09-26T13:03:35-05:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/lectures/week-5-intenslive-longitudinal/</loc>
+    <lastmod>2019-09-26T14:59:01-05:00</lastmod>
   </url>
   
   <url>
@@ -43,12 +54,6 @@
   <url>
     <loc>/workshops/workshop-4/</loc>
     <lastmod>2019-09-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/lectures/</loc>
-    <lastmod>2019-09-18T00:00:00+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>

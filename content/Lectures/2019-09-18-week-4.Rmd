@@ -243,7 +243,7 @@ $$ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}$$
 
 $$ {\beta}_{1j} = \gamma_{10} +  U_{1j} $$  
 
-$$ {\beta}_{2j} = \gamma_{20} +  U_{2j} $$
+$$ {\beta}_{2j} = \gamma_{20}  $$
 
 ## Readings
 
@@ -280,8 +280,6 @@ If you have less than 2 repeated measures for a person, they still can be used. 
 If you have convergence issues it is likely because you have a) too few data points, b) too much imbalance in your repeated measures (ie missing data), c) too many parameters to estimate or d) a combination of all of the above. 
 
 We will talk about fitting a "maximal model" -- one that has as many variance components as possible. However, this may be asking too much of the data. Instead, we may have to get rid of some of these random terms to reduce model complexity. 
-
-
 
 
 
@@ -417,6 +415,7 @@ summary(p2)
 p3 <- lmer(neuroticism ~ year + (year | mapid), data=personality)
 summary(p3)
 ```
+
 ### importance of centering
 ```{r}
 

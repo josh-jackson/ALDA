@@ -5,12 +5,111 @@
     <link>/lectures/</link>
       <atom:link href="/lectures/index.xml" rel="self" type="application/rss+xml" />
     <description>Lectures</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 18 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 26 Sep 2019 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/img/icon-192.png</url>
       <title>Lectures</title>
       <link>/lectures/</link>
     </image>
+    
+    <item>
+      <title>week 5 intenslive longitudinal</title>
+      <link>/lectures/week-5-intenslive-longitudinal/</link>
+      <pubDate>Thu, 26 Sep 2019 00:00:00 +0000</pubDate>
+      <guid>/lectures/week-5-intenslive-longitudinal/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#intensive-longitudinal-designs&#34;&gt;Intensive Longitudinal Designs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#within-versus-between-person-processes&#34;&gt;Within versus between person processes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#accounting-for-time&#34;&gt;Accounting for time&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-importance-of-centering.&#34;&gt;The importance of centering.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lagged-associations&#34;&gt;Lagged associations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#within-person-mediation&#34;&gt;Within person mediation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#modeling-residual-correlation&#34;&gt;Modeling Residual Correlation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;intensive-longitudinal-designs&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Intensive Longitudinal Designs&lt;/h1&gt;
+&lt;p&gt;Often we are not interested in looking at trajectories across time. Instead we are interested in using time as a means to look at fluctuations in our DV. Fluctuations are especially helpful to understand within person processes versus between person processes.&lt;/p&gt;
+&lt;p&gt;Typically, the focus of these sorts of analyses are with level 1 (time varying) covariates ie variables you have assessed more than once. The questions that can be answered with this design are many, but some examples: Are there associations between variation in X and variation in Y; is X associated with greater levels of Y; does X relate to later levels of Y; Does X relate to later levels of Y after accounting for concurent levels of X. Notice how all of these have the flavor of standard regression interpretations rather than the models we have been working with. The reason is that that intensive longitudinal designs are less likely to focus on time as a meaningful metric. Instead the focus on accounting for time, or the processes that unfold across time, not time per se.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;within-versus-between-person-processes&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Within versus between person processes&lt;/h1&gt;
+&lt;p&gt;Get comfortable with playing around between these two levels. Does doing more homework lead to better grades? Can ask this at a between person and a within peson level. Between: do people who on average study more tend to get higher grades? Within: When I study more do I get a higher grade? The answers are not necessarily the same.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
+## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
+## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
+## ✔ readr   1.3.1          ✔ forcats 0.4.0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;simp&amp;lt;- tribble(
+  ~ID, ~group,  ~test.score, ~study,
+1,1,5,1,
+2,1,7,3,
+3,2,4,1,
+4,2,6,4,
+5,3,3,3,
+6,3,5,5,
+7,4,2,4,
+8,4,4,6,
+9,5,1,5,
+10,5,3,7)
+
+ggplot(simp, aes(x=study, y=test.score, group = group)) +
+    geom_point() +   
+    geom_smooth(method=lm,  
+                se=FALSE) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-09-26-week-5-intenslive-longitudinal_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Also the relationship between a within person association and a between person association are likely correlated with one another. Someone who studies a lot on average may be more or less likely to study for a particular test.&lt;/p&gt;
+&lt;p&gt;Take another example: affect. Those who feel happy have more friends. How would you answer this? Well it is actually two questions. First, a between person one where those that are happier in general tend to have more friends. Second, if I go and get more friends do I become happier? These sorts of questions are useful to ask when, for example, you are thinking about interventions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;accounting-for-time&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Accounting for time&lt;/h1&gt;
+&lt;p&gt;Usually time is not an important factor for studies that last for weeks. What happens to the time variable? Two options:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Ignore it.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use it to control, but mostly disregard.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Level 1:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}(Exercise_{ij}-\overline{Exercise_{j}}) + \varepsilon_{ij} \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Level 2:
+&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{1j} = \gamma_{10} + \gamma_{11}\overline{Exercise_{j}} + U_{1j} \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{2j} = \gamma_{20}  \]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-importance-of-centering.&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;The importance of centering.&lt;/h1&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {Health}_{ij} =  [\gamma_{00} +   \gamma_{10}Time_{ij}   + \gamma_{20}(Exercise_{ij}-\overline{Exercise_{j}}) + \gamma_{30}Mood_{ij} +\gamma_{40}(Mood*(Exercise_{ij}-\overline{Exercise_{j}}))_{ij} ] + [ U_{0j}  + U_{1j}Time_{ij}+ \varepsilon_{ij}] \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;What happens if we want to add a level 2 predictor?&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {Health}_{ij} =  [\gamma_{00} +   \gamma_{10}Time_{ij}   + \gamma_{20}(Exercise_{ij}-\overline{Exercise_{j}}) + \gamma_{30}Mood_{ij} +\gamma_{31}(Mood*\overline{Exercise_{j}})_{j}  +\gamma_{40}(Mood*(Exercise_{ij}-\overline{Exercise_{j}}))_{ij} ] + [ U_{0j}  + U_{1j}Time_{ij}+ \varepsilon_{ij}] \]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lagged-associations&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Lagged associations&lt;/h1&gt;
+&lt;p&gt;What if I want to predict something in the future? Such that my excercise today is associated with future health gains.&lt;/p&gt;
+&lt;p&gt;Level 1
+&lt;span class=&#34;math display&#34;&gt;\[ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}(Exercise_{(i-t)j}-\overline{Exercise_{j}}) + \varepsilon_{ij} \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Level 2:
+&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{1j} = \gamma_{10} + \gamma_{11}\overline{Exercise_{j}} + U_{1j} \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{2j} = \gamma_{20}  \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Do I need to account for t also?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;within-person-mediation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Within person mediation&lt;/h1&gt;
+&lt;/div&gt;
+&lt;div id=&#34;modeling-residual-correlation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Modeling Residual Correlation&lt;/h1&gt;
+&lt;p&gt;Typically we model error assuming that there is $ {}_{ij} (0, ^{2}) $ such that there is no correlation among residuals. This is likely met when we have small number of repeated measures, as a linear trajectory likely captures the data well, and all of the deviations from that trajectory are likely noise. However, when we have a lot of repeated measures (and where we not be modeling time systematically) there is more likelihood that we will have correlated residuals. This is problematic. We got rid of a similar concern of correlated errors by fitting MLMs in the first place (ie nesting overvations within person), but this different.&lt;/p&gt;
+&lt;p&gt;This is hard to do within ‘lme4’ but we can do it easier within Bayesian frameworks&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Week 4</title>
@@ -202,7 +301,7 @@ BIC = ln(n)(number of parameters) + (−2LL)&lt;/p&gt;
 &lt;p&gt;Level 2:
 &lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{1j} = \gamma_{10} +  U_{1j} \]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{2j} = \gamma_{20} +  U_{2j} \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{2j} = \gamma_{20}  \]&lt;/span&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;readings&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Readings&lt;/h2&gt;
@@ -276,11 +375,11 @@ gg1&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 1 rows containing missing values (geom_path).&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/Lectures/2019-09-18-week-4_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse) &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Attaching packages ────────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
 ## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
 ## ✔ purrr   0.3.2          ✔ forcats 0.4.0&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Conflicts ────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;personality&amp;lt;- personality %&amp;gt;% 
