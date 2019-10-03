@@ -35,7 +35,9 @@ output:
 </ul></li>
 <li><a href="#more-models">More models</a><ul>
 <li><a href="#ex-1">Ex 1</a></li>
-<li><a href="#intercepts-are-different-because-of-priors">Intercepts are different because of priors</a></li>
+<li><a href="#intercepts-are-different-because-of-priors">Intercepts are different because of priors</a><ul>
+<li><a href="#lets-fit-it-again-without-that-intercept.">Lets fit it again without that intercept.</a></li>
+</ul></li>
 <li><a href="#what-does-the-posterior-look-like">What does the posterior look like?</a></li>
 <li><a href="#random-effects">Random effects</a></li>
 <li><a href="#ex-2">Ex 2</a><ul>
@@ -76,12 +78,12 @@ The models we have been working with can easily be done in a Bayesian Framework.
 <p>Prior - Allows us to provide a priori intuition about what the findings are. It is of the form of a probability distribution. E.g., “Extrodanary claims require extrodinary evidene.” Note we will note use this as “guesses” of what will happen. Instead we will use this as a regularization tool, similar to partial pooling in MLM.</p>
 <p>Likelihood - Distribution of the likelihood of various hypothesis. Probability attaches to possible results; likelihood attaches to hypotheses. It is akin to flipping coins, something we did with binomials.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ──────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
 ## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
 ## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
 ## ✔ readr   1.3.1          ✔ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ──────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <p>For 7 successes out of 10 trials, what is the likelihood of different probabilities?</p>
@@ -177,17 +179,31 @@ updated belief = current evidence ∗ prior belief or evidence</p>
 <div id="how-to-think-about-these-models" class="section level1">
 <h1>How to think about these models</h1>
 <p>In standard regression, we can state some expectations up front:</p>
-<p><span class="math display">\[Y_{i}  \sim \text{Normal}(\mu_i, \sigma) \]</span></p>
-<p><span class="math display">\[ \mu_i  = \beta \times Predictor_i \]</span></p>
+<p><span class="math display">\[
+h_i  \sim \text{Normal}(\mu_i, \sigma) \\
+\mu_i  = \alpha + \beta x_i \\
+\alpha  \sim \text{Normal}(0, 10) \\
+\beta  \sim \text{Normal}(0, 10) \\
+\sigma  \sim \text{Half Cauchy}(0, 50)
+\]</span></p>
+<p><span class="math display">\[Y_{i}  \sim \text{Normal}(\mu_i, \sigma) \]</span>
+This specifies the DGP and the family argument within <code>brms</code></p>
+<p><span class="math display">\[ \mu_i  = \beta \times Predictor_i \]</span>
+This specifies themodel we are fitting. Here it is just a standard regression.</p>
 <p>The above two lines are what is implicitly implied in almost all regressions. Namely, we have some variable that is being generated from a normal distribution, with a mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>. That <span class="math inline">\(\mu\)</span> is going to be described as the relationship between some (fixed) regression coefficient and a person specific predictor variable.</p>
-<p>Belwo is where we get into some new stuff, where we describe what we think the estimated parameters will look like (ie format a prior).</p>
-<p><span class="math inline">\(\beta \sim \text{Normal}(0, 10)\)</span></p>
+<p>Below is where we get into some new stuff, where we describe what we think the estimated parameters will look like (ie format a prior).</p>
+<p><span class="math inline">\(\alpha \sim \text{Normal}(0, 10) \\\)</span>
+This says we have a prior idea bout the distribution of the intercept. Namely that it is centered around 0 with a possible range above and below that.</p>
+<p><span class="math inline">\(\beta \sim \text{Normal}(0, 10)\)</span>
+This says that we have a prior idea about the possible distribution of the regression coefficient. We think it is most likely zero, but we aren’t that confident. As it could be higher or lower.</p>
 <pre class="r"><code>ggplot() +
   aes(x = c(-40, 40)) +
   stat_function(fun = dnorm, n = 200, args = list(0, 10)) +
   labs(title = &quot;Normal (Gaussian) distribution&quot;)</code></pre>
 <p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>$(0, 1) $</p>
+<p>Now for the priors for our residual.
+$(0, 1) $
+Same idea for the residual, the prior specifies what we expect is plausible.</p>
 <pre class="r"><code>ggplot() +
   aes(x = c(0, 10)) +
   stat_function(fun = dcauchy, n = 200, args = list(0, 1)) +
@@ -198,13 +214,14 @@ updated belief = current evidence ∗ prior belief or evidence</p>
 </div>
 <div id="mcmc-estimation" class="section level1">
 <h1>MCMC Estimation</h1>
-<p>Bayesian estimation, like maximum likelihood, starts with initial guesses as starting points and then runs in an iterative fashion, producing simulated draws from the posterior distribution. This occurs until some stopping value is reached. This part is key and different from frequentist statistics. We are aiming for creating a distribution as our end goal, not just a point estimate.</p>
+<p>Bayesian estimation, like maximum likelihood, starts with initial guesses as starting points and then runs in an iterative fashion, producing simulated draws from the posterior distribution. Think of taking one of the posterior samples above and randomly selecting values from it, again and again. Lets take a sample the size of your study and call that sample 1. Then do that same procedure 4000 times. The result is that you have a lot of potential samples that can be combined in multiple ways. This part is key and different from frequentist statistics. We are aiming for creating a distribution of end goals as our end goal, not just a point estimate.</p>
 <p>The simulation process is referred to as Markov Chain Monte Carlo, or MCMC for short. In MCMC, all of the simulated draws from the posterior are based on and correlated with previous draws. We will typically allow the process to “warm up”, as the initial random starting point may be way off of being plausible. As it runs, however, these estimates will get better and better, creating a distribution of plausible values. As a safety check, we will run the the process multiple times, what is known as having multiple chains. If multiple chains converge towards the same answer we are more confident in our results.</p>
 </div>
 <div id="comparing-lmer-with-brms" class="section level1">
 <h1>Comparing lmer with brms</h1>
 <p>Lets do a mixed effects model to test this out. We will use the sleepstudy dataset that is loaded with lme4</p>
-<pre class="r"><code>library(lme4)</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(lme4)</code></pre>
 <pre><code>## Loading required package: Matrix</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;Matrix&#39;</code></pre>
@@ -248,111 +265,20 @@ summary(sleep_lmer)</code></pre>
 ## Correlation of Fixed Effects:
 ##      (Intr)
 ## Days -0.138</code></pre>
-<pre class="r"><code>library(brms)
-
-sleep_brm &lt;- brm(Reaction ~ Days + (1 + Days|Subject), data = sleepstudy)</code></pre>
-<pre><code>## Compiling the C++ model</code></pre>
-<pre><code>## Start sampling</code></pre>
+<pre class="r"><code>library(brms)</code></pre>
+<pre><code>## Loading required package: Rcpp</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;xts&#39;:
+##   method     from
+##   as.zoo.xts zoo</code></pre>
+<pre><code>## Loading &#39;brms&#39; package (version 2.10.0). Useful instructions
+## can be found by typing help(&#39;brms&#39;). A more detailed introduction
+## to the package is available through vignette(&#39;brms_overview&#39;).</code></pre>
 <pre><code>## 
-## SAMPLING FOR MODEL &#39;3c408cb3dadd05772809281a09d7c178&#39; NOW (CHAIN 1).
-## Chain 1: 
-## Chain 1: Gradient evaluation took 0.000159 seconds
-## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.59 seconds.
-## Chain 1: Adjust your expectations accordingly!
-## Chain 1: 
-## Chain 1: 
-## Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
-## Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
-## Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
-## Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
-## Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
-## Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-## Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-## Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-## Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-## Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-## Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-## Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
-## Chain 1: 
-## Chain 1:  Elapsed Time: 3.01152 seconds (Warm-up)
-## Chain 1:                1.20743 seconds (Sampling)
-## Chain 1:                4.21894 seconds (Total)
-## Chain 1: 
+## Attaching package: &#39;brms&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:lme4&#39;:
 ## 
-## SAMPLING FOR MODEL &#39;3c408cb3dadd05772809281a09d7c178&#39; NOW (CHAIN 2).
-## Chain 2: 
-## Chain 2: Gradient evaluation took 3.8e-05 seconds
-## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.38 seconds.
-## Chain 2: Adjust your expectations accordingly!
-## Chain 2: 
-## Chain 2: 
-## Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
-## Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
-## Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
-## Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
-## Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
-## Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-## Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-## Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-## Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-## Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-## Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-## Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
-## Chain 2: 
-## Chain 2:  Elapsed Time: 2.79123 seconds (Warm-up)
-## Chain 2:                1.17906 seconds (Sampling)
-## Chain 2:                3.97029 seconds (Total)
-## Chain 2: 
-## 
-## SAMPLING FOR MODEL &#39;3c408cb3dadd05772809281a09d7c178&#39; NOW (CHAIN 3).
-## Chain 3: 
-## Chain 3: Gradient evaluation took 4e-05 seconds
-## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.4 seconds.
-## Chain 3: Adjust your expectations accordingly!
-## Chain 3: 
-## Chain 3: 
-## Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)
-## Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)
-## Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)
-## Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)
-## Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)
-## Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-## Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-## Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-## Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-## Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-## Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-## Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
-## Chain 3: 
-## Chain 3:  Elapsed Time: 3.7019 seconds (Warm-up)
-## Chain 3:                1.41167 seconds (Sampling)
-## Chain 3:                5.11357 seconds (Total)
-## Chain 3: 
-## 
-## SAMPLING FOR MODEL &#39;3c408cb3dadd05772809281a09d7c178&#39; NOW (CHAIN 4).
-## Chain 4: 
-## Chain 4: Gradient evaluation took 5.3e-05 seconds
-## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.53 seconds.
-## Chain 4: Adjust your expectations accordingly!
-## Chain 4: 
-## Chain 4: 
-## Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)
-## Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)
-## Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)
-## Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)
-## Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)
-## Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-## Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-## Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-## Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-## Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-## Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-## Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
-## Chain 4: 
-## Chain 4:  Elapsed Time: 3.20541 seconds (Warm-up)
-## Chain 4:                1.13799 seconds (Sampling)
-## Chain 4:                4.3434 seconds (Total)
-## Chain 4:</code></pre>
+##     ngrps</code></pre>
+<pre class="r"><code>sleep_brm &lt;- brm(Reaction ~ Days + (1 + Days|Subject), data = sleepstudy, file = &quot;fit1&quot;)</code></pre>
 <pre class="r"><code>summary(sleep_brm)</code></pre>
 <pre><code>## Registered S3 method overwritten by &#39;xts&#39;:
 ##   method     from
@@ -367,22 +293,22 @@ sleep_brm &lt;- brm(Reaction ~ Days + (1 + Days|Subject), data = sleepstudy)</co
 ## Group-Level Effects: 
 ## ~Subject (Number of levels: 18) 
 ##                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-## sd(Intercept)          27.06      6.86    15.57    42.41 1.00     1853
-## sd(Days)                6.60      1.48     4.18     9.96 1.00     1607
-## cor(Intercept,Days)     0.09      0.30    -0.46     0.69 1.00      795
+## sd(Intercept)          27.20      6.94    16.21    43.45 1.00     1745
+## sd(Days)                6.65      1.57     4.14    10.36 1.00     1437
+## cor(Intercept,Days)     0.08      0.30    -0.48     0.68 1.00     1096
 ##                     Tail_ESS
-## sd(Intercept)           2567
-## sd(Days)                2437
-## cor(Intercept,Days)     1448
+## sd(Intercept)           2348
+## sd(Days)                1878
+## cor(Intercept,Days)     1800
 ## 
 ## Population-Level Effects: 
 ##           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## Intercept   251.51      7.34   237.03   265.88 1.00     1906     2490
-## Days         10.44      1.73     6.95    13.82 1.00     1335     1850
+## Intercept   251.16      7.62   235.92   266.63 1.00     1813     1960
+## Days         10.40      1.68     7.19    13.65 1.00     1478     2246
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma    25.91      1.61    22.96    29.27 1.00     3403     2492
+## sigma    25.86      1.57    23.04    29.16 1.00     3680     3030
 ## 
 ## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
 ## is a crude measure of effective sample size, and Rhat is the potential 
@@ -401,6 +327,7 @@ sleep_brm &lt;- brm(Reaction ~ Days + (1 + Days|Subject), data = sleepstudy)</co
 ## 8                               sd      Days Subject                      
 ## 9                               sd Intercept Subject                      
 ## 10   student_t(3, 0, 59)     sigma</code></pre>
+<p>*Note that there are flat priors as the default for fixed effects. This essentially disregards the prior and spits back the likelihood, equivalent to the ML estimate.</p>
 <p>The ts have three parameters: degress of freedom, mean, and then an SD.</p>
 </div>
 <div id="differenes-in-random-effects-with-brms" class="section level2">
@@ -415,7 +342,7 @@ sleep_brm &lt;- brm(Reaction ~ Days + (1 + Days|Subject), data = sleepstudy)</co
 \bigg )
 \end{align*}
 \]</span></p>
-<p>Note, that in many Bayesian texts, the Level 2 covariance matrix above is often rewritten as below</p>
+<p>Note, that in many Bayesian texts, the Level 2 covariance matrix above is often rewritten as below.</p>
 <p><span class="math display">\[
 U \sim \text{N} (\mathbf{0}, \mathbf{\Sigma})
 \]</span></p>
@@ -427,7 +354,9 @@ U \sim \text{N} (\mathbf{0}, \mathbf{\Sigma})
 \mathbf{\Omega} &amp; = \begin{bmatrix} 1 &amp; \rho \\ \rho &amp; 1 \end{bmatrix}
 \end{align*}
 \]</span></p>
-<p>Thus <span class="math inline">\(\mathbf{D}\)</span> is the diagonal matrix of standard deviations and <span class="math inline">\(\mathbf{\Omega}\)</span> is the correlation matrix.</p>
+<p>Thus <span class="math inline">\(\mathbf{D}\)</span> is the diagonal matrix of standard deviations and <span class="math inline">\(\mathbf{\Omega}\)</span> is the correlation matrix. As we will see later, we will need to specify priors for each of these components, the SDs of our random effects and the correlation between them. By splitting them into these two different matrixes we can handle that easier.</p>
+<pre class="r"><code>plot(sleep_brm)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-12-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
 </div>
 </div>
 <div id="more-models" class="section level1">
@@ -497,16 +426,21 @@ early_int_sim %&gt;%
   theme(panel.grid = element_blank(),
         legend.position = &quot;none&quot;) +
   facet_wrap(~label)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
-<p>This is our assumed data generating model
-<span class="math display">\[
-\begin{align*}
-\text{cog} &amp; \sim \text{Normal} (\mu_{ij}, \sigma_\epsilon^2) \\
-\mu_{ij}   &amp; = \gamma_{0j} + \gamma_{1j} (\text{age}_{ij} - 1) + \gamma_{2j} (\text{Program})
-\end{align*}
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-15-1.png" width="576" /></p>
+<p>This is our assumed data generating model</p>
+<p><span class="math display">\[
+cog  \sim \text{Normal} (\mu_{ij}, \sigma_\epsilon^2) \\
+\mu_{ij}    = \gamma_{00j} + \gamma_{10j} ({age}_{ij} - 1) + \gamma_{11j} Program \\
+\gamma_{00}      \sim \text{Normal}(1.335, 1) \\
+\gamma_{10}      \sim \text{Normal}(0, 0.5) \\
+\sigma_\epsilon  \sim \text{Student-t} (3, 0, 1)\\ 
+\sigma_0         \sim \text{Student-t} (3, 0, 1) \\
+\sigma_1         \sim \text{Student-t} (3, 0, 1) \\
+\rho_{01}        \sim \text{LKJ} (4) \\
 \]</span></p>
 <pre class="r"><code>ex1 &lt;-
   brm(data = early_int_sim,
+      file = &quot;fit2&quot;,
       family = gaussian,
       formula = cog ~ 0 + intercept + age_c + program + age_c:program + (1 + age_c | id),
       iter = 2000, warmup = 1000, chains = 4, cores = 4,
@@ -552,6 +486,62 @@ early_int_sim %&gt;%
 ## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+<pre class="r"><code>  brms::get_prior(cog ~ 0 + intercept + age_c + program + age_c:program + (1 + age_c | id), data = early_int_sim)</code></pre>
+<pre><code>##                  prior class          coef group resp dpar nlpar bound
+## 1                          b                                          
+## 2                          b         age_c                            
+## 3                          b age_c:program                            
+## 4                          b     intercept                            
+## 5                          b       program                            
+## 6               lkj(1)   cor                                          
+## 7                        cor                  id                      
+## 8  student_t(3, 0, 16)    sd                                          
+## 9                         sd                  id                      
+## 10                        sd         age_c    id                      
+## 11                        sd     Intercept    id                      
+## 12 student_t(3, 0, 16) sigma</code></pre>
+<div id="lets-fit-it-again-without-that-intercept." class="section level3">
+<h3>Lets fit it again without that intercept.</h3>
+<p>What is the difference?</p>
+<pre class="r"><code>ex1.nc &lt;-
+  brm(data = early_int_sim,
+      file = &quot;fit2.nc&quot;,
+      family = gaussian,
+      formula = cog ~ 1 + age.c + program + age.c:program + (1 + age | id),
+      iter = 2000, warmup = 1000, chains = 4, cores = 4,
+      control = list(adapt_delta = 0.9),
+      seed = 3)
+print(ex1.nc)</code></pre>
+<pre class="r"><code>  brms::get_prior(cog ~  1 + age_c + program + age_c:program + (1 + age_c | id), data = early_int_sim)</code></pre>
+<pre><code>##                    prior     class          coef group resp dpar nlpar
+## 1                                b                                    
+## 2                                b         age_c                      
+## 3                                b age_c:program                      
+## 4                                b       program                      
+## 5                 lkj(1)       cor                                    
+## 6                              cor                  id                
+## 7  student_t(3, 102, 16) Intercept                                    
+## 8    student_t(3, 0, 16)        sd                                    
+## 9                               sd                  id                
+## 10                              sd         age_c    id                
+## 11                              sd     Intercept    id                
+## 12   student_t(3, 0, 16)     sigma                                    
+##    bound
+## 1       
+## 2       
+## 3       
+## 4       
+## 5       
+## 6       
+## 7       
+## 8       
+## 9       
+## 10      
+## 11      
+## 12</code></pre>
+<p>A few take aways: 1. not much as changed. Why? Because our data overwelm the prior. Again, priors are not <em>that</em> big of a deal.
+2. We can forget about all of this if we do not use default priors. More on that later.</p>
+</div>
 </div>
 <div id="what-does-the-posterior-look-like" class="section level2">
 <h2>What does the posterior look like?</h2>
@@ -561,23 +551,53 @@ early_int_sim %&gt;%
 ## age_c         -20.516543  1.982355 -24.422934 -16.641683
 ## program         9.213920  2.536958   4.140112  14.087900
 ## age_c:program   3.201103  2.655993  -2.030914   8.378437</code></pre>
-<pre class="r"><code>#post &lt;- posterior_samples(ex1)</code></pre>
+<pre class="r"><code>library(brms)</code></pre>
+<pre><code>## Loading required package: Rcpp</code></pre>
+<pre><code>## Loading &#39;brms&#39; package (version 2.10.0). Useful instructions
+## can be found by typing help(&#39;brms&#39;). A more detailed introduction
+## to the package is available through vignette(&#39;brms_overview&#39;).</code></pre>
+<pre><code>## 
+## Attaching package: &#39;brms&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:lme4&#39;:
+## 
+##     ngrps</code></pre>
+<pre class="r"><code>post &lt;- brms::posterior_samples(ex1)</code></pre>
 <p>Here’s a look at the first 10 columns.</p>
-<pre class="r"><code># post[, 1:10] %&gt;%
-#   glimpse()</code></pre>
+<pre class="r"><code> post[, 1:10] %&gt;%
+glimpse()</code></pre>
+<pre><code>## Observations: 4,000
+## Variables: 10
+## $ b_intercept              &lt;dbl&gt; 107.8432, 105.9106, 106.5840, 105.9220,…
+## $ b_age_c                  &lt;dbl&gt; -22.15160, -18.79935, -20.28713, -21.92…
+## $ b_program                &lt;dbl&gt; 8.058549, 7.426575, 7.172656, 7.401558,…
+## $ `b_age_c:program`        &lt;dbl&gt; 6.71653288, 1.54733881, 2.46308672, 6.0…
+## $ sd_id__Intercept         &lt;dbl&gt; 7.934120, 9.182119, 9.680560, 9.891759,…
+## $ sd_id__age_c             &lt;dbl&gt; 0.07493328, 3.29208929, 0.46960055, 1.4…
+## $ cor_id__Intercept__age_c &lt;dbl&gt; 0.11099642, -0.85142856, -0.62951652, -…
+## $ sigma                    &lt;dbl&gt; 9.009290, 8.263876, 8.559613, 8.511837,…
+## $ `r_id[1,Intercept]`      &lt;dbl&gt; 3.9047820, 6.2320897, 4.9022182, 8.3357…
+## $ `r_id[2,Intercept]`      &lt;dbl&gt; -2.6429448, -3.2966948, 5.0002671, 2.64…</code></pre>
 <p>We saved our results as <code>post</code>, which is a data frame with 4000 rows (i.e., 1000 post-warmup iterations times 4 chains) and 215 columns, each depicting one of the model parameters. With <strong>brms</strong>, the <span class="math inline">\(\gamma\)</span> parameters (i.e., the fixed effects or population parameters) get <code>b_</code> prefixes in the <code>posterior_samples()</code> output. So we can isolate them like so.</p>
-<pre class="r"><code># post %&gt;% 
-#   select(starts_with(&quot;b_&quot;)) %&gt;% 
-#   head()</code></pre>
-<pre class="r"><code># post %&gt;% 
-#   select(starts_with(&quot;b_&quot;)) %&gt;% 
-#   gather() %&gt;% 
-#   
-#   ggplot(aes(x = value)) +
-#   geom_density(color = &quot;transparent&quot;, fill = &quot;grey&quot;) +
-#   scale_y_continuous(NULL, breaks = NULL) +
-#   theme(panel.grid = element_blank()) +
-#   facet_wrap(~key, scales = &quot;free&quot;)</code></pre>
+<pre class="r"><code>post %&gt;% 
+select(starts_with(&quot;b_&quot;)) %&gt;% 
+head()</code></pre>
+<pre><code>##   b_intercept   b_age_c b_program b_age_c:program
+## 1    107.8432 -22.15160  8.058549        6.716533
+## 2    105.9106 -18.79935  7.426575        1.547339
+## 3    106.5840 -20.28713  7.172656        2.463087
+## 4    105.9220 -21.92054  7.401558        6.062974
+## 5    104.3962 -18.09924  9.998274        1.475840
+## 6    108.5692 -22.13250  2.936269        7.693650</code></pre>
+<pre class="r"><code>post %&gt;%
+  select(starts_with(&quot;b_&quot;)) %&gt;%
+  gather() %&gt;%
+
+  ggplot(aes(x = value)) +
+  geom_density(color = &quot;transparent&quot;, fill = &quot;grey&quot;) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~key, scales = &quot;free&quot;)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 </div>
 <div id="random-effects" class="section level2">
 <h2>Random effects</h2>
@@ -653,19 +673,20 @@ early_int_sim %&gt;%
 ##            Estimate Est.Error        Q2.5    Q97.5
 ## Intercept -21.32497  18.96069 -65.5194793  4.40548
 ## age_c      20.52097  22.16587   0.0395562 80.95712</code></pre>
-<pre class="r"><code># posterior_samples(ex1) %&gt;% 
-#   transmute(`sigma[0]^2`  = sd_id__Intercept^2,
-#             `sigma[1]^2`  = sd_id__age_c^2,
-#             `sigma[0][1]` = sd_id__Intercept * cor_id__Intercept__age_c * sd_id__age_c,
-#             `sigma[epsilon]^2` = sigma^2) %&gt;% 
-#   gather(key, posterior) %&gt;% 
-#   
-#   ggplot(aes(x = posterior)) +
-#   geom_density(color = &quot;transparent&quot;, fill = &quot;grey&quot;) +
-#   scale_y_continuous(NULL, breaks = NULL) +
-#   theme(panel.grid = element_blank(),
-#         strip.text = element_text(size = 12)) +
-#   facet_wrap(~key, scales = &quot;free&quot;, labeller = label_parsed) </code></pre>
+<pre class="r"><code>posterior_samples(ex1) %&gt;%
+  transmute(`sigma[0]^2`  = sd_id__Intercept^2,
+            `sigma[1]^2`  = sd_id__age_c^2,
+            `sigma[0][1]` = sd_id__Intercept * cor_id__Intercept__age_c * sd_id__age_c,
+            `sigma[epsilon]^2` = sigma^2) %&gt;%
+  gather(key, posterior) %&gt;%
+
+  ggplot(aes(x = posterior)) +
+  geom_density(color = &quot;transparent&quot;, fill = &quot;grey&quot;) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank(),
+        strip.text = element_text(size = 12)) +
+  facet_wrap(~key, scales = &quot;free&quot;, labeller = label_parsed)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 </div>
 <div id="ex-2" class="section level2">
 <h2>Ex 2</h2>
@@ -679,14 +700,21 @@ U_{0i} &amp; \sim \text{Normal} (0, \sigma_0^2)
 \end{align*}
 \]</span></p>
 <p>What are the default priors?</p>
-<pre class="r"><code>#  get_prior(data = alcohol1_pp, 
-#           family = gaussian,
-#           alcuse ~ 1 + (1 | id))</code></pre>
+<pre class="r"><code>  get_prior(data = alcohol1_pp, 
+           family = gaussian,
+           alcuse ~ 1 + (1 | id))</code></pre>
+<pre><code>##                 prior     class      coef group resp dpar nlpar bound
+## 1 student_t(3, 1, 10) Intercept                                      
+## 2 student_t(3, 0, 10)        sd                                      
+## 3                            sd              id                      
+## 4                            sd Intercept    id                      
+## 5 student_t(3, 0, 10)     sigma</code></pre>
 <div id="using-priors" class="section level3">
 <h3>Using priors</h3>
 <p>How can we put that in directly to our code?</p>
 <pre class="r"><code>ex2 &lt;-
-  brm(data = alcohol1_pp, 
+  brm(data = alcohol1_pp,
+      file = &quot;fit3&quot;,
       family = gaussian,
       alcuse ~ 1 + (1 | id),
       prior = c(prior(student_t(3, 1, 10), class = Intercept),
@@ -710,7 +738,7 @@ U_{0i} &amp; \sim \text{Normal} (0, \sigma_0^2)
   labs(title = expression(paste(&quot;prior for &quot;, gamma[0][0])),
        x = &quot;parameter space&quot;) +
   theme(panel.grid = element_blank())</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 <p>Note a few things: First, this is a broad space for our intercept based on what we are looking at. This would be considering minimally informative.</p>
 <p>Second, consider the variance priors – they go below zero. Does this make sense?</p>
 <p>Here are the results.</p>
@@ -738,25 +766,34 @@ U_{0i} &amp; \sim \text{Normal} (0, \sigma_0^2)
 ## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
-<pre class="r"><code># post2 &lt;- posterior_samples(ex2)</code></pre>
-<p>Since all we’re interested in are the variance components, we’ll <code>select()</code> out the relevant columns from <code>post</code>, compute the squared versions, and save the results in a mini data frame, <code>v</code>.</p>
-<pre class="r"><code># v &lt;-
-#   post2 %&gt;% 
-#   select(sigma, sd_id__Intercept)
-# 
-# head(v)</code></pre>
+<pre class="r"><code>post2 &lt;- posterior_samples(ex2)</code></pre>
+<p>Since all we’re interested in are the variance components, we’ll <code>select()</code> out the relevant columns from <code>post2</code>, and save the results in a mini data frame, <code>v</code>.</p>
+<pre class="r"><code>v &lt;-
+  post2 %&gt;%
+  select(sigma, sd_id__Intercept)
+
+head(v)</code></pre>
+<pre><code>##       sigma sd_id__Intercept
+## 1 0.7657679        0.9317019
+## 2 0.7630844        0.9259266
+## 3 0.8073889        0.7670859
+## 4 0.6964495        0.6670863
+## 5 0.7029354        0.7075109
+## 6 0.7410712        0.7324726</code></pre>
+<pre class="r"><code>dim(v)</code></pre>
+<pre><code>## [1] 4000    2</code></pre>
 <p>Note these are in SD units</p>
-<pre class="r"><code># v %&gt;% 
-#   gather() %&gt;% 
-#   
-#   ggplot(aes(x = value)) +
-#   geom_vline(xintercept = c(.25, .5, .75, 1), color = &quot;white&quot;) +
-#   geom_density(size = 0, fill = &quot;grey&quot;) +
-#   scale_x_continuous(NULL, limits = c(0, 1.25),
-#                      breaks = seq(from = 0, to = 1.25, by = .25)) +
-#   scale_y_continuous(NULL, breaks = NULL) +
-#   theme(panel.grid = element_blank()) +
-#   facet_wrap(~key, scales = &quot;free_y&quot;)</code></pre>
+<pre class="r"><code>v %&gt;%
+  gather() %&gt;%
+  ggplot(aes(x = value)) +
+  geom_vline(xintercept = c(.25, .5, .75, 1), color = &quot;white&quot;) +
+  geom_density(size = 0, fill = &quot;grey&quot;) +
+  scale_x_continuous(NULL, limits = c(0, 1.25),
+                     breaks = seq(from = 0, to = 1.25, by = .25)) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~key, scales = &quot;free_y&quot;)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
 </div>
 <div id="calculate-icc." class="section level3">
 <h3>Calculate ICC.</h3>
@@ -764,12 +801,13 @@ U_{0i} &amp; \sim \text{Normal} (0, \sigma_0^2)
 <span class="math display">\[
 ICC = \frac{\sigma_0^2}{\sigma_0^2 + \sigma_\epsilon^2}
 \]</span></p>
-<pre class="r"><code># v %&gt;%
-#   transmute(ICC = sd_id__Intercept^2 / (sd_id__Intercept^2 + sigma^2)) %&gt;% 
-#   ggplot(aes(x = ICC)) +
-#   geom_density(size = 0, fill = &quot;grey&quot;) +
-#   scale_x_continuous( limits = 0:1) +
-#   scale_y_continuous(NULL, breaks = NULL) </code></pre>
+<pre class="r"><code>v %&gt;%
+  transmute(ICC = sd_id__Intercept^2 / (sd_id__Intercept^2 + sigma^2)) %&gt;%
+  ggplot(aes(x = ICC)) +
+  geom_density(size = 0, fill = &quot;grey&quot;) +
+  scale_x_continuous( limits = 0:1) +
+  scale_y_continuous(NULL, breaks = NULL)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
 <p>Note we get a distribution of ICCs, not just a singular score! Not all of our samples show as strong of between person association. Note that measuring this dispersion is a feature, not a problem. With standard MLM we are not taking into account potential sampling variance that may influence our estimates. Bayesian does.</p>
 </div>
 <div id="adding-predictors" class="section level3">
@@ -777,21 +815,33 @@ ICC = \frac{\sigma_0^2}{\sigma_0^2 + \sigma_\epsilon^2}
 <p>Using the composite formula, our next model, the unconditional growth model, follows the form</p>
 <p><span class="math display">\[
 \begin{align*}
-\text{alcuse}_{ij} &amp; = \gamma_{00} + \gamma_{10} \text{age_14}_{ij} + U_{0j} + U_{1j} \text{age_14}_{ij} + \epsilon_{ij} \\
+\text{alcuse}_{ij} &amp; = \gamma_{00} + \gamma_{10} \text{age_14}_{ij} + U_{0j} + U_{1j} \text{age_14}_{ij} + e_{ij} \\
 \epsilon_{ij} &amp; \sim \text{Normal} (0, \sigma_\epsilon^2) \\
-\begin{bmatrix} U_{0j} \\ U_{1j} \end{bmatrix} &amp; \sim \text{Normal} 
+\begin{bmatrix} U_{0j} \\ U_{1j} \end{bmatrix} &amp; \sim \text{MVN} 
 \Bigg ( 
 \begin{bmatrix} 0 \\ 0 \end{bmatrix}, 
 \begin{bmatrix} \sigma_0^2 &amp; \sigma_{01} \\ \sigma_{01} &amp; \sigma_1^2 \end{bmatrix}
 \Bigg )
 \end{align*}
 \]</span></p>
-<pre class="r"><code># get_prior(data = alcohol1_pp, 
-#           family = gaussian,
-#           alcuse ~ 0 + intercept + age_14 + (1 + age_14 | id))</code></pre>
-<p>Note that there are flat priors as the default for fixed effects. This essentially disregards the prior and spits back the likelihood, equivalent to the ML estimate.</p>
+<pre class="r"><code>get_prior(data = alcohol1_pp,
+          family = gaussian,
+          alcuse ~ 0 + intercept + age_14 + (1 + age_14 | id))</code></pre>
+<pre><code>##                  prior class      coef group resp dpar nlpar bound
+## 1                          b                                      
+## 2                          b    age_14                            
+## 3                          b intercept                            
+## 4               lkj(1)   cor                                      
+## 5                        cor              id                      
+## 6  student_t(3, 0, 10)    sd                                      
+## 7                         sd              id                      
+## 8                         sd    age_14    id                      
+## 9                         sd Intercept    id                      
+## 10 student_t(3, 0, 10) sigma</code></pre>
+<p>*Note that there are flat priors as the default for fixed effects. This essentially disregards the prior and spits back the likelihood, equivalent to the ML estimate.</p>
 <pre class="r"><code>ex2.fit2 &lt;-
   brm(data = alcohol1_pp, 
+      file = &quot;fit4&quot;,
       family = gaussian,
       alcuse ~ 0 + intercept + age_14 + (1 + age_14 | id),
       prior = c(prior(student_t(3, 0, 10), class = sd),
@@ -802,9 +852,11 @@ ICC = \frac{\sigma_0^2}{\sigma_0^2 + \sigma_\epsilon^2}
 </div>
 <div id="marginal-effects" class="section level3">
 <h3>Marginal effects</h3>
-<pre class="r"><code># marginal_effects(ex2.fit2)</code></pre>
+<pre class="r"><code>marginal_effects(ex2.fit2)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
 <pre class="r"><code>ex2.fit3 &lt;-
   brm(data = alcohol1_pp, 
+      file = &quot;fit5&quot;,
       family = gaussian,
       alcuse ~ 0 + intercept + age_14 + coa + age_14:coa + (1 + age_14 | id),
       prior = c(prior(student_t(3, 0, 10), class = sd),
@@ -845,24 +897,22 @@ ICC = \frac{\sigma_0^2}{\sigma_0^2 + \sigma_\epsilon^2}
 ## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
-<pre class="r"><code># marginal_effects(ex2.fit3)</code></pre>
+<pre class="r"><code>marginal_effects(ex2.fit3)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/marg.ex2.fit3-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/marg.ex2.fit3-2.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/marg.ex2.fit3-3.png" width="672" /></p>
 <pre class="r"><code>fit3_f &lt;-
   update(ex2.fit3,
          newdata = alcohol1_pp %&gt;% mutate(coa = factor(coa)))</code></pre>
-<pre class="r"><code># marginal_effects(fit3_f)</code></pre>
-<pre class="r"><code># marginal_effects(fit3_f,
-#                  effects = &quot;coa&quot;)
-# ```
-# 
-# ```{r}
-# marginal_effects(fit3_f,
-#                  effects = &quot;coa:age_14&quot;)
-# ```
-# 
-# 
-# ```{r}
-# marginal_effects(fit3_f,
-#                  effects = &quot;age_14:coa&quot;)</code></pre>
+<pre class="r"><code>marginal_effects(fit3_f)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-43-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-43-2.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-43-3.png" width="672" /></p>
+<pre class="r"><code>marginal_effects(fit3_f,
+                 effects = &quot;coa&quot;)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<pre class="r"><code>marginal_effects(fit3_f,
+                 effects = &quot;coa:age_14&quot;)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<pre class="r"><code>marginal_effects(fit3_f,
+                 effects = &quot;age_14:coa&quot;)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
 <p>We can use fitted function to create “predicted” values, much like we did with lmer</p>
 <pre class="r"><code>nd &lt;- 
   tibble(age_14 = seq(from = 0, to = 2, length.out = 30))
@@ -891,52 +941,105 @@ head(f)</code></pre>
   scale_y_continuous(&quot;alcuse&quot;, breaks = 0:2, limits = c(0, 2)) +
   coord_cartesian(xlim = 13:17) +
   theme(panel.grid = element_blank())</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
 </div>
 <div id="comparing-models" class="section level3">
 <h3>Comparing models</h3>
 <p>As it turns out, we Bayesians use the log-likelihood (LL), too. Recall how the numerator in the right-hand side of Bayes’ Theorem was <span class="math inline">\(p(\text{data} | \theta) p(\theta)\)</span>? That first part, <span class="math inline">\(p(\text{data} | \theta)\)</span>, is the likelihood. In words, the likelihood is the <em>probability of the data given the parameters</em>. And we take the log of the likelihood rather than the likelihood itself because it’s easier to work with statistically.</p>
 <p>When you’re working with <strong>brms</strong>, you can extract the LL with the <code>log_lik()</code> function. Here’s an example with <code>fit1</code>, our unconditional means model.</p>
-<pre class="r"><code># log_lik(ex2) %&gt;% 
-#   str()</code></pre>
+<pre class="r"><code>log_lik(ex2) %&gt;%
+  str()</code></pre>
+<pre><code>##  num [1:4000, 1:246] -0.654 -0.788 -0.795 -0.65 -0.587 ...
+##  - attr(*, &quot;dimnames&quot;)=List of 2
+##   ..$ : NULL
+##   ..$ : NULL</code></pre>
 <p>You may have noticed we didn’t just get a single value back. Rather, we got an array of 4000 rows and 246 columns. The reason we got 4000 rows is because that’s how many post-warmup iterations we drew from the posterior. I.e., we set <code>brm(..., iter = 2000, warmup = 1000, chains = 4)</code>. With respect to the 246 columns, that’s how many rows there are in the <code>alcohol1_pp</code> data. So for each person in the data set, we get an entire posterior distribution of LL values.</p>
-<pre class="r"><code># ll &lt;-
-#   log_lik(ex2) %&gt;%
-#   data.frame() %&gt;% 
-#   mutate(sums     = rowSums(.)) %&gt;% 
-#   mutate(deviance = -2 * sums) %&gt;% 
-#   select(sums, deviance, everything())</code></pre>
-<pre class="r"><code># ll %&gt;% 
-#   ggplot(aes(x = deviance)) +
-#   geom_density(fill = &quot;grey25&quot;, size = 0) +
-#   scale_y_continuous(NULL, breaks = NULL) +
-#   theme(panel.grid = element_blank())</code></pre>
+<pre class="r"><code>ll &lt;-
+  log_lik(ex2) %&gt;%
+  data.frame() %&gt;%
+  mutate(sums     = rowSums(.)) %&gt;%
+  mutate(deviance = -2 * sums) %&gt;%
+  select(sums, deviance, everything())</code></pre>
+<pre class="r"><code>ll %&gt;%
+  ggplot(aes(x = deviance)) +
+  geom_density(fill = &quot;grey25&quot;, size = 0) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-51-1.png" width="576" /></p>
 <p>The AIC is frequentist and cannot handle models with priors. The BIC isis a misnomer as it is not Bayesian. The Widely Applicable Information Criterion (WAIC) is used instead.</p>
 <p>The distinguishing feature of WAIC is that it is <em>pointwise</em>. This means that uncertainty in prediction is considered case-by-case, or point-by-point, in the data. This is useful, because some observations are much harder to predict than others and may also have different uncertainty. You can think of WAIC as handling uncertainty where it actually matters: for each independent observation.</p>
-<pre class="r"><code># waic(ex2)</code></pre>
+<pre class="r"><code>waic(ex2)</code></pre>
+<pre><code>## 
+## Computed from 4000 by 246 log-likelihood matrix
+## 
+##           Estimate   SE
+## elpd_waic   -312.2 12.0
+## p_waic        54.8  4.7
+## waic         624.5 24.0</code></pre>
+<pre><code>## Warning: 42 (17.1%) p_waic estimates greater than 0.4. We recommend trying
+## loo instead.</code></pre>
 <p>For the statistic in each row, you get a point estimate and a standard error. The WAIC is on the bottom. The effective number of parameters, the <span class="math inline">\(p_\text{WAIC}\)</span>, is in the middle. Notice the <code>elpd_waic</code> on the top. That’s what you get without the <span class="math inline">\(-2 \times ...\)</span> in the formula. Remember how that part is just to put things in a metric amenable to <span class="math inline">\(\chi^2\)</span> difference testing? Well, not all Bayesians like that and within the <strong>Stan</strong> ecosystem you’ll also see the WAIC expressed instead as the <span class="math inline">\(\text{elpd}_\text{WAIC}\)</span>.</p>
 <p>The current recommended workflow within <strong>brms</strong> is to attach the WAIC information to the model fit. You do it with the <code>add_criterion()</code> function.</p>
-<pre class="r"><code># ex2 &lt;- add_criterion(ex2, &quot;waic&quot;)</code></pre>
+<pre class="r"><code>ex2 &lt;- add_criterion(ex2, &quot;waic&quot;)</code></pre>
 <pre class="r"><code>ex2$waic</code></pre>
-<pre><code>## NULL</code></pre>
+<pre><code>## 
+## Computed from 4000 by 246 log-likelihood matrix
+## 
+##           Estimate   SE
+## elpd_waic   -312.2 12.0
+## p_waic        54.8  4.7
+## waic         624.5 24.0</code></pre>
+<pre><code>## Warning: 42 (17.1%) p_waic estimates greater than 0.4. We recommend trying
+## loo instead.</code></pre>
 <p>Leave-one-out cross-validation (LOO-CV).</p>
 <p>Cross validation is quickly becoming the primary method to examine fit and utility of one’s model. The hope is our findings would generalize to other data we could have collected or may collect in the future. We’d like our findings to tell us something more general about the world at large. But we don’t have all the data and we typically don’t even know what all the relevant variables are. That is where validation comes in.</p>
 <p>k-fold is a common type of CV. As <span class="math inline">\(k\)</span> increases, the number of cases with a fold get smaller. In the extreme, <span class="math inline">\(k = N\)</span>, the number of cases within the data. At that point, <span class="math inline">\(k\)</span>-fold cross-validation turns into leave-one-out cross-validation (LOO-CV).</p>
 <p>But there’s a practical difficulty with LOO-CV: it’s costly. As you may have noticed, it takes some time to fit a Bayesian multilevel model. For large data and/or complicated models, sometimes it takes hours or days. Most of us just don’t have enough time or computational resources to fit that many models. Pareto smoothed importance-sampling leave-one-out cross-validation (PSIS-LOO) as an efficient way to approximate true LOO-CV.</p>
-<pre class="r"><code># l_fit1 &lt;- loo(ex2)
-# 
-# print(l_fit1)</code></pre>
+<pre class="r"><code>l_fit1 &lt;- loo(ex2)</code></pre>
+<pre><code>## Warning: Found 3 observations with a pareto_k &gt; 0.7 in model &#39;ex2&#39;. It is
+## recommended to set &#39;reloo = TRUE&#39; in order to calculate the ELPD without
+## the assumption that these observations are negligible. This will refit
+## the model 3 times to compute the ELPDs for the problematic observations
+## directly.</code></pre>
+<pre class="r"><code>print(l_fit1)</code></pre>
+<pre><code>## 
+## Computed from 4000 by 246 log-likelihood matrix
+## 
+##          Estimate   SE
+## elpd_loo   -315.5 12.3
+## p_loo        58.0  4.9
+## looic       630.9 24.6
+## ------
+## Monte Carlo SE of elpd_loo is NA.
+## 
+## Pareto k diagnostic values:
+##                          Count Pct.    Min. n_eff
+## (-Inf, 0.5]   (good)     221   89.8%   715       
+##  (0.5, 0.7]   (ok)        22    8.9%   395       
+##    (0.7, 1]   (bad)        3    1.2%   99        
+##    (1, Inf)   (very bad)   0    0.0%   &lt;NA&gt;      
+## See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
 <p>Comparing models with the WAIC and LOO.</p>
-<pre class="r"><code># ex2 &lt;- add_criterion(ex2, c(&quot;loo&quot;, &quot;waic&quot;))
-# ex2.fit2 &lt;- add_criterion(ex2.fit2, c(&quot;loo&quot;, &quot;waic&quot;))
-# ex2.fit3 &lt;- add_criterion(ex2.fit3, c(&quot;loo&quot;, &quot;waic&quot;))</code></pre>
+<pre class="r"><code>ex2 &lt;- add_criterion(ex2, c(&quot;loo&quot;, &quot;waic&quot;))
+ex2.fit2 &lt;- add_criterion(ex2.fit2, c(&quot;loo&quot;, &quot;waic&quot;))
+ex2.fit3 &lt;- add_criterion(ex2.fit3, c(&quot;loo&quot;, &quot;waic&quot;))</code></pre>
 <p>The point to focus on, here, is we can use the <code>loo_compare()</code> function to compare fits by their WAIC or LOO. Let’s practice with the WAIC.</p>
-<pre class="r"><code># ws &lt;- loo_compare(ex2, ex2.fit2, ex2.fit3, criterion = &quot;waic&quot;)
-# 
-# print(ws)</code></pre>
-<p>And if you wanted a more focused comparison, say between <code>fit1</code> and <code>fit2</code>, you’d just simplify your input.</p>
-<pre class="r"><code># loo_compare(ex2, ex2.fit2, criterion = &quot;loo&quot;) %&gt;% 
-#   print(simplify = F)</code></pre>
+<pre class="r"><code>ws &lt;- loo_compare(ex2, ex2.fit2, ex2.fit3, criterion = &quot;waic&quot;)
+
+print(ws)</code></pre>
+<pre><code>##          elpd_diff se_diff
+## ex2.fit3   0.0       0.0  
+## ex2.fit2  -0.5       2.2  
+## ex2      -35.7       7.6</code></pre>
+<p>And if you wanted a more focused comparison, say between <code>ex2</code> and <code>ex2.fit2</code>, you’d just simplify your input.</p>
+<pre class="r"><code>loo_compare(ex2, ex2.fit2, criterion = &quot;loo&quot;) %&gt;%
+  print(simplify = F)</code></pre>
+<pre><code>##          elpd_diff se_diff elpd_loo se_elpd_loo p_loo  se_p_loo looic 
+## ex2.fit2    0.0       0.0  -290.3     12.8        95.8    7.8    580.6
+## ex2       -25.1       7.6  -315.5     12.3        58.0    4.9    630.9
+##          se_looic
+## ex2.fit2   25.7  
+## ex2        24.6</code></pre>
 </div>
 <div id="random-effects-revisited" class="section level3">
 <h3>Random effects revisited</h3>
@@ -950,62 +1053,106 @@ head(f)</code></pre>
 ## 1    23    14     1 -1.02   1   
 ## 2    23    15     1 -1.02   1   
 ## 3    23    16     1 -1.02   1.73</code></pre>
-<pre class="r"><code># post_23 &lt;-
-#   posterior_samples(ex2.fit3) %&gt;% 
-#   select(starts_with(&quot;b_&quot;)) %&gt;% 
-#   mutate(`gamma[0][&quot;,23&quot;]` = b_intercept + b_coa * 1 ,
-#          `gamma[1][&quot;,23&quot;]` = b_age_14 + `b_age_14:coa`)
-# 
-# head(post_23)</code></pre>
-<pre class="r"><code># post_23 %&gt;% 
-#   select(starts_with(&quot;gamma&quot;)) %&gt;% 
-#   gather() %&gt;% 
-#   group_by(key) %&gt;% 
-#   summarise(mean = mean(value),
-#             ll = quantile(value, probs = .025),
-#             ul = quantile(value, probs = .975)) %&gt;% 
-#   mutate_if(is.double, round, digits = 3)</code></pre>
-<pre class="r"><code># post_23 %&gt;% 
-#   select(starts_with(&quot;gamma&quot;)) %&gt;% 
-#   gather() %&gt;% 
-#   
-#   ggplot(aes(x = value)) +
-#   geom_density(size = 0, fill = &quot;grey25&quot;) +
-#   scale_y_continuous(NULL, breaks = NULL) +
-#   xlab(&quot;participant-specific parameter estimates&quot;) +
-#   theme(panel.grid = element_blank()) +
-#   facet_wrap(~key, labeller = label_parsed, scales = &quot;free_y&quot;)</code></pre>
-<p>Yet this approach neglects the <span class="math inline">\(U\)</span>s. W’ve been extracting the <span class="math inline">\(U\)</span>s with <code>ranef()</code>. We also get them when we use <code>posterior_samples()</code>. Here we’ll extract both the <span class="math inline">\(\gamma\)</span>s as well as the <span class="math inline">\(U\)</span>s for <code>id == 23</code>.</p>
-<pre class="r"><code># post_23 &lt;-
-#   posterior_samples(ex2.fit3) %&gt;% 
-#   select(starts_with(&quot;b_&quot;), contains(&quot;23&quot;))
-# 
-# glimpse(post_23)</code></pre>
+<pre class="r"><code>post_23 &lt;-
+  posterior_samples(ex2.fit3) %&gt;%
+  select(starts_with(&quot;b_&quot;)) %&gt;%
+  mutate(`gamma[0][&quot;,23&quot;]` = b_intercept + b_coa * 1 ,
+         `gamma[1][&quot;,23&quot;]` = b_age_14 + `b_age_14:coa`)
+
+head(post_23)</code></pre>
+<pre><code>##   b_intercept  b_age_14     b_coa b_age_14:coa gamma[0][&quot;,23&quot;]
+## 1   0.5346809 0.2726632 0.3404332  -0.10266363       0.8751141
+## 2   0.5003572 0.2943097 0.4494779  -0.14723165       0.9498351
+## 3   0.6032724 0.2168968 0.1844755   0.05751361       0.7877478
+## 4   0.5964837 0.2549591 0.5012584  -0.11002381       1.0977422
+## 5   0.1802073 0.3580173 0.8257751  -0.03640028       1.0059824
+## 6   0.1855054 0.2323935 0.6888844  -0.02800347       0.8743898
+##   gamma[1][&quot;,23&quot;]
+## 1       0.1699996
+## 2       0.1470781
+## 3       0.2744105
+## 4       0.1449353
+## 5       0.3216170
+## 6       0.2043900</code></pre>
+<pre class="r"><code>post_23 %&gt;%
+  select(starts_with(&quot;gamma&quot;)) %&gt;%
+  gather() %&gt;%
+  group_by(key) %&gt;%
+  summarise(mean = mean(value),
+            ll = quantile(value, probs = .025),
+            ul = quantile(value, probs = .975)) %&gt;%
+  mutate_if(is.double, round, digits = 3)</code></pre>
+<pre><code>## # A tibble: 2 x 4
+##   key                  mean    ll    ul
+##   &lt;chr&gt;               &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;gamma[0][\&quot;,23\&quot;]&quot; 1.05  0.765 1.34 
+## 2 &quot;gamma[1][\&quot;,23\&quot;]&quot; 0.244 0.06  0.425</code></pre>
+<pre class="r"><code>post_23 %&gt;%
+  select(starts_with(&quot;gamma&quot;)) %&gt;%
+  gather() %&gt;%
+
+  ggplot(aes(x = value)) +
+  geom_density(size = 0, fill = &quot;grey25&quot;) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  xlab(&quot;participant-specific parameter estimates&quot;) +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~key, labeller = label_parsed, scales = &quot;free_y&quot;)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-62-1.png" width="672" /></p>
+<p>Yet this approach neglects the <span class="math inline">\(U\)</span>s. That is, it would be the same for everyone with COA = 1. W’ve been extracting the <span class="math inline">\(U\)</span>s with <code>ranef()</code>. We also get them when we use <code>posterior_samples()</code>. Here we’ll extract both the <span class="math inline">\(\gamma\)</span>s as well as the <span class="math inline">\(U\)</span>s for <code>id == 23</code>.</p>
+<pre class="r"><code>post_23.r &lt;-
+  posterior_samples(ex2.fit3) %&gt;%
+  select(starts_with(&quot;b_&quot;), contains(&quot;23&quot;))
+
+glimpse(post_23.r)</code></pre>
+<pre><code>## Observations: 4,000
+## Variables: 6
+## $ b_intercept          &lt;dbl&gt; 0.53468090, 0.50035715, 0.60327237, 0.59648…
+## $ b_age_14             &lt;dbl&gt; 0.27266322, 0.29430973, 0.21689684, 0.25495…
+## $ b_coa                &lt;dbl&gt; 0.3404332, 0.4494779, 0.1844755, 0.5012584,…
+## $ `b_age_14:coa`       &lt;dbl&gt; -0.102663630, -0.147231646, 0.057513614, -0…
+## $ `r_id[23,Intercept]` &lt;dbl&gt; -0.207329355, 0.396994028, -0.131291582, -0…
+## $ `r_id[23,age_14]`    &lt;dbl&gt; 0.12645762, -0.04757970, 0.23943539, 0.5509…</code></pre>
 <p>With the <code>r_id</code> prefix, <strong>brms</strong> tells you these are residual estimates for the levels in the <code>id</code> grouping variable. Within the brackets, we learn these particular columns are for <code>id == 23</code>, the first with respect to the <code>Intercept</code> and second with respect to the <code>age_14</code> parameter. Let’s put them to use.</p>
-<pre class="r"><code># post_23 &lt;-
-#   post_23 %&gt;% 
-#   mutate(`beta[0][&quot;,23&quot;]` = b_intercept + b_coa * 1  + `r_id[23,Intercept]`,
-#          `beta[1][&quot;,23&quot;]` = b_age_14 + `r_id[23,age_14]`)
-# 
-# glimpse(post_23)</code></pre>
-<pre class="r"><code># post_23 %&gt;% 
-#   select(starts_with(&quot;beta&quot;)) %&gt;% 
-#   gather() %&gt;% 
-#   group_by(key) %&gt;% 
-#   summarise(mean = mean(value),
-#             ll = quantile(value, probs = .025),
-#             ul = quantile(value, probs = .975)) %&gt;% 
-#   mutate_if(is.double, round, digits = 3)</code></pre>
-<pre class="r"><code># post_23 %&gt;% 
-#   select(starts_with(&quot;beta&quot;)) %&gt;% 
-#   gather() %&gt;% 
-#   
-#   ggplot(aes(x = value)) +
-#   geom_density(size = 0, fill = &quot;grey25&quot;) +
-#   scale_y_continuous(NULL, breaks = NULL) +
-#   xlab(&quot;participant-specific parameter estimates&quot;) +
-#   theme(panel.grid = element_blank()) +
-#   facet_wrap(~key, labeller = label_parsed, scales = &quot;free_y&quot;)</code></pre>
+<pre class="r"><code>post_23.r &lt;-
+  post_23.r %&gt;%
+  mutate(`beta[0][&quot;,23&quot;]` = b_intercept + b_coa * 1  + `r_id[23,Intercept]`,
+         `beta[1][&quot;,23&quot;]` = b_age_14 + `r_id[23,age_14]`)
+
+glimpse(post_23.r)</code></pre>
+<pre><code>## Observations: 4,000
+## Variables: 8
+## $ b_intercept          &lt;dbl&gt; 0.53468090, 0.50035715, 0.60327237, 0.59648…
+## $ b_age_14             &lt;dbl&gt; 0.27266322, 0.29430973, 0.21689684, 0.25495…
+## $ b_coa                &lt;dbl&gt; 0.3404332, 0.4494779, 0.1844755, 0.5012584,…
+## $ `b_age_14:coa`       &lt;dbl&gt; -0.102663630, -0.147231646, 0.057513614, -0…
+## $ `r_id[23,Intercept]` &lt;dbl&gt; -0.207329355, 0.396994028, -0.131291582, -0…
+## $ `r_id[23,age_14]`    &lt;dbl&gt; 0.12645762, -0.04757970, 0.23943539, 0.5509…
+## $ `beta[0][&quot;,23&quot;]`     &lt;dbl&gt; 0.6677847, 1.3468291, 0.6564562, 0.5999346,…
+## $ `beta[1][&quot;,23&quot;]`     &lt;dbl&gt; 0.39912085, 0.24673003, 0.45633223, 0.80588…</code></pre>
+<pre class="r"><code>post_23.r %&gt;%
+  select(starts_with(&quot;beta&quot;)) %&gt;%
+  gather() %&gt;%
+  group_by(key) %&gt;%
+  summarise(mean = mean(value),
+            ll = quantile(value, probs = .025),
+            ul = quantile(value, probs = .975)) %&gt;%
+  mutate_if(is.double, round, digits = 3)</code></pre>
+<pre><code>## # A tibble: 2 x 4
+##   key                 mean     ll    ul
+##   &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;beta[0][\&quot;,23\&quot;]&quot; 0.979  0.247 1.73 
+## 2 &quot;beta[1][\&quot;,23\&quot;]&quot; 0.332 -0.198 0.883</code></pre>
+<pre class="r"><code>post_23.r %&gt;%
+  select(starts_with(&quot;beta&quot;)) %&gt;%
+  gather() %&gt;%
+
+  ggplot(aes(x = value)) +
+  geom_density(size = 0, fill = &quot;grey25&quot;) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  xlab(&quot;participant-specific parameter estimates&quot;) +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~key, labeller = label_parsed, scales = &quot;free_y&quot;)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-66-1.png" width="672" /></p>
 </div>
 <div id="variance-explained" class="section level3">
 <h3>Variance explained</h3>
