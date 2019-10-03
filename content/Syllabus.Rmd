@@ -38,10 +38,10 @@ Grading consists of 3 aspects:
 | 2    | 9/5    | Growth curve basics; MLM in R: packages and procedures | tidyr/lme4 |   Hw#1             |
 | 3    | 9/12   |  Conditional (Level 1 and 2 predictors) MLM models  | purrr  |                 |
 | 4    | 9/19   |  Polynomial, piecewise and spline models   |  plotting redux     |  Hw#2      |
-| 5    | 9/26   |  Intensive data analysis/within person fluctuations p1       |   brms   | Hw#3       |
-| 6    | 10/03  | Intensive data analysis/within person fluctuations p1 | brms  |                     |
-| 7    | 10/10  | Group models | tidybayes  | Hw#4         |
-| 8    | 10/17   |   SEM and simple path models                    |  lavaan       |         |
+| 5    | 9/26   |  Intensive data analysis/within person fluctuations p1       |   brms   |        |
+| 6    | 10/03  | Intensive data analysis/within person fluctuations p1 | brms  |  Hw#3                   |
+| 7    | 10/10  | Group models | tidybayes and bayesplot |         |
+| 8    | 10/17   |   SEM and simple path models                    |  lavaan       | Hw#4         |
 | 9    | 10/24  | Latent Grown (curve) Models   |  amelia            |     Hw#5                 |
 | 10   | 10/31  |   MI and Second order Model |   semPlot                 |                      |
 | 11   | 11/7  |    Multiple group models |   lavaan          |    Hw#6                  |

@@ -1,5 +1,5 @@
 ---
-title: 'week 5 intenslive longitudinal'
+title: 'week 5 &6 intensive longitudinal'
 author: 'Josh Jackson'
 date: '2019-09-26'
 slug: week-5-intenslive-longitudinal
@@ -24,11 +24,11 @@ output:
 
 Often we are not interested in looking at trajectories across time. Instead we are interested in using time as a means to look at fluctuations in our DV. Fluctuations are especially helpful to understand within person processes versus between person processes. 
 
-Typically, the focus of these sorts of analyses are with level 1 (time varying) covariates ie variables you have assessed more than once. The questions that can be answered with this design are many, but some examples: Are there associations between variation in X and variation in Y; is X associated with greater levels of Y; does X relate to later levels of Y; Does X relate to later levels of Y after accounting for concurent levels of X. Notice how all of these have the flavor of standard regression interpretations rather than the models we have been working with. The reason is that that intensive longitudinal designs are less likely to focus on time as a meaningful metric. Instead the focus on accounting for time, or the processes that unfold across time, not time per se.  
+Typically, the focus of these sorts of analyses are with level 1 (time varying) covariates ie variables you have assessed more than once. The questions that can be answered with this design are many, but some examples: Are there associations between variation in X and variation in Y; is X associated with greater levels of Y; does X relate to later levels of Y; Does X relate to later levels of Y after accounting for concurrent levels of X. Notice how all of these have the flavor of standard regression interpretations rather than the models we have been working with. The reason is that that intensive longitudinal designs are less likely to focus on time as a meaningful metric. Instead the focus on accounting for time, or the processes that unfold across time, not time per se.  
 
 # Within versus between person processes
 
-Get comfortable with playing around between these two levels. Does doing more homework lead to better grades? Can ask this at a between person and a within peson level. Between: do people who on average study more tend to get higher grades? Within: When I study more do I get a higher grade? The answers are not necessarily the same. 
+Get comfortable with playing around between these two levels. Does doing more homework lead to better grades? Can ask this at a between person and a within person level. Between: do people who on average study more tend to get higher grades? Within: When I study more do I get a higher grade? The answers are not necessarily the same. 
 
 
 ```{r}
@@ -93,7 +93,7 @@ $$ {Health}_{ij} =  [\gamma_{00} +   \gamma_{10}Time_{ij}   + \gamma_{20}(Exerci
  
 # Lagged associations
 
-What if I want to predict something in the future? Such that my excercise today is associated with future health gains. 
+What if I want to predict something in the future? Such that my exercise today is associated with future health gains. 
 
 Level 1
 $$ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}(Exercise_{(i-t)j}-\overline{Exercise_{j}}) + \varepsilon_{ij} $$
@@ -110,16 +110,45 @@ $$ {\beta}_{1j} = \gamma_{10} + \gamma_{11}\overline{Exercise_{j}} + U_{1j} $$
 $$ {\beta}_{2j} = \gamma_{20}  $$ 
 
  
- Do I need to account for t also? 
+Do I need to account for time also? 
  
+## Lag as moderator? 
+
+Is your X - > Y association dependent on time between assessments. 
+
+Create a new lag variable that 
+
+$$ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Lag_{ij} + \beta_{2j}(Exercise_{(i-t)j}-\overline{Exercise_{j}}) + \varepsilon_{ij} $$
+
+Level 2: 
+$$ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}$$ 
+
+
+$$ {\beta}_{1j} = \gamma_{10} + \gamma_{11}\overline{Exercise_{j}} + U_{1j} $$  
+
+$$ {\beta}_{2j} = \gamma_{20}  $$ 
  
 # Within person mediation
 
+Pick your poison. Overall, Josh is very `blah` about MLMM
 
+1-1-1
+2-1-1
+2-2-1?
+
+see:
+
+http://quantpsy.org/pubs/bauer_preacher_gil_2006.pdf for a general overview
+
+https://vuorre.netlify.com/pdf/2017-vuorre-bolger.pdf for a experimental plus Bayesian perspective
+
+https://www.statmodel.com/download/pzz_012610_for_web.pdf for why MLM might not be best and using SEM along with MLM is preferable. 
+
+We will talk more about longitudinal mediation models when we cover SEM approaches. 
 
 # Modeling Residual Correlation
 
-Typically we model error assuming that there is $ {\varepsilon}_{ij} \sim \mathcal{N}(0, \sigma^{2})  $ such that there is no correlation among residuals. This is likely met when we have small number of repeated measures, as a linear trajectory likely captures the data well, and all of the deviations from that trajectory are likely noise. However, when we have a lot of repeated measures (and where we not be modeling time systematically) there is more likelihood that we will have correlated residuals. This is problematic. We got rid of a similar concern of correlated errors by fitting MLMs in the first place (ie nesting overvations within person), but this different.  
+Typically we model error assuming that there is $ {\varepsilon}_{ij} \sim \mathcal{N}(0, \sigma^{2})  $ such that there is no correlation among residuals. This is likely met when we have small number of repeated measures, as a linear trajectory likely captures the data well, and all of the deviations from that trajectory are likely noise. However, when we have a lot of repeated measures (and where we not be modeling time systematically) there is more likelihood that we will have correlated residuals. This is problematic. We got rid of a similar concern of correlated errors by fitting MLMs in the first place (ie nesting observations within person), but this different.  
 
 This is hard to do within 'lme4' but we can do it easier within Bayesian frameworks
 

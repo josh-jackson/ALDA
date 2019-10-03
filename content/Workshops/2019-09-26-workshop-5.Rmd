@@ -1,15 +1,13 @@
 ---
-title: 'workshop#5'
+title: 'workshop#5 & 6'
 author: 'Josh Jackson'
-date: '2019-09-26'
+date: '2019-10-3'
 slug: workshop-5
 categories: []
 tags: []
 subtitle: 'intro to brms'
 summary: 'intro to brms'
 authors: []
-lastmod: '2019-09-26T13:03:35-05:00'
-featured: no
 image:
   caption: ''
   focal_point: ''
@@ -28,6 +26,8 @@ The models we have been working with can easily be done in a Bayesian Framework.
 
 Many places to read up on this. Try Kruschke's Bayesian new statistics: https://rdcu.be/bRUvW
 
+Simple blog post on why Bayesian should be default: 
+http://babieslearninglanguage.blogspot.com/2018/02/mixed-effects-models-is-it-time-to-go.html
 
 # How is this different? 
 Bayesian analysis differs in two major ways from our traditional MLMs that we have been working with.  First, the end result is different in that it uses probability differently to derive estimates and to interpret the results. The lucky thing for us is that this will not be drastically different if we dont want it to be. In other words, we can keep with our focuses on estimates and precision around those estimates, same way as we would in standard stats world. Once you progress further, you can better understand the nuances, but right now lets not get bogged down by technical differences. 
@@ -305,6 +305,7 @@ $$
 
 Thus $\mathbf{D}$ is the diagonal matrix of standard deviations and $\mathbf{\Omega}$ is the correlation matrix. As we will see later, we will need to specify priors for each of these components, the SDs of our random effects and the correlation between them. By splitting them into these two different matrixes we can handle that easier.  
 
+
 ```{r}
 plot(sleep_brm)
 ```
@@ -442,19 +443,21 @@ early_int_sim %>%
 
 
 
-This is our assumed data generating model
+This is our assumed data generating model, with some relatively random priors thrown in. 
 
 
 $$
-cog  \sim \text{Normal} (\mu_{ij}, \sigma_\epsilon^2) \\
+cog  \sim \text{Normal} (\mu_{ij}, \sigma_{ij}) \\
 \mu_{ij}    = \gamma_{00j} + \gamma_{10j} ({age}_{ij} - 1) + \gamma_{11j} Program \\
-\gamma_{00}      \sim \text{Normal}(1.335, 1) \\
-\gamma_{10}      \sim \text{Normal}(0, 0.5) \\
-\sigma_\epsilon  \sim \text{Student-t} (3, 0, 1)\\ 
+\gamma_{00}      \sim \text{Normal}(0, 20) \\
+\gamma_{10}      \sim \text{Normal}(0, 5) \\
+\gamma_{11}      \sim \text{Normal}(0, 5) \\
+\sigma_{ij}  \sim \text{Student-t} (3, 0, 1)\\ 
 \sigma_0         \sim \text{Student-t} (3, 0, 1) \\
 \sigma_1         \sim \text{Student-t} (3, 0, 1) \\
 \rho_{01}        \sim \text{LKJ} (4) \\
 $$
+
 
 
 
@@ -468,6 +471,7 @@ ex1 <-
       control = list(adapt_delta = 0.9),
       seed = 3)
 ```
+
 
 ## Intercepts are different because of priors
 Another important part of the syntax concerns the intercept. Normally we include a 1 (or lmer does it for us automatically) to reflect we want to fit an intercept. If we did that here, we would have made the assumption that our predictors are mean centered. The default priors set by `brms::brm()` are  set based on this assumption. SO, if we want to use non mean centered predictors (eg setting time at initial wave or dummy variables), we need to respecify our model. Neither our variables are mean centered. 
@@ -504,11 +508,23 @@ print(ex1.nc)
   brms::get_prior(cog ~  1 + age_c + program + age_c:program + (1 + age_c | id), data = early_int_sim)
 ```
 
+Is 102 the right prior we should have? 
+```{r}
+library(psych)
+describe(early_int_sim$cog)
+```
 
-A few take aways: 1. not much as changed. Why? Because our data overwelm the prior. Again, priors are not *that* big of a deal. 
+
+
+A few take aways: 1. not much has changed. Why? Because our data overwelm the prior. Again, priors are not *that* big of a deal. 
 2. We can forget about all of this if we do not use default priors. More on that later. 
 
 ## What does the posterior look like? 
+
+```{r}
+plot(ex1)
+```
+
 
 ```{r}
 fixef(ex1)
@@ -549,6 +565,7 @@ post %>%
   facet_wrap(~key, scales = "free")
 ```
 
+Notice how this is exactly the same as using the `plot` function. But you have more control now. 
 
 ## Random effects
 
@@ -598,7 +615,7 @@ posterior_samples(ex1) %>%
 
 
 ## Ex 2
-Load the data, here from chapter 4 of Singer and Willet
+Load the data, here from chapter 4 of Singer and Willet. It is a three wave longitudinal study of adolescents. We are looking at alcohol use during the previous year, meausred from 0 - 7. COA is a variable indicating the child's parents are alocholics. 
 
 ```{r, warning = F, message = F, echo = F}
 
@@ -609,13 +626,16 @@ alcohol1_pp <- read_csv("alcohol1_pp.csv")
 
 Data generating model we are fitting. You can also write this with L1 and L2 convention. 
 
+
+
 $$
-\begin{align*}
-\text{alcuse}_{ij} & =  \gamma_{00} +  U_{0j} + \epsilon_{ij} \\
-\epsilon_{ij} & \sim \text{Normal} (0, \sigma_\epsilon^2) \\
-U_{0i} & \sim \text{Normal} (0, \sigma_0^2)
-\end{align*}
+alcuse  \sim \text{Normal} (\mu_{ij}, \sigma_{ij}) \\
+\mu_{ij}  =  \gamma_{00} +  U_{0j} + \epsilon_{ij} \\
+\gamma_{00} \sim \text{Student t} (1, 10) \\
+U_{0i}  \sim \text{Student t} (0, 10) \\
+\epsilon_{ij}  \sim \text{Student t} (0, 10) \\
 $$
+
 
 What are the default priors? 
 
@@ -666,6 +686,10 @@ Here are the results.
 
 ```{r}
 summary(ex2)
+```
+
+```{r}
+plot(ex2)
 ```
 
 
@@ -761,6 +785,11 @@ ex2.fit2 <-
       seed = 4)
 ```
 
+```{r}
+plot(ex2.fit2)
+```
+
+
 ### Marginal effects
 
 ```{r}
@@ -786,6 +815,10 @@ ex2.fit3 <-
 
 ```{r}
 summary(ex2.fit3)
+```
+
+```{r}
+plot(ex2.fit3)
 ```
 
 
@@ -852,6 +885,58 @@ f %>%
   theme(panel.grid = element_blank())
 ```  
 
+
+### Priors choice
+
+Here we can change the prior to our regression coefficents
+
+```{r, cache = T, warning = F, message = F, results = "hide"}
+ex2.fit3.prior <-
+  brm(data = alcohol1_pp, 
+      file = "fit6",
+      family = gaussian,
+      alcuse ~ 0 + intercept + age_14 + coa + age_14:coa + (1 + age_14 | id),
+      prior = c(prior(student_t(3, 0, 10), class = b),
+                prior(student_t(3, 0, 10), class = sd),
+                prior(student_t(3, 0, 10), class = sigma),
+                prior(lkj(1), class = cor)),
+      iter = 2000, warmup = 1000, chains = 4, cores = 4,
+      seed = 4)
+```
+
+```{r}
+plot(ex2.fit3.prior)
+```
+
+compare that to the default
+
+```{r}
+plot(ex2.fit3)
+```
+
+can we make it break? 
+
+```{r, cache = T, warning = F, message = F, results = "hide"}
+ex2.fit3.prior2 <-
+  brm(data = alcohol1_pp, 
+      file = "fit7",
+      family = gaussian,
+      alcuse ~ 0 + intercept + age_14 + coa + age_14:coa + (1 + age_14 | id),
+      prior = c(prior(student_t(3, 5, 2), class = b),
+                prior(student_t(3, 0, 10), class = sd),
+                prior(student_t(3, 0, 10), class = sigma),
+                prior(lkj(1), class = cor)),
+      iter = 2000, warmup = 1000, chains = 4, cores = 4,
+      seed = 4)
+```
+
+```{r}
+plot(ex2.fit3.prior2)
+```
+
+So what priors should you use? 
+
+I will suggest the use of regularizing priors. Regularizing priors are centered around no effect, with a relatively large band around it. This will in effect pull your estimates closer to zero, especially if you have limited data. The result will be better out of sample model validity. 
 
 ### Comparing models
 
@@ -943,7 +1028,6 @@ ws <- loo_compare(ex2, ex2.fit2, ex2.fit3, criterion = "waic")
 
 print(ws)
 ```
-
 
 
 
@@ -1055,7 +1139,8 @@ post_23.r %>%
 
 ### Variance explained
 ### Hypothesis function
-### Update function again
+### Missing data
+### Nonlinear
 
 
 

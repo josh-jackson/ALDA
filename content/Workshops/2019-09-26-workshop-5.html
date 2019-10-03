@@ -1,15 +1,13 @@
 ---
-title: 'workshop#5'
+title: 'workshop#5 & 6'
 author: 'Josh Jackson'
-date: '2019-09-26'
+date: '2019-10-3'
 slug: workshop-5
 categories: []
 tags: []
 subtitle: 'intro to brms'
 summary: 'intro to brms'
 authors: []
-lastmod: '2019-09-26T13:03:35-05:00'
-featured: no
 image:
   caption: ''
   focal_point: ''
@@ -45,11 +43,13 @@ output:
 <li><a href="#calculate-icc.">Calculate ICC.</a></li>
 <li><a href="#adding-predictors">Adding predictors</a></li>
 <li><a href="#marginal-effects">Marginal effects</a></li>
+<li><a href="#priors-choice">Priors choice</a></li>
 <li><a href="#comparing-models">Comparing models</a></li>
 <li><a href="#random-effects-revisited">Random effects revisited</a></li>
 <li><a href="#variance-explained">Variance explained</a></li>
 <li><a href="#hypothesis-function">Hypothesis function</a></li>
-<li><a href="#update-function-again">Update function again</a></li>
+<li><a href="#missing-data">Missing data</a></li>
+<li><a href="#nonlinear">Nonlinear</a></li>
 </ul></li>
 <li><a href="#thanks">Thanks</a></li>
 </ul></li>
@@ -59,6 +59,8 @@ output:
 <p>#Why Bayesian?
 The models we have been working with can easily be done in a Bayesian Framework. Why Bayes? For at least 3 reasons: 1. Better convergence. 2. More flexibility. 3. Fewer assumptions. We will go through each of these ideas throughout the course in more detail, so what I want to do is sell you not on the benefits but on the lack of difference.</p>
 <p>Many places to read up on this. Try Kruschke’s Bayesian new statistics: <a href="https://rdcu.be/bRUvW" class="uri">https://rdcu.be/bRUvW</a></p>
+<p>Simple blog post on why Bayesian should be default:
+<a href="http://babieslearninglanguage.blogspot.com/2018/02/mixed-effects-models-is-it-time-to-go.html" class="uri">http://babieslearninglanguage.blogspot.com/2018/02/mixed-effects-models-is-it-time-to-go.html</a></p>
 <div id="how-is-this-different" class="section level1">
 <h1>How is this different?</h1>
 <p>Bayesian analysis differs in two major ways from our traditional MLMs that we have been working with. First, the end result is different in that it uses probability differently to derive estimates and to interpret the results. The lucky thing for us is that this will not be drastically different if we dont want it to be. In other words, we can keep with our focuses on estimates and precision around those estimates, same way as we would in standard stats world. Once you progress further, you can better understand the nuances, but right now lets not get bogged down by technical differences.</p>
@@ -78,12 +80,12 @@ The models we have been working with can easily be done in a Bayesian Framework.
 <p>Prior - Allows us to provide a priori intuition about what the findings are. It is of the form of a probability distribution. E.g., “Extrodanary claims require extrodinary evidene.” Note we will note use this as “guesses” of what will happen. Instead we will use this as a regularization tool, similar to partial pooling in MLM.</p>
 <p>Likelihood - Distribution of the likelihood of various hypothesis. Probability attaches to possible results; likelihood attaches to hypotheses. It is akin to flipping coins, something we did with binomials.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
 ## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
 ## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
 ## ✔ readr   1.3.1          ✔ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <p>For 7 successes out of 10 trials, what is the likelihood of different probabilities?</p>
@@ -427,13 +429,14 @@ early_int_sim %&gt;%
         legend.position = &quot;none&quot;) +
   facet_wrap(~label)</code></pre>
 <p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-15-1.png" width="576" /></p>
-<p>This is our assumed data generating model</p>
+<p>This is our assumed data generating model, with some relatively random priors thrown in.</p>
 <p><span class="math display">\[
-cog  \sim \text{Normal} (\mu_{ij}, \sigma_\epsilon^2) \\
+cog  \sim \text{Normal} (\mu_{ij}, \sigma_{ij}) \\
 \mu_{ij}    = \gamma_{00j} + \gamma_{10j} ({age}_{ij} - 1) + \gamma_{11j} Program \\
-\gamma_{00}      \sim \text{Normal}(1.335, 1) \\
-\gamma_{10}      \sim \text{Normal}(0, 0.5) \\
-\sigma_\epsilon  \sim \text{Student-t} (3, 0, 1)\\ 
+\gamma_{00}      \sim \text{Normal}(0, 20) \\
+\gamma_{10}      \sim \text{Normal}(0, 5) \\
+\gamma_{11}      \sim \text{Normal}(0, 5) \\
+\sigma_{ij}  \sim \text{Student-t} (3, 0, 1)\\ 
 \sigma_0         \sim \text{Student-t} (3, 0, 1) \\
 \sigma_1         \sim \text{Student-t} (3, 0, 1) \\
 \rho_{01}        \sim \text{LKJ} (4) \\
@@ -539,12 +542,26 @@ print(ex1.nc)</code></pre>
 ## 10      
 ## 11      
 ## 12</code></pre>
-<p>A few take aways: 1. not much as changed. Why? Because our data overwelm the prior. Again, priors are not <em>that</em> big of a deal.
+<p>Is 102 the right prior we should have?</p>
+<pre class="r"><code>library(psych)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;psych&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:ggplot2&#39;:
+## 
+##     %+%, alpha</code></pre>
+<pre class="r"><code>describe(early_int_sim$cog)</code></pre>
+<pre><code>##    vars   n   mean    sd median trimmed   mad min max range skew kurtosis
+## X1    1 309 102.35 15.42    102  102.27 16.31  64 155    91 0.12    -0.16
+##      se
+## X1 0.88</code></pre>
+<p>A few take aways: 1. not much has changed. Why? Because our data overwelm the prior. Again, priors are not <em>that</em> big of a deal.
 2. We can forget about all of this if we do not use default priors. More on that later.</p>
 </div>
 </div>
 <div id="what-does-the-posterior-look-like" class="section level2">
 <h2>What does the posterior look like?</h2>
+<pre class="r"><code>plot(ex1)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-22-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-22-2.png" width="672" /></p>
 <pre class="r"><code>fixef(ex1)</code></pre>
 <pre><code>##                 Estimate Est.Error       Q2.5      Q97.5
 ## intercept     106.529202  1.946755 102.448293 110.258352
@@ -558,6 +575,9 @@ print(ex1.nc)</code></pre>
 ## to the package is available through vignette(&#39;brms_overview&#39;).</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;brms&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:psych&#39;:
+## 
+##     cs</code></pre>
 <pre><code>## The following object is masked from &#39;package:lme4&#39;:
 ## 
 ##     ngrps</code></pre>
@@ -597,7 +617,8 @@ head()</code></pre>
   scale_y_continuous(NULL, breaks = NULL) +
   theme(panel.grid = element_blank()) +
   facet_wrap(~key, scales = &quot;free&quot;)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p>Notice how this is exactly the same as using the <code>plot</code> function. But you have more control now.</p>
 </div>
 <div id="random-effects" class="section level2">
 <h2>Random effects</h2>
@@ -686,18 +707,18 @@ head()</code></pre>
   theme(panel.grid = element_blank(),
         strip.text = element_text(size = 12)) +
   facet_wrap(~key, scales = &quot;free&quot;, labeller = label_parsed)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
 </div>
 <div id="ex-2" class="section level2">
 <h2>Ex 2</h2>
-<p>Load the data, here from chapter 4 of Singer and Willet</p>
+<p>Load the data, here from chapter 4 of Singer and Willet. It is a three wave longitudinal study of adolescents. We are looking at alcohol use during the previous year, meausred from 0 - 7. COA is a variable indicating the child’s parents are alocholics.</p>
 <p>Data generating model we are fitting. You can also write this with L1 and L2 convention.</p>
 <p><span class="math display">\[
-\begin{align*}
-\text{alcuse}_{ij} &amp; =  \gamma_{00} +  U_{0j} + \epsilon_{ij} \\
-\epsilon_{ij} &amp; \sim \text{Normal} (0, \sigma_\epsilon^2) \\
-U_{0i} &amp; \sim \text{Normal} (0, \sigma_0^2)
-\end{align*}
+alcuse  \sim \text{Normal} (\mu_{ij}, \sigma_{ij}) \\
+\mu_{ij}  =  \gamma_{00} +  U_{0j} + \epsilon_{ij} \\
+\gamma_{00} \sim \text{Student t} (1, 10) \\
+U_{0i}  \sim \text{Student t} (0, 10) \\
+\epsilon_{ij}  \sim \text{Student t} (0, 10) \\
 \]</span></p>
 <p>What are the default priors?</p>
 <pre class="r"><code>  get_prior(data = alcohol1_pp, 
@@ -738,7 +759,7 @@ U_{0i} &amp; \sim \text{Normal} (0, \sigma_0^2)
   labs(title = expression(paste(&quot;prior for &quot;, gamma[0][0])),
        x = &quot;parameter space&quot;) +
   theme(panel.grid = element_blank())</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
 <p>Note a few things: First, this is a broad space for our intercept based on what we are looking at. This would be considering minimally informative.</p>
 <p>Second, consider the variance priors – they go below zero. Does this make sense?</p>
 <p>Here are the results.</p>
@@ -766,6 +787,8 @@ U_{0i} &amp; \sim \text{Normal} (0, \sigma_0^2)
 ## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+<pre class="r"><code>plot(ex2)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
 <pre class="r"><code>post2 &lt;- posterior_samples(ex2)</code></pre>
 <p>Since all we’re interested in are the variance components, we’ll <code>select()</code> out the relevant columns from <code>post2</code>, and save the results in a mini data frame, <code>v</code>.</p>
 <pre class="r"><code>v &lt;-
@@ -793,7 +816,7 @@ head(v)</code></pre>
   scale_y_continuous(NULL, breaks = NULL) +
   theme(panel.grid = element_blank()) +
   facet_wrap(~key, scales = &quot;free_y&quot;)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
 </div>
 <div id="calculate-icc." class="section level3">
 <h3>Calculate ICC.</h3>
@@ -807,7 +830,7 @@ ICC = \frac{\sigma_0^2}{\sigma_0^2 + \sigma_\epsilon^2}
   geom_density(size = 0, fill = &quot;grey&quot;) +
   scale_x_continuous( limits = 0:1) +
   scale_y_continuous(NULL, breaks = NULL)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
 <p>Note we get a distribution of ICCs, not just a singular score! Not all of our samples show as strong of between person association. Note that measuring this dispersion is a feature, not a problem. With standard MLM we are not taking into account potential sampling variance that may influence our estimates. Bayesian does.</p>
 </div>
 <div id="adding-predictors" class="section level3">
@@ -849,11 +872,13 @@ ICC = \frac{\sigma_0^2}{\sigma_0^2 + \sigma_\epsilon^2}
                 prior(lkj(1), class = cor)),
       iter = 2000, warmup = 1000, chains = 4, cores = 4,
       seed = 4)</code></pre>
+<pre class="r"><code>plot(ex2.fit2)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-44-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-44-2.png" width="672" /></p>
 </div>
 <div id="marginal-effects" class="section level3">
 <h3>Marginal effects</h3>
 <pre class="r"><code>marginal_effects(ex2.fit2)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
 <pre class="r"><code>ex2.fit3 &lt;-
   brm(data = alcohol1_pp, 
       file = &quot;fit5&quot;,
@@ -897,22 +922,24 @@ ICC = \frac{\sigma_0^2}{\sigma_0^2 + \sigma_\epsilon^2}
 ## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+<pre class="r"><code>plot(ex2.fit3)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-47-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-47-2.png" width="672" /></p>
 <pre class="r"><code>marginal_effects(ex2.fit3)</code></pre>
 <p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/marg.ex2.fit3-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/marg.ex2.fit3-2.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/marg.ex2.fit3-3.png" width="672" /></p>
 <pre class="r"><code>fit3_f &lt;-
   update(ex2.fit3,
          newdata = alcohol1_pp %&gt;% mutate(coa = factor(coa)))</code></pre>
 <pre class="r"><code>marginal_effects(fit3_f)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-43-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-43-2.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-43-3.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-48-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-48-2.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-48-3.png" width="672" /></p>
 <pre class="r"><code>marginal_effects(fit3_f,
                  effects = &quot;coa&quot;)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
 <pre class="r"><code>marginal_effects(fit3_f,
                  effects = &quot;coa:age_14&quot;)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
 <pre class="r"><code>marginal_effects(fit3_f,
                  effects = &quot;age_14:coa&quot;)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
 <p>We can use fitted function to create “predicted” values, much like we did with lmer</p>
 <pre class="r"><code>nd &lt;- 
   tibble(age_14 = seq(from = 0, to = 2, length.out = 30))
@@ -941,7 +968,43 @@ head(f)</code></pre>
   scale_y_continuous(&quot;alcuse&quot;, breaks = 0:2, limits = c(0, 2)) +
   coord_cartesian(xlim = 13:17) +
   theme(panel.grid = element_blank())</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-53-1.png" width="672" /></p>
+</div>
+<div id="priors-choice" class="section level3">
+<h3>Priors choice</h3>
+<p>Here we can change the prior to our regression coefficents</p>
+<pre class="r"><code>ex2.fit3.prior &lt;-
+  brm(data = alcohol1_pp, 
+      file = &quot;fit6&quot;,
+      family = gaussian,
+      alcuse ~ 0 + intercept + age_14 + coa + age_14:coa + (1 + age_14 | id),
+      prior = c(prior(student_t(3, 0, 10), class = b),
+                prior(student_t(3, 0, 10), class = sd),
+                prior(student_t(3, 0, 10), class = sigma),
+                prior(lkj(1), class = cor)),
+      iter = 2000, warmup = 1000, chains = 4, cores = 4,
+      seed = 4)</code></pre>
+<pre class="r"><code>plot(ex2.fit3.prior)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-55-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-55-2.png" width="672" /></p>
+<p>compare that to the default</p>
+<pre class="r"><code>plot(ex2.fit3)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-56-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-56-2.png" width="672" /></p>
+<p>can we make it break?</p>
+<pre class="r"><code>ex2.fit3.prior2 &lt;-
+  brm(data = alcohol1_pp, 
+      file = &quot;fit7&quot;,
+      family = gaussian,
+      alcuse ~ 0 + intercept + age_14 + coa + age_14:coa + (1 + age_14 | id),
+      prior = c(prior(student_t(3, 5, 2), class = b),
+                prior(student_t(3, 0, 10), class = sd),
+                prior(student_t(3, 0, 10), class = sigma),
+                prior(lkj(1), class = cor)),
+      iter = 2000, warmup = 1000, chains = 4, cores = 4,
+      seed = 4)</code></pre>
+<pre class="r"><code>plot(ex2.fit3.prior2)</code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-58-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-58-2.png" width="672" /></p>
+<p>So what priors should you use?</p>
+<p>I will suggest the use of regularizing priors. Regularizing priors are centered around no effect, with a relatively large band around it. This will in effect pull your estimates closer to zero, especially if you have limited data. The result will be better out of sample model validity.</p>
 </div>
 <div id="comparing-models" class="section level3">
 <h3>Comparing models</h3>
@@ -965,7 +1028,7 @@ head(f)</code></pre>
   geom_density(fill = &quot;grey25&quot;, size = 0) +
   scale_y_continuous(NULL, breaks = NULL) +
   theme(panel.grid = element_blank())</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-51-1.png" width="576" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-61-1.png" width="576" /></p>
 <p>The AIC is frequentist and cannot handle models with priors. The BIC isis a misnomer as it is not Bayesian. The Widely Applicable Information Criterion (WAIC) is used instead.</p>
 <p>The distinguishing feature of WAIC is that it is <em>pointwise</em>. This means that uncertainty in prediction is considered case-by-case, or point-by-point, in the data. This is useful, because some observations are much harder to predict than others and may also have different uncertainty. You can think of WAIC as handling uncertainty where it actually matters: for each independent observation.</p>
 <pre class="r"><code>waic(ex2)</code></pre>
@@ -1097,7 +1160,7 @@ head(post_23)</code></pre>
   xlab(&quot;participant-specific parameter estimates&quot;) +
   theme(panel.grid = element_blank()) +
   facet_wrap(~key, labeller = label_parsed, scales = &quot;free_y&quot;)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-62-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-72-1.png" width="672" /></p>
 <p>Yet this approach neglects the <span class="math inline">\(U\)</span>s. That is, it would be the same for everyone with COA = 1. W’ve been extracting the <span class="math inline">\(U\)</span>s with <code>ranef()</code>. We also get them when we use <code>posterior_samples()</code>. Here we’ll extract both the <span class="math inline">\(\gamma\)</span>s as well as the <span class="math inline">\(U\)</span>s for <code>id == 23</code>.</p>
 <pre class="r"><code>post_23.r &lt;-
   posterior_samples(ex2.fit3) %&gt;%
@@ -1152,7 +1215,7 @@ glimpse(post_23.r)</code></pre>
   xlab(&quot;participant-specific parameter estimates&quot;) +
   theme(panel.grid = element_blank()) +
   facet_wrap(~key, labeller = label_parsed, scales = &quot;free_y&quot;)</code></pre>
-<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-66-1.png" width="672" /></p>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-76-1.png" width="672" /></p>
 </div>
 <div id="variance-explained" class="section level3">
 <h3>Variance explained</h3>
@@ -1160,8 +1223,11 @@ glimpse(post_23.r)</code></pre>
 <div id="hypothesis-function" class="section level3">
 <h3>Hypothesis function</h3>
 </div>
-<div id="update-function-again" class="section level3">
-<h3>Update function again</h3>
+<div id="missing-data" class="section level3">
+<h3>Missing data</h3>
+</div>
+<div id="nonlinear" class="section level3">
+<h3>Nonlinear</h3>
 </div>
 </div>
 <div id="thanks" class="section level2">

@@ -13,7 +13,7 @@
     </image>
     
     <item>
-      <title>week 5 intenslive longitudinal</title>
+      <title>week 5 &amp;6 intensive longitudinal</title>
       <link>/lectures/week-5-intenslive-longitudinal/</link>
       <pubDate>Thu, 26 Sep 2019 00:00:00 +0000</pubDate>
       <guid>/lectures/week-5-intenslive-longitudinal/</guid>
@@ -25,7 +25,9 @@
 &lt;li&gt;&lt;a href=&#34;#within-versus-between-person-processes&#34;&gt;Within versus between person processes&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#accounting-for-time&#34;&gt;Accounting for time&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#the-importance-of-centering.&#34;&gt;The importance of centering.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#lagged-associations&#34;&gt;Lagged associations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lagged-associations&#34;&gt;Lagged associations&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#lag-as-moderator&#34;&gt;Lag as moderator?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#within-person-mediation&#34;&gt;Within person mediation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#modeling-residual-correlation&#34;&gt;Modeling Residual Correlation&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -34,18 +36,18 @@
 &lt;div id=&#34;intensive-longitudinal-designs&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Intensive Longitudinal Designs&lt;/h1&gt;
 &lt;p&gt;Often we are not interested in looking at trajectories across time. Instead we are interested in using time as a means to look at fluctuations in our DV. Fluctuations are especially helpful to understand within person processes versus between person processes.&lt;/p&gt;
-&lt;p&gt;Typically, the focus of these sorts of analyses are with level 1 (time varying) covariates ie variables you have assessed more than once. The questions that can be answered with this design are many, but some examples: Are there associations between variation in X and variation in Y; is X associated with greater levels of Y; does X relate to later levels of Y; Does X relate to later levels of Y after accounting for concurent levels of X. Notice how all of these have the flavor of standard regression interpretations rather than the models we have been working with. The reason is that that intensive longitudinal designs are less likely to focus on time as a meaningful metric. Instead the focus on accounting for time, or the processes that unfold across time, not time per se.&lt;/p&gt;
+&lt;p&gt;Typically, the focus of these sorts of analyses are with level 1 (time varying) covariates ie variables you have assessed more than once. The questions that can be answered with this design are many, but some examples: Are there associations between variation in X and variation in Y; is X associated with greater levels of Y; does X relate to later levels of Y; Does X relate to later levels of Y after accounting for concurrent levels of X. Notice how all of these have the flavor of standard regression interpretations rather than the models we have been working with. The reason is that that intensive longitudinal designs are less likely to focus on time as a meaningful metric. Instead the focus on accounting for time, or the processes that unfold across time, not time per se.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;within-versus-between-person-processes&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Within versus between person processes&lt;/h1&gt;
-&lt;p&gt;Get comfortable with playing around between these two levels. Does doing more homework lead to better grades? Can ask this at a between person and a within peson level. Between: do people who on average study more tend to get higher grades? Within: When I study more do I get a higher grade? The answers are not necessarily the same.&lt;/p&gt;
+&lt;p&gt;Get comfortable with playing around between these two levels. Does doing more homework lead to better grades? Can ask this at a between person and a within person level. Between: do people who on average study more tend to get higher grades? Within: When I study more do I get a higher grade? The answers are not necessarily the same.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
 ## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
 ## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
 ## ✔ readr   1.3.1          ✔ forcats 0.4.0&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;simp&amp;lt;- tribble(
@@ -91,21 +93,40 @@ ggplot(simp, aes(x=study, y=test.score, group = group)) +
 &lt;/div&gt;
 &lt;div id=&#34;lagged-associations&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Lagged associations&lt;/h1&gt;
-&lt;p&gt;What if I want to predict something in the future? Such that my excercise today is associated with future health gains.&lt;/p&gt;
+&lt;p&gt;What if I want to predict something in the future? Such that my exercise today is associated with future health gains.&lt;/p&gt;
 &lt;p&gt;Level 1
 &lt;span class=&#34;math display&#34;&gt;\[ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}(Exercise_{(i-t)j}-\overline{Exercise_{j}}) + \varepsilon_{ij} \]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Level 2:
 &lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{1j} = \gamma_{10} + \gamma_{11}\overline{Exercise_{j}} + U_{1j} \]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{2j} = \gamma_{20}  \]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Do I need to account for t also?&lt;/p&gt;
+&lt;p&gt;Do I need to account for time also?&lt;/p&gt;
+&lt;div id=&#34;lag-as-moderator&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Lag as moderator?&lt;/h2&gt;
+&lt;p&gt;Is your X - &amp;gt; Y association dependent on time between assessments.&lt;/p&gt;
+&lt;p&gt;Create a new lag variable that&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Lag_{ij} + \beta_{2j}(Exercise_{(i-t)j}-\overline{Exercise_{j}}) + \varepsilon_{ij} \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Level 2:
+&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{1j} = \gamma_{10} + \gamma_{11}\overline{Exercise_{j}} + U_{1j} \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ {\beta}_{2j} = \gamma_{20}  \]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;within-person-mediation&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Within person mediation&lt;/h1&gt;
+&lt;p&gt;Pick your poison. Overall, Josh is very &lt;code&gt;blah&lt;/code&gt; about MLMM&lt;/p&gt;
+&lt;p&gt;1-1-1
+2-1-1
+2-2-1?&lt;/p&gt;
+&lt;p&gt;see:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://quantpsy.org/pubs/bauer_preacher_gil_2006.pdf&#34; class=&#34;uri&#34;&gt;http://quantpsy.org/pubs/bauer_preacher_gil_2006.pdf&lt;/a&gt; for a general overview&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://vuorre.netlify.com/pdf/2017-vuorre-bolger.pdf&#34; class=&#34;uri&#34;&gt;https://vuorre.netlify.com/pdf/2017-vuorre-bolger.pdf&lt;/a&gt; for a experimental plus Bayesian perspective&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.statmodel.com/download/pzz_012610_for_web.pdf&#34; class=&#34;uri&#34;&gt;https://www.statmodel.com/download/pzz_012610_for_web.pdf&lt;/a&gt; for why MLM might not be best and using SEM along with MLM is preferable.&lt;/p&gt;
+&lt;p&gt;We will talk more about longitudinal mediation models when we cover SEM approaches.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;modeling-residual-correlation&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Modeling Residual Correlation&lt;/h1&gt;
-&lt;p&gt;Typically we model error assuming that there is $ {}_{ij} (0, ^{2}) $ such that there is no correlation among residuals. This is likely met when we have small number of repeated measures, as a linear trajectory likely captures the data well, and all of the deviations from that trajectory are likely noise. However, when we have a lot of repeated measures (and where we not be modeling time systematically) there is more likelihood that we will have correlated residuals. This is problematic. We got rid of a similar concern of correlated errors by fitting MLMs in the first place (ie nesting overvations within person), but this different.&lt;/p&gt;
+&lt;p&gt;Typically we model error assuming that there is $ {}_{ij} (0, ^{2}) $ such that there is no correlation among residuals. This is likely met when we have small number of repeated measures, as a linear trajectory likely captures the data well, and all of the deviations from that trajectory are likely noise. However, when we have a lot of repeated measures (and where we not be modeling time systematically) there is more likelihood that we will have correlated residuals. This is problematic. We got rid of a similar concern of correlated errors by fitting MLMs in the first place (ie nesting observations within person), but this different.&lt;/p&gt;
 &lt;p&gt;This is hard to do within ‘lme4’ but we can do it easier within Bayesian frameworks&lt;/p&gt;
 &lt;/div&gt;
 </description>

@@ -24,7 +24,7 @@
   
     
   
-  <meta name="description" content="Intensive Longitudinal Designs Within versus between person processes Accounting for time The importance of centering. Lagged associations Within person mediation Modeling Residual Correlation   Intensive Longitudinal Designs Often we are not interested in looking at trajectories across time. Instead we are interested in using time as a means to look at fluctuations in our DV. Fluctuations are especially helpful to understand within person processes versus between person processes.">
+  <meta name="description" content="Intensive Longitudinal Designs Within versus between person processes Accounting for time The importance of centering. Lagged associations Lag as moderator?  Within person mediation Modeling Residual Correlation   Intensive Longitudinal Designs Often we are not interested in looking at trajectories across time. Instead we are interested in using time as a means to look at fluctuations in our DV. Fluctuations are especially helpful to understand within person processes versus between person processes.">
 
   
   <link rel="alternate" hreflang="en-us" href="/lectures/week-5-intenslive-longitudinal/">
@@ -109,8 +109,8 @@
   
   <meta property="og:site_name" content="Applied Longitudinal Data Analysis">
   <meta property="og:url" content="/lectures/week-5-intenslive-longitudinal/">
-  <meta property="og:title" content="week 5 intenslive longitudinal | Applied Longitudinal Data Analysis">
-  <meta property="og:description" content="Intensive Longitudinal Designs Within versus between person processes Accounting for time The importance of centering. Lagged associations Within person mediation Modeling Residual Correlation   Intensive Longitudinal Designs Often we are not interested in looking at trajectories across time. Instead we are interested in using time as a means to look at fluctuations in our DV. Fluctuations are especially helpful to understand within person processes versus between person processes."><meta property="og:image" content="/img/icon-192.png">
+  <meta property="og:title" content="week 5 &amp;6 intensive longitudinal | Applied Longitudinal Data Analysis">
+  <meta property="og:description" content="Intensive Longitudinal Designs Within versus between person processes Accounting for time The importance of centering. Lagged associations Lag as moderator?  Within person mediation Modeling Residual Correlation   Intensive Longitudinal Designs Often we are not interested in looking at trajectories across time. Instead we are interested in using time as a means to look at fluctuations in our DV. Fluctuations are especially helpful to understand within person processes versus between person processes."><meta property="og:image" content="/img/icon-192.png">
   <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
   
     
@@ -128,7 +128,7 @@
 
 
 
-  <title>week 5 intenslive longitudinal | Applied Longitudinal Data Analysis</title>
+  <title>week 5 &amp;6 intensive longitudinal | Applied Longitudinal Data Analysis</title>
 
 </head>
 
@@ -324,7 +324,7 @@
   
   
 <div class="article-container pt-3">
-  <h1 itemprop="name">week 5 intenslive longitudinal</h1>
+  <h1 itemprop="name">week 5 &amp;6 intensive longitudinal</h1>
 
   
 
@@ -402,7 +402,9 @@
 <li><a href="#within-versus-between-person-processes">Within versus between person processes</a></li>
 <li><a href="#accounting-for-time">Accounting for time</a></li>
 <li><a href="#the-importance-of-centering.">The importance of centering.</a></li>
-<li><a href="#lagged-associations">Lagged associations</a></li>
+<li><a href="#lagged-associations">Lagged associations</a><ul>
+<li><a href="#lag-as-moderator">Lag as moderator?</a></li>
+</ul></li>
 <li><a href="#within-person-mediation">Within person mediation</a></li>
 <li><a href="#modeling-residual-correlation">Modeling Residual Correlation</a></li>
 </ul>
@@ -411,18 +413,18 @@
 <div id="intensive-longitudinal-designs" class="section level1">
 <h1>Intensive Longitudinal Designs</h1>
 <p>Often we are not interested in looking at trajectories across time. Instead we are interested in using time as a means to look at fluctuations in our DV. Fluctuations are especially helpful to understand within person processes versus between person processes.</p>
-<p>Typically, the focus of these sorts of analyses are with level 1 (time varying) covariates ie variables you have assessed more than once. The questions that can be answered with this design are many, but some examples: Are there associations between variation in X and variation in Y; is X associated with greater levels of Y; does X relate to later levels of Y; Does X relate to later levels of Y after accounting for concurent levels of X. Notice how all of these have the flavor of standard regression interpretations rather than the models we have been working with. The reason is that that intensive longitudinal designs are less likely to focus on time as a meaningful metric. Instead the focus on accounting for time, or the processes that unfold across time, not time per se.</p>
+<p>Typically, the focus of these sorts of analyses are with level 1 (time varying) covariates ie variables you have assessed more than once. The questions that can be answered with this design are many, but some examples: Are there associations between variation in X and variation in Y; is X associated with greater levels of Y; does X relate to later levels of Y; Does X relate to later levels of Y after accounting for concurrent levels of X. Notice how all of these have the flavor of standard regression interpretations rather than the models we have been working with. The reason is that that intensive longitudinal designs are less likely to focus on time as a meaningful metric. Instead the focus on accounting for time, or the processes that unfold across time, not time per se.</p>
 </div>
 <div id="within-versus-between-person-processes" class="section level1">
 <h1>Within versus between person processes</h1>
-<p>Get comfortable with playing around between these two levels. Does doing more homework lead to better grades? Can ask this at a between person and a within peson level. Between: do people who on average study more tend to get higher grades? Within: When I study more do I get a higher grade? The answers are not necessarily the same.</p>
+<p>Get comfortable with playing around between these two levels. Does doing more homework lead to better grades? Can ask this at a between person and a within person level. Between: do people who on average study more tend to get higher grades? Within: When I study more do I get a higher grade? The answers are not necessarily the same.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
 ## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
 ## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
 ## ✔ readr   1.3.1          ✔ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>simp&lt;- tribble(
@@ -468,21 +470,40 @@ ggplot(simp, aes(x=study, y=test.score, group = group)) +
 </div>
 <div id="lagged-associations" class="section level1">
 <h1>Lagged associations</h1>
-<p>What if I want to predict something in the future? Such that my excercise today is associated with future health gains.</p>
+<p>What if I want to predict something in the future? Such that my exercise today is associated with future health gains.</p>
 <p>Level 1
 <span class="math display">\[ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Time_{ij} + \beta_{2j}(Exercise_{(i-t)j}-\overline{Exercise_{j}}) + \varepsilon_{ij} \]</span></p>
 <p>Level 2:
 <span class="math display">\[ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}\]</span></p>
 <p><span class="math display">\[ {\beta}_{1j} = \gamma_{10} + \gamma_{11}\overline{Exercise_{j}} + U_{1j} \]</span></p>
 <p><span class="math display">\[ {\beta}_{2j} = \gamma_{20}  \]</span></p>
-<p>Do I need to account for t also?</p>
+<p>Do I need to account for time also?</p>
+<div id="lag-as-moderator" class="section level2">
+<h2>Lag as moderator?</h2>
+<p>Is your X - &gt; Y association dependent on time between assessments.</p>
+<p>Create a new lag variable that</p>
+<p><span class="math display">\[ {Health}_{ij} = \beta_{0j}  + \beta_{1j}Lag_{ij} + \beta_{2j}(Exercise_{(i-t)j}-\overline{Exercise_{j}}) + \varepsilon_{ij} \]</span></p>
+<p>Level 2:
+<span class="math display">\[ {\beta}_{0j} = \gamma_{00} + \gamma_{01}\overline{Exercise_{j}} + U_{0j}\]</span></p>
+<p><span class="math display">\[ {\beta}_{1j} = \gamma_{10} + \gamma_{11}\overline{Exercise_{j}} + U_{1j} \]</span></p>
+<p><span class="math display">\[ {\beta}_{2j} = \gamma_{20}  \]</span></p>
+</div>
 </div>
 <div id="within-person-mediation" class="section level1">
 <h1>Within person mediation</h1>
+<p>Pick your poison. Overall, Josh is very <code>blah</code> about MLMM</p>
+<p>1-1-1
+2-1-1
+2-2-1?</p>
+<p>see:</p>
+<p><a href="http://quantpsy.org/pubs/bauer_preacher_gil_2006.pdf" class="uri">http://quantpsy.org/pubs/bauer_preacher_gil_2006.pdf</a> for a general overview</p>
+<p><a href="https://vuorre.netlify.com/pdf/2017-vuorre-bolger.pdf" class="uri">https://vuorre.netlify.com/pdf/2017-vuorre-bolger.pdf</a> for a experimental plus Bayesian perspective</p>
+<p><a href="https://www.statmodel.com/download/pzz_012610_for_web.pdf" class="uri">https://www.statmodel.com/download/pzz_012610_for_web.pdf</a> for why MLM might not be best and using SEM along with MLM is preferable.</p>
+<p>We will talk more about longitudinal mediation models when we cover SEM approaches.</p>
 </div>
 <div id="modeling-residual-correlation" class="section level1">
 <h1>Modeling Residual Correlation</h1>
-<p>Typically we model error assuming that there is $ {}_{ij} (0, ^{2}) $ such that there is no correlation among residuals. This is likely met when we have small number of repeated measures, as a linear trajectory likely captures the data well, and all of the deviations from that trajectory are likely noise. However, when we have a lot of repeated measures (and where we not be modeling time systematically) there is more likelihood that we will have correlated residuals. This is problematic. We got rid of a similar concern of correlated errors by fitting MLMs in the first place (ie nesting overvations within person), but this different.</p>
+<p>Typically we model error assuming that there is $ {}_{ij} (0, ^{2}) $ such that there is no correlation among residuals. This is likely met when we have small number of repeated measures, as a linear trajectory likely captures the data well, and all of the deviations from that trajectory are likely noise. However, when we have a lot of repeated measures (and where we not be modeling time systematically) there is more likelihood that we will have correlated residuals. This is problematic. We got rid of a similar concern of correlated errors by fitting MLMs in the first place (ie nesting observations within person), but this different.</p>
 <p>This is hard to do within ‘lme4’ but we can do it easier within Bayesian frameworks</p>
 </div>
 
