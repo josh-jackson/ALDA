@@ -5,12 +5,33 @@
     <link>/</link>
       <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <description>Applied Longitudinal Data Analysis</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 03 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 04 Oct 2019 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/img/icon-192.png</url>
       <title>Applied Longitudinal Data Analysis</title>
       <link>/</link>
     </image>
+    
+    <item>
+      <title>Homework #3</title>
+      <link>/homeworks/homework-3/</link>
+      <pubDate>Fri, 04 Oct 2019 00:00:00 +0000</pubDate>
+      <guid>/homeworks/homework-3/</guid>
+      <description>
+
+
+&lt;p&gt;This homework introduces you to brms. Because I want you to feel comfortable with the software first we will be reanalyzing past datasets that were done within &lt;code&gt;lme4&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Please send an email and Rmd (and pdf) files to: &lt;a href=&#34;mailto:Homewor.r53rwfxazn4wnxur@u.box.com&#34; class=&#34;email&#34;&gt;Homewor.r53rwfxazn4wnxur@u.box.com&lt;/a&gt; due date is: 10/18&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rerun one model from question #1 from homework #2 in brms. Compare the output with the lme4 model.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;What are the priors on this model? Graph one of them and explain what the distributions means about what you expect to happen.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Get the posterior samples into a dataframe. What does this dataframe contain? To answer describe why are there the number of rows there, why that many columns? What do each of the columns represent?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Graph the distribution of random effects of the slope parameter. Interpret what this graph tells you.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Change the default priors of this model to something that a) regularizes the model and b) that does the opposite, one that is wildly wrong/optomostic about the effects. What happens in each of these models?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Introduce a covariate to the model. Run the new model and empirically comapre the fit of the model to the model you ran in #1.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
     
     <item>
       <title>Homework #3 is delayed.</title>

@@ -1,0 +1,40 @@
+---
+title: 'Homework #3'
+author: ''
+date: '2019-10-04'
+slug: homework-3
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2019-10-04T16:44:16-05:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+This homework introduces you to brms. Because I want you to feel comfortable with the software first we will be reanalyzing past datasets that were done within `lme4`. 
+
+Please send an email and Rmd (and pdf) files to: Homewor.r53rwfxazn4wnxur@u.box.com due date is: 10/18
+
+1. Rerun one model from question #1 from homework #2 in brms. Compare the output with the lme4 model. 
+
+2. What are the priors on this model? Graph one of them and explain what the distributions means about what you expect to happen.  
+
+3. Get the posterior samples into a dataframe. What does this dataframe contain? To answer describe why are there the number of rows there, why that many columns? What do each of the columns represent? 
+
+4. Graph the distribution of random effects of the slope parameter. Interpret what this graph tells you. 
+
+5. Change the default priors of this model to something that a) regularizes the model and b) that does the opposite, one that is wildly wrong/optomostic about the effects. What happens in each of these models? 
+
+6. Introduce a covariate to the model. Run the new model and empirically comapre the fit of the model to the model you ran in #1. 
+
+
+
+
+
