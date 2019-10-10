@@ -465,6 +465,59 @@
 <li>Mean level/ absolute change. Takes into account mean structure and indexes absolute levels of a construct. A strong assumption is that the construct means (not a pun) the same thing across time. That is, my measure of depression is interpreted the same for a 40 year old and a 90 year old if I want to look at absolute differences between the two ages.</li>
 </ol>
 <p>Mean level change is not dependent at all on rank order consistency. Can have no mean level change and high rank order consistency and vice versa.</p>
+<p>Perfect rank order, mean level increase</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
+## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
+## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
+## ✔ readr   1.3.1          ✔ forcats 0.4.0</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>simp&lt;- tribble(
+  ~ID,  ~Y, ~time,
+1,5,1,
+1,7,2,
+2,4,1,
+2,6,2,
+3,3,1,
+3,5,2,
+4,2,1,
+4,4,2,
+5,1,1,
+5,3,2)
+
+ro.ml &lt;- ggplot(simp, aes(x=time, y=Y)) +
+    geom_point() +   
+   stat_summary(fun.y = mean, geom=&quot;line&quot;, size = 4) +
+    geom_smooth(aes(group = ID), method=lm,  
+                se=FALSE)  
+
+ggsave(&quot;ro.ml.png&quot;, ro.ml)</code></pre>
+<pre><code>## Saving 7 x 5 in image</code></pre>
+<p>No rank order, mean level increase</p>
+<pre class="r"><code>library(tidyverse)
+simp&lt;- tribble(
+  ~ID,  ~Y, ~time,
+1,1,1,
+1,5,2,
+2,1.5,1,
+2,4.5,2,
+3,2,1,
+3,4,2,
+4,2.5,1,
+4,3.5,2,
+5,3,1,
+5,3,2)
+
+noro.ml&lt;- ggplot(simp, aes(x=time, y=Y)) +
+    geom_point() +   
+   stat_summary(fun.y = mean, geom=&quot;line&quot;, size = 4) +
+    geom_smooth(aes(group = ID), method=lm,  
+                se=FALSE)  
+ggsave(&quot;noro.ml.png&quot;, noro.ml)</code></pre>
+<pre><code>## Saving 7 x 5 in image</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li><p>Individual differences in change. Rank order and mean level provide an index of change and or stability for the sample. Here this provides an assessment of change for an individual. For example, if it is typical to decline in cognitive ability do some people buck the trend and stay at their past level? Individual differences in change get at both mean level changes as well as the tendency of the sample to show stability. It is the type of change that we will focus on the most.</p></li>
 <li><p>Structural. Does the construct (or measure) change across time? The assumption for mean level change assumes that the measurement properties stays the same. But maybe it is theoretically interesting to ask whether what you are measuring changes. Examples include practice effects, age effects (cog ability in kids vs adults), differences due to health and life events.</p></li>
@@ -498,21 +551,13 @@
 <h2>Thinking through longitudinal data example</h2>
 <pre class="r"><code>library(ggplot2)
 library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
-<pre><code>## ✔ tibble  2.1.3           ✔ dplyr   0.8.3      
-## ✔ tidyr   0.8.99.9000     ✔ stringr 1.4.0      
-## ✔ readr   1.3.1           ✔ forcats 0.4.0      
-## ✔ purrr   0.3.2</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <p>Using some resting state imaging data, lets think about how we can model and think about this data using our current skills (ie standard regression and plotting)</p>
 <p>We defined time as year in study. How would this look if we used age?</p>
 <pre class="r"><code>gg1 &lt;- ggplot(example,
    aes(x = year, y = SMN7, group = ID)) + geom_point()  
 print(gg1)</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>The above graph just plots datapoints. Do we have repeated assessments per person? Lets find out.</p>
 <div id="person-level" class="section level3">
 <h3>Person level</h3>
@@ -520,7 +565,7 @@ print(gg1)</code></pre>
    aes(x = year, y = SMN7, group = ID)) + geom_line()  
 gg2</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_path).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-8-1.png" width="672" />
 Note that some people start at different levels. Some people have more data in terms of assessment points and years. Note that the shape of change isn’t necessarily a straight line.</p>
 <p>We often want to look at this at a per person level to get more info.</p>
 <pre class="r"><code>gg3 &lt;- ggplot(example,
@@ -528,18 +573,18 @@ Note that some people start at different levels. Some people have more data in t
 gg3</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_path).</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-9-1.png" width="672" />
 As part of our dataset we have different groups. A question we may have is if they change differently across time. Lets take a look at this.</p>
 <pre class="r"><code>gg4 &lt;- ggplot(example,
    aes(x = year, y = SMN7, group = ID)) + geom_line() + facet_grid(. ~ group)
 gg4</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_path).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>We’re not in Kansas anymore - look at the technocolor.</p>
 <pre class="r"><code>gg5 &lt;-  gg2 + aes(colour = factor(ID)) + guides(colour=FALSE) 
 gg5</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_path).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Okay, beside the occular technique, we’re going to need to do something more to address our theoretical questions. Lets look at some random people in the sample and run some regressions.</p>
 <pre class="r"><code>set.seed(11)
 ex.random &lt;- example %&gt;% 
@@ -564,7 +609,7 @@ gg6</code></pre>
 ## Warning in qt((1 - level)/2, df): NaNs produced
 
 ## Warning in qt((1 - level)/2, df): NaNs produced</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Lets look at individual level regressions</p>
 <pre class="r"><code>library(tidyverse)
 library(broom)
@@ -614,14 +659,14 @@ gg7</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
 <pre><code>## Warning: Removed 9 rows containing non-finite values (stat_smooth).</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>That lowess line is a little strange. How about a linear estimate.</p>
 <p>Split up by group</p>
 <pre class="r"><code>gg8 &lt;-  ggplot(example, aes(x = year, y = SMN7)) + geom_point() + stat_smooth(method = &quot;lm&quot;) + facet_grid(. ~ group)
 gg8</code></pre>
 <pre><code>## Warning: Removed 9 rows containing non-finite values (stat_smooth).</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>But I also want to see the individual slopes, not just the average.</p>
 <pre class="r"><code>gg9 &lt;- ggplot(example, aes(x = year, y = SMN7, group = ID)) + geom_point(alpha = 0.05) + stat_smooth(method = &quot;lm&quot;, se = FALSE)   
 
@@ -635,7 +680,7 @@ gg11</code></pre>
 
 ## Warning: Removed 9 rows containing non-finite values (stat_smooth).</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_point).</code></pre>
-<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 </div>
 <div id="doing-this-with-mlm-and-sem" class="section level3">
 <h3>Doing this with MLM (and SEM)</h3>

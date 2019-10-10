@@ -1,0 +1,314 @@
+---
+title: 'Week #7'
+author: ''
+date: '2019-10-09'
+slug: week-6
+categories: []
+tags: []
+subtitle: 'lavaan'
+summary: 'lavaan'
+authors: []
+lastmod: '2019-10-09T13:34:07-05:00'
+featured: yes
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+# lavaan
+
+Easy to use SEM program in R
+```{r}
+library(lavaan)
+```
+
+Does most of what other sem packages do and just as well except for: 
+
+1. advanced Multilevel SEM
+2. Latent class models/mixture models
+3. Bayesian SEM
+4. "Dynamic" SEM
+
+Two useful add on packages are 
+
+```{r}
+library(semTools)
+library(semPlot)
+```
+
+A related package that uses similar syntax for Bayesian models is
+
+```{r}
+library(blavaan)
+```
+
+
+# lavaan language
+
+All you need to know (almost) is here: 
+http://lavaan.ugent.be/tutorial/
+
+A quick recap of that:
+
+1. Paths between variables is the same as our linear model syntax
+```{r, eval=FALSE}
+
+y ~ x1 + x2 + x3
+
+```
+
+~ can be read as "is regressed on"
+
+2. defining latent variables
+```{r, eval=FALSE}
+
+y =~ x1 + x2 + x3
+
+```
+
+=~ can be read as "measured by"
+
+Y is measured by the variables x1 - x3. This will define the factor loadings. 
+
+3. defining variances and covariances
+```{r, eval=FALSE}
+
+y ~~ x1 
+
+```
+
+Y covaries with X1. 
+
+The beautify of lavaan is that it will decide for you if you are interested in a variance or a covariance or a residual (co)variance. 
+
+4. intercept
+
+```{r, eval=FALSE}
+
+y ~ 1 
+
+```
+
+Much as we saw with our lmer models where 1 served an important role, 1 here also is special in that it references the mean (intercept) of the variable. This will come in handy when we want to constrain or make the means of variables similar to one another. 
+
+5. constraints
+
+```{r, eval=FALSE}
+
+y =~ NA*x1 + 1*x2 + a*x3 + a*x4
+
+```
+
+NA serves to free a lavaan imposed constraint. Here, the default is to set the first factor loading to 1 to define the latent variable. NA* serves to say there is no constraint. 
+
+1* pre-multiples the loading by a particular number. In this case it is 1, to define the latent variable, but it could be any number. R doesn't know if it makes sense or not. 
+
+a* (or and other character strings) serves as an equality constraint by estimating the same parameter for each term with that label. In this case x3 and x4 will have the same factor loading, referred to as a. 
+
+
+## How to run lavaan
+
+1. Specify your model
+2. Fit the model
+3. Display the summary output
+
+
+```{r, eval=FALSE}
+#1. Specify your model
+
+HS.model <- ' visual  =~ x1 + x2 + x3      
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 '
+
+#2. Fit the model
+
+fit <- cfa(HS.model, data=HolzingerSwineford1939)
+
+  # other functions include sem, growth, and lavaan. All have different defaults (See below). we will use growth a lot. 
+
+
+#3. Display the summary output
+
+summary(fit, fit.measures=TRUE)
+
+```
+
+
+## lavaan defaults
+
+First, by default, the factor loading of the first indicator of a latent variable is fixed to 1, thereby fixing the scale of the latent variable. Second, residual variances are added automatically. And third, all exogenous latent variables are correlated by default.
+
+lets work with a dataset from the lavaan package
+```{r}
+HolzingerSwineford1939 <- HolzingerSwineford1939
+
+mod.1 <- 'visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9'
+
+fit.1 <- cfa(mod.1, data=HolzingerSwineford1939)
+
+summary(fit.1, fit.measures=TRUE, standardized=TRUE)
+
+```
+
+### Coding revisited
+
+Marker variable: if you are lazy; default. Residual variances won't change, but the loadings do, as does the variance of the latent factor. The latent factors variance is the reliable variance of the marker variable, and the mean of the marker variable if you fit a mean. The latent variable takes on the identity, if you will, of the marker variable chosen. For this to work, one of the assumptions is that all indicators are equivalent to one another. 
+
+Fixed factor: standardized, unit-free estimates. Has some nice-ities. Does not arbitrarily give more weight to one indicator. If more than one latent factor is estimated, the estimates between the factors gives the correlation. If you square the loadings and add the residual it equals 1. 
+
+Effects coding: if the original metric is meaningful, keeps the latent variable in the metric of your scale. Residual variance is the same. Loadings average to 1. Latent variance is the average amount of reliable variance. To estimate you use the equation: indicator 1 = (number of indicators) - indicator N, indicator N-1... E.g. if you have three indicators (a,b,c) then: a = 3 - b - c. It would be the same if you changed it to b = 3 - a - c. 
+
+
+Lets use a fixed factor approach rather than a marker variable approach
+```{r}
+
+mod.2 <- 'visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9'
+
+fit.2 <- cfa(mod.2, std.lv=TRUE, data=HolzingerSwineford1939)
+
+summary(fit.2, fit.measures=TRUE, standardized=TRUE)
+
+```
+
+
+And now an effect coded one
+```{r}
+
+mod.3 <- ' 
+     visual  =~ NA*x1 + v1*x1 + v2*x2 + v3*x3 
+     textual =~ NA*x4 + t1*x4 + t2*x5 + t3*x6 
+     speed   =~ NA*x7 + s1*x7 + s2*x8 + s3*x9 
+     
+# constraints for loading
+     v1 == 3 - v2 - v3 
+     t1 == 3 - t2 - t3 
+     s1 == 3 - s2 - s3 
+' 
+
+# Note that the number 3 will change depending on how many indicators you have
+
+fit.3 <- cfa(mod.3, data=HolzingerSwineford1939) 
+summary(fit.3, fit.measures=TRUE, standardized=TRUE) 
+
+```
+
+### Lets try with means
+Now an effect coded one with means. 
+
+First lest see what we get when we ask for a mean structures
+
+```{r}
+
+mod.1m <- 'visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9
+
+'
+
+fit.1m <- cfa(mod.1m, meanstructure= TRUE, data=HolzingerSwineford1939)
+
+summary(fit.1m)
+
+```
+
+Note for both the marker and fixed factor give you the same means. This is because the latent variable means need to be scaled to zero to make the model identifiable (in this case). 
+```{r}
+
+mod.2m <- 'visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9
+
+
+'
+
+fit.2m <- cfa(mod.2m, std.lv=TRUE, meanstructure = TRUE, data=HolzingerSwineford1939)
+
+summary(fit.2m)
+
+```
+
+We can relax this assumption with the effect coding method using a newly implemented method
+```{r}
+
+mod.3m <- ' 
+     visual  =~  x1 + x2 + x3 
+
+
+' 
+
+
+fit.3m <- sem(mod.3m, meanstructure = TRUE, effect.coding = c("loadings", "intercepts"),  data=HolzingerSwineford1939) 
+summary(fit.3m) 
+
+
+```
+
+or with more code
+```{r}
+
+mod.3e <- ' 
+     visual  =~ NA*x1 + v1*x1 + v2*x2 + v3*x3 
+     textual =~ NA*x4 + t1*x4 + t2*x5 + t3*x6
+     speed   =~ NA*x7 + s1*x7 + s2*x8 + s3*x9
+
+# specifying means
+x1 ~ (m1)*1
+x2 ~ (m2)*1
+x3 ~ (m3)*1
+x4 ~ (m4)*1
+x5 ~ (m5)*1
+x6 ~ (m6)*1
+x7 ~ (m7)*1
+x8 ~ (m8)*1
+x9 ~ (m9)*1
+
+visual ~ 1
+textual ~ 1
+speed ~ 1
+
+# constraints for means
+m1 == 0 - m2 - m3
+m4 == 0 - m5 - m6
+m7 == 0 - m8 - m9
+
+
+' 
+
+
+fit.3e <- sem(mod.3e, meanstructure = TRUE, data=HolzingerSwineford1939) 
+summary(fit.3e) 
+
+```
+
+
+### Comparing models
+
+Can compare models as in mlm. 
+```{r, eval=FALSE}
+anova(model1, model2)
+```
+
+Use AIC and BIC, just as with MLM. Smaller values indicate a better fit. 
+
+
+### Estimators
+
+Default in lavaan is the ML estimator, which we have seen before. There are many other options too, some of which require complete data (though see multiple imputation discussion next class). 
+
+There are a number of "robust" estimates that are uniformly better. MLR is my personal choice if you go this route, but others are just as good and maybe better if you have complete data. 
+
+To confuse things, there are other methods to get robust standard errors. When data are missing one can request standard errors via a number of different methods. To do so one needs to first specify that data are missing via missing = "ML" in the fitting function. Then use the se function to specify what you want. 
+
+Bootstrapped estimates are also available with se = "bootstrap"
+
+
+
+
+

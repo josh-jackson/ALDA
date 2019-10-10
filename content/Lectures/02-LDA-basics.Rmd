@@ -52,6 +52,56 @@ A specialized case of this is ipsative change, which looks at the rank order of 
 
 Mean level change is not dependent at all on rank order consistency. Can have no mean level change and high rank order consistency and vice versa. 
 
+Perfect rank order, mean level increase
+```{r}
+library(tidyverse)
+simp<- tribble(
+  ~ID,  ~Y, ~time,
+1,5,1,
+1,7,2,
+2,4,1,
+2,6,2,
+3,3,1,
+3,5,2,
+4,2,1,
+4,4,2,
+5,1,1,
+5,3,2)
+
+ro.ml <- ggplot(simp, aes(x=time, y=Y)) +
+    geom_point() +   
+   stat_summary(fun.y = mean, geom="line", size = 4) +
+    geom_smooth(aes(group = ID), method=lm,  
+                se=FALSE)  
+
+ggsave("ro.ml.png", ro.ml)
+
+```
+
+No rank order, mean level increase
+```{r}
+library(tidyverse)
+simp<- tribble(
+  ~ID,  ~Y, ~time,
+1,1,1,
+1,5,2,
+2,1.5,1,
+2,4.5,2,
+3,2,1,
+3,4,2,
+4,2.5,1,
+4,3.5,2,
+5,3,1,
+5,3,2)
+
+noro.ml<- ggplot(simp, aes(x=time, y=Y)) +
+    geom_point() +   
+   stat_summary(fun.y = mean, geom="line", size = 4) +
+    geom_smooth(aes(group = ID), method=lm,  
+                se=FALSE)  
+ggsave("noro.ml.png", noro.ml)
+```
+
 3. Individual differences in change. Rank order and mean level provide an index of change and or stability for the sample. Here this provides an assessment of change for an individual. For example, if it is typical to decline in cognitive ability do some people buck the trend and stay at their past level? Individual differences in change get at both mean level changes as well as the tendency of the sample to show stability. It is the type of change that we will focus on the most.
 
 4. Structural. Does the construct (or measure) change across time? The assumption for mean level change assumes that the measurement properties stays the same. But maybe it is theoretically interesting to ask whether what you are measuring changes. Examples include practice effects, age effects (cog ability in kids vs adults), differences due to health and life events. 

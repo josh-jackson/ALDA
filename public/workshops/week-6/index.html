@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.4.0">
+
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+  
+  
+    
+  
+  <meta name="description" content="lavaan">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/workshops/week-6/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="rgb(0, 136, 204)">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light" disabled>
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark">
+        
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.301ab7eca2ca7d1311ed71a9afa2cc4f.css">
+
+  
+
+  
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon-32.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/workshops/week-6/">
+
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="twitter:site" content="@jackson_josh_">
+  <meta property="twitter:creator" content="@jackson_josh_">
+  
+  <meta property="og:site_name" content="Applied Longitudinal Data Analysis">
+  <meta property="og:url" content="/workshops/week-6/">
+  <meta property="og:title" content="Week #7 | Applied Longitudinal Data Analysis">
+  <meta property="og:description" content="lavaan"><meta property="og:image" content="/img/icon-192.png">
+  <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2019-10-09T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2019-10-09T13:34:07-05:00">
+  
+
+  
+
+
+  
+
+
+
+
+
+  <title>Week #7 | Applied Longitudinal Data Analysis</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="dark">
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/">Applied Longitudinal Data Analysis</a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav mr-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/lectures"><span>Lectures</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/workshops"><span>Workshops</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/homeworks"><span>Homeworks</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+      
+      </ul>
+      <ul class="navbar-nav ml-auto">
+      
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1 itemprop="name">Week #7</h1>
+
+  
+  <p class="page-subtitle">lavaan</p>
+  
+
+  
+    
+
+
+
+<meta content="2019-10-09 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+<meta content="2019-10-09 13:34:07 -0500 CDT" itemprop="dateModified">
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+          Last updated on
+      
+    
+    <time>Oct 9, 2019</time>
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+
+  
+  
+
+  
+    
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+
+<div id="lavaan" class="section level1">
+<h1>lavaan</h1>
+<p>Easy to use SEM program in R</p>
+<pre class="r"><code>library(lavaan)</code></pre>
+<pre><code>## This is lavaan 0.6-4</code></pre>
+<pre><code>## lavaan is BETA software! Please report any bugs.</code></pre>
+<p>Does most of what other sem packages do and just as well except for:</p>
+<ol style="list-style-type: decimal">
+<li>advanced Multilevel SEM</li>
+<li>Latent class models/mixture models</li>
+<li>Bayesian SEM</li>
+<li>“Dynamic” SEM</li>
+</ol>
+<p>Two useful add on packages are</p>
+<pre class="r"><code>library(semTools)</code></pre>
+<pre><code>## </code></pre>
+<pre><code>## ###############################################################################</code></pre>
+<pre><code>## This is semTools 0.5-1</code></pre>
+<pre><code>## All users of R (or SEM) are invited to submit functions or ideas for functions.</code></pre>
+<pre><code>## ###############################################################################</code></pre>
+<pre class="r"><code>library(semPlot)</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;huge&#39;:
+##   method    from   
+##   plot.sim  BDgraph
+##   print.sim BDgraph</code></pre>
+<p>A related package that uses similar syntax for Bayesian models is</p>
+<pre class="r"><code>library(blavaan)</code></pre>
+<pre><code>## Loading required package: Rcpp</code></pre>
+<pre><code>## This is blavaan 0.3-6</code></pre>
+<pre><code>## Major changes from blavaan 0.3-4:
+##   - The default target is now &#39;stan&#39; instead of &#39;jags&#39;.
+##   - To use JAGS, you now need to explicitly set target = &#39;jags&#39;.
+##   - To use the old Stan approach, set target = &#39;stanclassic&#39;.
+##   - Priors on variance parameters now default to gamma(1,.5) on the SD.</code></pre>
+</div>
+<div id="lavaan-language" class="section level1">
+<h1>lavaan language</h1>
+<p>All you need to know (almost) is here:
+<a href="http://lavaan.ugent.be/tutorial/" class="uri">http://lavaan.ugent.be/tutorial/</a></p>
+<p>A quick recap of that:</p>
+<ol style="list-style-type: decimal">
+<li>Paths between variables is the same as our linear model syntax</li>
+</ol>
+<pre class="r"><code>y ~ x1 + x2 + x3</code></pre>
+<p>~ can be read as “is regressed on”</p>
+<ol start="2" style="list-style-type: decimal">
+<li>defining latent variables</li>
+</ol>
+<pre class="r"><code>y =~ x1 + x2 + x3</code></pre>
+<p>=~ can be read as “measured by”</p>
+<p>Y is measured by the variables x1 - x3. This will define the factor loadings.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>defining variances and covariances</li>
+</ol>
+<pre class="r"><code>y ~~ x1 </code></pre>
+<p>Y covaries with X1.</p>
+<p>The beautify of lavaan is that it will decide for you if you are interested in a variance or a covariance or a residual (co)variance.</p>
+<ol start="4" style="list-style-type: decimal">
+<li>intercept</li>
+</ol>
+<pre class="r"><code>y ~ 1 </code></pre>
+<p>Much as we saw with our lmer models where 1 served an important role, 1 here also is special in that it references the mean (intercept) of the variable. This will come in handy when we want to constrain or make the means of variables similar to one another.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>constraints</li>
+</ol>
+<pre class="r"><code>y =~ NA*x1 + 1*x2 + a*x3 + a*x4</code></pre>
+<p>NA serves to free a lavaan imposed constraint. Here, the default is to set the first factor loading to 1 to define the latent variable. NA* serves to say there is no constraint.</p>
+<p>1* pre-multiples the loading by a particular number. In this case it is 1, to define the latent variable, but it could be any number. R doesn’t know if it makes sense or not.</p>
+<p>a* (or and other character strings) serves as an equality constraint by estimating the same parameter for each term with that label. In this case x3 and x4 will have the same factor loading, referred to as a.</p>
+<div id="how-to-run-lavaan" class="section level2">
+<h2>How to run lavaan</h2>
+<ol style="list-style-type: decimal">
+<li>Specify your model</li>
+<li>Fit the model</li>
+<li>Display the summary output</li>
+</ol>
+<pre class="r"><code>#1. Specify your model
+
+HS.model &lt;- &#39; visual  =~ x1 + x2 + x3      
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 &#39;
+
+#2. Fit the model
+
+fit &lt;- cfa(HS.model, data=HolzingerSwineford1939)
+
+  # other functions include sem, growth, and lavaan. All have different defaults (See below). we will use growth a lot. 
+
+
+#3. Display the summary output
+
+summary(fit, fit.measures=TRUE)</code></pre>
+</div>
+<div id="lavaan-defaults" class="section level2">
+<h2>lavaan defaults</h2>
+<p>First, by default, the factor loading of the first indicator of a latent variable is fixed to 1, thereby fixing the scale of the latent variable. Second, residual variances are added automatically. And third, all exogenous latent variables are correlated by default.</p>
+<p>lets work with a dataset from the lavaan package</p>
+<pre class="r"><code>HolzingerSwineford1939 &lt;- HolzingerSwineford1939
+
+mod.1 &lt;- &#39;visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9&#39;
+
+fit.1 &lt;- cfa(mod.1, data=HolzingerSwineford1939)
+
+summary(fit.1, fit.measures=TRUE, standardized=TRUE)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 35 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         21
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                24
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic              918.852
+##   Degrees of freedom                                36
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.931
+##   Tucker-Lewis Index (TLI)                       0.896
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3737.745
+##   Loglikelihood unrestricted model (H1)      -3695.092
+## 
+##   Number of free parameters                         21
+##   Akaike (AIC)                                7517.490
+##   Bayesian (BIC)                              7595.339
+##   Sample-size adjusted Bayesian (BIC)         7528.739
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.092
+##   90 Percent Confidence Interval          0.071  0.114
+##   P-value RMSEA &lt;= 0.05                          0.001
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.065
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   visual =~                                                             
+##     x1                1.000                               0.900    0.772
+##     x2                0.554    0.100    5.554    0.000    0.498    0.424
+##     x3                0.729    0.109    6.685    0.000    0.656    0.581
+##   textual =~                                                            
+##     x4                1.000                               0.990    0.852
+##     x5                1.113    0.065   17.014    0.000    1.102    0.855
+##     x6                0.926    0.055   16.703    0.000    0.917    0.838
+##   speed =~                                                              
+##     x7                1.000                               0.619    0.570
+##     x8                1.180    0.165    7.152    0.000    0.731    0.723
+##     x9                1.082    0.151    7.155    0.000    0.670    0.665
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   visual ~~                                                             
+##     textual           0.408    0.074    5.552    0.000    0.459    0.459
+##     speed             0.262    0.056    4.660    0.000    0.471    0.471
+##   textual ~~                                                            
+##     speed             0.173    0.049    3.518    0.000    0.283    0.283
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .x1                0.549    0.114    4.833    0.000    0.549    0.404
+##    .x2                1.134    0.102   11.146    0.000    1.134    0.821
+##    .x3                0.844    0.091    9.317    0.000    0.844    0.662
+##    .x4                0.371    0.048    7.779    0.000    0.371    0.275
+##    .x5                0.446    0.058    7.642    0.000    0.446    0.269
+##    .x6                0.356    0.043    8.277    0.000    0.356    0.298
+##    .x7                0.799    0.081    9.823    0.000    0.799    0.676
+##    .x8                0.488    0.074    6.573    0.000    0.488    0.477
+##    .x9                0.566    0.071    8.003    0.000    0.566    0.558
+##     visual            0.809    0.145    5.564    0.000    1.000    1.000
+##     textual           0.979    0.112    8.737    0.000    1.000    1.000
+##     speed             0.384    0.086    4.451    0.000    1.000    1.000</code></pre>
+<div id="coding-revisited" class="section level3">
+<h3>Coding revisited</h3>
+<p>Marker variable: if you are lazy; default. Residual variances won’t change, but the loadings do, as does the variance of the latent factor. The latent factors variance is the reliable variance of the marker variable, and the mean of the marker variable if you fit a mean. The latent variable takes on the identity, if you will, of the marker variable chosen. For this to work, one of the assumptions is that all indicators are equivalent to one another.</p>
+<p>Fixed factor: standardized, unit-free estimates. Has some nice-ities. Does not arbitrarily give more weight to one indicator. If more than one latent factor is estimated, the estimates between the factors gives the correlation. If you square the loadings and add the residual it equals 1.</p>
+<p>Effects coding: if the original metric is meaningful, keeps the latent variable in the metric of your scale. Residual variance is the same. Loadings average to 1. Latent variance is the average amount of reliable variance. To estimate you use the equation: indicator 1 = (number of indicators) - indicator N, indicator N-1… E.g. if you have three indicators (a,b,c) then: a = 3 - b - c. It would be the same if you changed it to b = 3 - a - c. </p>
+<p>Lets use a fixed factor approach rather than a marker variable approach</p>
+<pre class="r"><code>mod.2 &lt;- &#39;visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9&#39;
+
+fit.2 &lt;- cfa(mod.2, std.lv=TRUE, data=HolzingerSwineford1939)
+
+summary(fit.2, fit.measures=TRUE, standardized=TRUE)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 20 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         21
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                24
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic              918.852
+##   Degrees of freedom                                36
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.931
+##   Tucker-Lewis Index (TLI)                       0.896
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3737.745
+##   Loglikelihood unrestricted model (H1)      -3695.092
+## 
+##   Number of free parameters                         21
+##   Akaike (AIC)                                7517.490
+##   Bayesian (BIC)                              7595.339
+##   Sample-size adjusted Bayesian (BIC)         7528.739
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.092
+##   90 Percent Confidence Interval          0.071  0.114
+##   P-value RMSEA &lt;= 0.05                          0.001
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.065
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   visual =~                                                             
+##     x1                0.900    0.081   11.128    0.000    0.900    0.772
+##     x2                0.498    0.077    6.429    0.000    0.498    0.424
+##     x3                0.656    0.074    8.817    0.000    0.656    0.581
+##   textual =~                                                            
+##     x4                0.990    0.057   17.474    0.000    0.990    0.852
+##     x5                1.102    0.063   17.576    0.000    1.102    0.855
+##     x6                0.917    0.054   17.082    0.000    0.917    0.838
+##   speed =~                                                              
+##     x7                0.619    0.070    8.903    0.000    0.619    0.570
+##     x8                0.731    0.066   11.090    0.000    0.731    0.723
+##     x9                0.670    0.065   10.305    0.000    0.670    0.665
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   visual ~~                                                             
+##     textual           0.459    0.064    7.189    0.000    0.459    0.459
+##     speed             0.471    0.073    6.461    0.000    0.471    0.471
+##   textual ~~                                                            
+##     speed             0.283    0.069    4.117    0.000    0.283    0.283
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .x1                0.549    0.114    4.833    0.000    0.549    0.404
+##    .x2                1.134    0.102   11.146    0.000    1.134    0.821
+##    .x3                0.844    0.091    9.317    0.000    0.844    0.662
+##    .x4                0.371    0.048    7.779    0.000    0.371    0.275
+##    .x5                0.446    0.058    7.642    0.000    0.446    0.269
+##    .x6                0.356    0.043    8.277    0.000    0.356    0.298
+##    .x7                0.799    0.081    9.823    0.000    0.799    0.676
+##    .x8                0.488    0.074    6.573    0.000    0.488    0.477
+##    .x9                0.566    0.071    8.003    0.000    0.566    0.558
+##     visual            1.000                               1.000    1.000
+##     textual           1.000                               1.000    1.000
+##     speed             1.000                               1.000    1.000</code></pre>
+<p>And now an effect coded one</p>
+<pre class="r"><code>mod.3 &lt;- &#39; 
+     visual  =~ NA*x1 + v1*x1 + v2*x2 + v3*x3 
+     textual =~ NA*x4 + t1*x4 + t2*x5 + t3*x6 
+     speed   =~ NA*x7 + s1*x7 + s2*x8 + s3*x9 
+     
+# constraints for loading
+     v1 == 3 - v2 - v3 
+     t1 == 3 - t2 - t3 
+     s1 == 3 - s2 - s3 
+&#39; 
+
+# Note that the number 3 will change depending on how many indicators you have
+
+fit.3 &lt;- cfa(mod.3, data=HolzingerSwineford1939) 
+summary(fit.3, fit.measures=TRUE, standardized=TRUE) </code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 31 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         24
+##   Number of equality constraints                     3
+##   Row rank of the constraints matrix                 3
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                24
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic              918.852
+##   Degrees of freedom                                36
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.931
+##   Tucker-Lewis Index (TLI)                       0.896
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3737.745
+##   Loglikelihood unrestricted model (H1)      -3695.092
+## 
+##   Number of free parameters                         21
+##   Akaike (AIC)                                7517.490
+##   Bayesian (BIC)                              7595.339
+##   Sample-size adjusted Bayesian (BIC)         7528.739
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.092
+##   90 Percent Confidence Interval          0.071  0.114
+##   P-value RMSEA &lt;= 0.05                          0.001
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.065
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   visual =~                                                             
+##     x1        (v1)    1.314    0.101   13.037    0.000    0.900    0.772
+##     x2        (v2)    0.727    0.091    8.006    0.000    0.498    0.424
+##     x3        (v3)    0.958    0.089   10.744    0.000    0.656    0.581
+##   textual =~                                                            
+##     x4        (t1)    0.987    0.034   29.056    0.000    0.990    0.852
+##     x5        (t2)    1.099    0.036   30.883    0.000    1.102    0.855
+##     x6        (t3)    0.914    0.033   27.627    0.000    0.917    0.838
+##   speed =~                                                              
+##     x7        (s1)    0.920    0.078   11.725    0.000    0.619    0.570
+##     x8        (s2)    1.085    0.081   13.381    0.000    0.731    0.723
+##     x9        (s3)    0.995    0.078   12.789    0.000    0.670    0.665
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   visual ~~                                                             
+##     textual           0.315    0.055    5.736    0.000    0.459    0.459
+##     speed             0.217    0.041    5.295    0.000    0.471    0.471
+##   textual ~~                                                            
+##     speed             0.191    0.051    3.775    0.000    0.283    0.283
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .x1                0.549    0.114    4.833    0.000    0.549    0.404
+##    .x2                1.134    0.102   11.146    0.000    1.134    0.821
+##    .x3                0.844    0.091    9.317    0.000    0.844    0.662
+##    .x4                0.371    0.048    7.779    0.000    0.371    0.275
+##    .x5                0.446    0.058    7.642    0.000    0.446    0.269
+##    .x6                0.356    0.043    8.277    0.000    0.356    0.298
+##    .x7                0.799    0.081    9.823    0.000    0.799    0.676
+##    .x8                0.488    0.074    6.573    0.000    0.488    0.477
+##    .x9                0.566    0.071    8.003    0.000    0.566    0.558
+##     visual            0.469    0.062    7.549    0.000    1.000    1.000
+##     textual           1.005    0.093   10.823    0.000    1.000    1.000
+##     speed             0.454    0.055    8.271    0.000    1.000    1.000
+## 
+## Constraints:
+##                                                |Slack|
+##     v1 - (3-v2-v3)                               0.000
+##     t1 - (3-t2-t3)                               0.000
+##     s1 - (3-s2-s3)                               0.000</code></pre>
+</div>
+<div id="lets-try-with-means" class="section level3">
+<h3>Lets try with means</h3>
+<p>Now an effect coded one with means.</p>
+<p>First lest see what we get when we ask for a mean structures</p>
+<pre class="r"><code>mod.1m &lt;- &#39;visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9
+
+&#39;
+
+fit.1m &lt;- cfa(mod.1m, meanstructure= TRUE, data=HolzingerSwineford1939)
+
+summary(fit.1m)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 35 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         30
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                24
+##   P-value (Chi-square)                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   visual =~                                           
+##     x1                1.000                           
+##     x2                0.554    0.100    5.554    0.000
+##     x3                0.729    0.109    6.685    0.000
+##   textual =~                                          
+##     x4                1.000                           
+##     x5                1.113    0.065   17.014    0.000
+##     x6                0.926    0.055   16.703    0.000
+##   speed =~                                            
+##     x7                1.000                           
+##     x8                1.180    0.165    7.152    0.000
+##     x9                1.082    0.151    7.155    0.000
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   visual ~~                                           
+##     textual           0.408    0.074    5.552    0.000
+##     speed             0.262    0.056    4.660    0.000
+##   textual ~~                                          
+##     speed             0.173    0.049    3.518    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .x1                4.936    0.067   73.473    0.000
+##    .x2                6.088    0.068   89.855    0.000
+##    .x3                2.250    0.065   34.579    0.000
+##    .x4                3.061    0.067   45.694    0.000
+##    .x5                4.341    0.074   58.452    0.000
+##    .x6                2.186    0.063   34.667    0.000
+##    .x7                4.186    0.063   66.766    0.000
+##    .x8                5.527    0.058   94.854    0.000
+##    .x9                5.374    0.058   92.546    0.000
+##     visual            0.000                           
+##     textual           0.000                           
+##     speed             0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .x1                0.549    0.114    4.833    0.000
+##    .x2                1.134    0.102   11.146    0.000
+##    .x3                0.844    0.091    9.317    0.000
+##    .x4                0.371    0.048    7.779    0.000
+##    .x5                0.446    0.058    7.642    0.000
+##    .x6                0.356    0.043    8.277    0.000
+##    .x7                0.799    0.081    9.823    0.000
+##    .x8                0.488    0.074    6.573    0.000
+##    .x9                0.566    0.071    8.003    0.000
+##     visual            0.809    0.145    5.564    0.000
+##     textual           0.979    0.112    8.737    0.000
+##     speed             0.384    0.086    4.451    0.000</code></pre>
+<p>Note for both the marker and fixed factor give you the same means. This is because the latent variable means need to be scaled to zero to make the model identifiable (in this case).</p>
+<pre class="r"><code>mod.2m &lt;- &#39;visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9
+
+
+&#39;
+
+fit.2m &lt;- cfa(mod.2m, std.lv=TRUE, meanstructure = TRUE, data=HolzingerSwineford1939)
+
+summary(fit.2m)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 20 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         30
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                24
+##   P-value (Chi-square)                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   visual =~                                           
+##     x1                0.900    0.081   11.128    0.000
+##     x2                0.498    0.077    6.429    0.000
+##     x3                0.656    0.074    8.817    0.000
+##   textual =~                                          
+##     x4                0.990    0.057   17.474    0.000
+##     x5                1.102    0.063   17.576    0.000
+##     x6                0.917    0.054   17.082    0.000
+##   speed =~                                            
+##     x7                0.619    0.070    8.903    0.000
+##     x8                0.731    0.066   11.090    0.000
+##     x9                0.670    0.065   10.305    0.000
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   visual ~~                                           
+##     textual           0.459    0.064    7.189    0.000
+##     speed             0.471    0.073    6.461    0.000
+##   textual ~~                                          
+##     speed             0.283    0.069    4.117    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .x1                4.936    0.067   73.473    0.000
+##    .x2                6.088    0.068   89.855    0.000
+##    .x3                2.250    0.065   34.579    0.000
+##    .x4                3.061    0.067   45.694    0.000
+##    .x5                4.341    0.074   58.452    0.000
+##    .x6                2.186    0.063   34.667    0.000
+##    .x7                4.186    0.063   66.766    0.000
+##    .x8                5.527    0.058   94.854    0.000
+##    .x9                5.374    0.058   92.546    0.000
+##     visual            0.000                           
+##     textual           0.000                           
+##     speed             0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .x1                0.549    0.114    4.833    0.000
+##    .x2                1.134    0.102   11.146    0.000
+##    .x3                0.844    0.091    9.317    0.000
+##    .x4                0.371    0.048    7.779    0.000
+##    .x5                0.446    0.058    7.642    0.000
+##    .x6                0.356    0.043    8.277    0.000
+##    .x7                0.799    0.081    9.823    0.000
+##    .x8                0.488    0.074    6.573    0.000
+##    .x9                0.566    0.071    8.003    0.000
+##     visual            1.000                           
+##     textual           1.000                           
+##     speed             1.000</code></pre>
+<p>We can relax this assumption with the effect coding method using a newly implemented method</p>
+<pre class="r"><code>mod.3m &lt;- &#39; 
+     visual  =~  x1 + x2 + x3 
+
+
+&#39; 
+
+
+fit.3m &lt;- sem(mod.3m, meanstructure = TRUE, effect.coding = c(&quot;loadings&quot;, &quot;intercepts&quot;),  data=HolzingerSwineford1939) 
+summary(fit.3m) </code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 46 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         11
+##   Number of equality constraints                     2
+##   Row rank of the constraints matrix                 2
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       0.000
+##   Degrees of freedom                                 0
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   visual =~                                           
+##     x1                0.772    0.061   12.695    0.000
+##     x2                0.601    0.077    7.783    0.000
+##     x3                0.855    0.107    7.969    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .x1                0.249    0.371    0.671    0.502
+##    .x2                2.442    0.471    5.181    0.000
+##    .x3               -2.939    0.653   -4.502    0.000
+##     visual            6.070    0.069   87.822    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .x1                0.835    0.118    7.064    0.000
+##    .x2                1.065    0.105   10.177    0.000
+##    .x3                0.633    0.129    4.899    0.000
+##     visual            0.878    0.125    7.021    0.000</code></pre>
+<p>or with more code</p>
+<pre class="r"><code>mod.3e &lt;- &#39; 
+     visual  =~ NA*x1 + v1*x1 + v2*x2 + v3*x3 
+     textual =~ NA*x4 + t1*x4 + t2*x5 + t3*x6
+     speed   =~ NA*x7 + s1*x7 + s2*x8 + s3*x9
+
+# specifying means
+x1 ~ (m1)*1
+x2 ~ (m2)*1
+x3 ~ (m3)*1
+x4 ~ (m4)*1
+x5 ~ (m5)*1
+x6 ~ (m6)*1
+x7 ~ (m7)*1
+x8 ~ (m8)*1
+x9 ~ (m9)*1
+
+visual ~ 1
+textual ~ 1
+speed ~ 1
+
+# constraints for means
+m1 == 0 - m2 - m3
+m4 == 0 - m5 - m6
+m7 == 0 - m8 - m9
+
+
+&#39; 
+
+
+fit.3e &lt;- sem(mod.3e, meanstructure = TRUE, data=HolzingerSwineford1939) </code></pre>
+<pre><code>## Warning in lav_model_vcov(lavmodel = lavmodel2, lavsamplestats = lavsamplestats, : lavaan WARNING:
+##     The variance-covariance matrix of the estimated parameters (vcov)
+##     does not appear to be positive definite! The smallest eigenvalue
+##     (= 9.868366e-18) is close to zero. This may be a symptom that the
+##     model is not identified.</code></pre>
+<pre class="r"><code>summary(fit.3e) </code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 85 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         36
+##   Number of equality constraints                     3
+##   Row rank of the constraints matrix                 3
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                21
+##   P-value (Chi-square)                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   visual =~                                           
+##     x1        (v1)    1.910    0.135   14.174    0.000
+##     x2        (v2)    1.057    0.138    7.645    0.000
+##     x3        (v3)    1.393    0.132   10.515    0.000
+##   textual =~                                          
+##     x4        (t1)    1.160    0.043   27.239    0.000
+##     x5        (t2)    1.291    0.044   29.042    0.000
+##     x6        (t3)    1.074    0.042   25.799    0.000
+##   speed =~                                            
+##     x7        (s1)    1.292    0.112   11.540    0.000
+##     x8        (s2)    1.525    0.113   13.546    0.000
+##     x9        (s3)    1.398    0.110   12.732    0.000
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   visual ~~                                           
+##     textual           0.184    0.031    5.909    0.000
+##     speed             0.106    0.020    5.349    0.000
+##   textual ~~                                          
+##     speed             0.116    0.030    3.813    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .x1        (m1)   -0.879    0.448   -1.962    0.050
+##    .x2        (m2)    2.870    0.405    7.085    0.000
+##    .x3        (m3)   -1.991    0.397   -5.013    0.000
+##    .x4        (m4)   -0.094    0.112   -0.832    0.405
+##    .x5        (m5)    0.829    0.118    7.049    0.000
+##    .x6        (m6)   -0.736    0.110   -6.716    0.000
+##    .x7        (m7)   -0.440    0.397   -1.109    0.267
+##    .x8        (m8)    0.069    0.409    0.168    0.867
+##    .x9        (m9)    0.371    0.393    0.945    0.345
+##     visual            3.044    0.026  117.478    0.000
+##     textual           2.720    0.032   86.335    0.000
+##     speed             3.579    0.012  293.501    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .x1                0.549    0.114    4.833    0.000
+##    .x2                1.134    0.102   11.146    0.000
+##    .x3                0.844    0.091    9.317    0.000
+##    .x4                0.371    0.048    7.779    0.000
+##    .x5                0.446    0.058    7.642    0.000
+##    .x6                0.356    0.043    8.277    0.000
+##    .x7                0.799    0.081    9.823    0.000
+##    .x8                0.488    0.074    6.573    0.000
+##    .x9                0.566    0.071    8.003    0.000
+##     visual            0.222    0.028    7.794    0.000
+##     textual           0.728    0.058   12.451    0.000
+##     speed             0.230    0.027    8.357    0.000
+## 
+## Constraints:
+##                                                |Slack|
+##     m1 - (0-m2-m3)                               0.000
+##     m4 - (0-m5-m6)                               0.000
+##     m7 - (0-m8-m9)                               0.000</code></pre>
+</div>
+<div id="comparing-models" class="section level3">
+<h3>Comparing models</h3>
+<p>Can compare models as in mlm.</p>
+<pre class="r"><code>anova(model1, model2)</code></pre>
+<p>Use AIC and BIC, just as with MLM. Smaller values indicate a better fit.</p>
+</div>
+<div id="estimators" class="section level3">
+<h3>Estimators</h3>
+<p>Default in lavaan is the ML estimator, which we have seen before. There are many other options too, some of which require complete data (though see multiple imputation discussion next class).</p>
+<p>There are a number of “robust” estimates that are uniformly better. MLR is my personal choice if you go this route, but others are just as good and maybe better if you have complete data.</p>
+<p>To confuse things, there are other methods to get robust standard errors. When data are missing one can request standard errors via a number of different methods. To do so one needs to first specify that data are missing via missing = “ML” in the fitting function. Then use the se function to specify what you want.</p>
+<p>Bootstrapped estimates are also available with se = “bootstrap”</p>
+</div>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+    
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+  
+  
+
+
+
+
+
+
+
+      
+      
+    
+
+    
+    <div class="article-widget">
+      
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/workshops/workshop-4/" rel="prev">Workshop #4</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+    
+    <script src="/js/mathjax-config.js"></script>
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.min.js" integrity="sha256-0w92bcB21IY5+rGI84MGj52jNfHNbXVeQLrZ0CGdjNY=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+      
+
+      
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML-full" integrity="sha256-GhM+5JHb6QUzOQPXSJLEWP7R73CbkisjzK5Eyij4U9w=" crossorigin="anonymous" async></script>
+      
+    
+
+    
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/index.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'results': "results found",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.16bbb3750feb7244c9bc409a5a4fe678.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+  <p class="powered-by">
+    
+      <a href="/privacy/">Privacy Policy</a>
+    
+    
+       &middot; 
+      <a href="/terms/">Terms</a>
+        
+  </p>
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

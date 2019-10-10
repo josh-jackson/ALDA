@@ -5,12 +5,1957 @@
     <link>/</link>
       <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <description>Applied Longitudinal Data Analysis</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 04 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 09 Oct 2019 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/img/icon-192.png</url>
       <title>Applied Longitudinal Data Analysis</title>
       <link>/</link>
     </image>
+    
+    <item>
+      <title>Week #7</title>
+      <link>/lectures/week-6/</link>
+      <pubDate>Wed, 09 Oct 2019 00:00:00 +0000</pubDate>
+      <guid>/lectures/week-6/</guid>
+      <description>
+
+
+&lt;div id=&#34;longitudinal-structural-equation-modeling&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Longitudinal Structural Equation Modeling&lt;/h1&gt;
+&lt;p&gt;SEM is the broader umbrella from the GLM. With it we are able to do two interesting this:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Fit a latent measurement model (e.g., CFA)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Fit a structural model (e.g,. path analysis)&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;These two components allow us to address more difficult research questions involving but not limited to: multiple DVs, mediators, varying effects across time, unmeasured variables, constraints, and measurement invariance.&lt;/p&gt;
+&lt;p&gt;Compared to MLM, and SEM approach to longitudinal data may be better suited to your research goals. We will see that at one level the two approaches can be equivalent.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sem-primer&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;SEM primer&lt;/h1&gt;
+&lt;p&gt;In our studies some of the variables of interest will be measured and others will be latent or unobserved. Measured variables are the observed scores that are typically collected in a research study. That is, your variables in your dataset. This may include responses to survey items, reports of age or income, or performance on a recall task. We will use the general term “indicators” or “items” or “manifest variables” to refer to these measures variables. They will be indicated by boxes in a path diagram.&lt;/p&gt;
+&lt;p&gt;Latent variables, in contrast, are not directly observed. A latent variable is something that we assume to exist but we cannot directly measure (see) it. They are typically postulated by theories or inferred from the statistical behavior of measured variables. Sounds like psychological variables! Examples of latent variables include “depression,” “job satisfaction,” and “working memory capacity.” Latent variables will be represented as a circle in path diagrams.&lt;/p&gt;
+&lt;p&gt;For example, why does Sally like to go to parties, likes to talk a lot, and always tends to be a in a good mood? Maybe it is because her high levels of extraversion ( a latent variable that we cannot directly measure) is causing these tendencies.&lt;/p&gt;
+&lt;p&gt;Key point: the variable/construct itself is not measurable, but the manifestations caused by the variable are measurable/observable.&lt;/p&gt;
+&lt;p&gt;Interesting point: because variables are assumed to be causing indicators of the variable, SEM is sometimes referred to as causal modeling. (Also because in path models a directional relationship is hypothesized) Note that we cannot get any closer to causality than we can with regression.&lt;/p&gt;
+&lt;div id=&#34;pretty-pictures&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Pretty pictures&lt;/h2&gt;
+&lt;p&gt;Circles = latent variables&lt;/p&gt;
+&lt;p&gt;Boxes = observed indicator variables&lt;/p&gt;
+&lt;p&gt;two headed arrows = correlations/covariances/variances&lt;/p&gt;
+&lt;p&gt;single head arrows = regressions&lt;/p&gt;
+&lt;p&gt;triangle = means&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(lavaan)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## This is lavaan 0.6-4&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan is BETA software! Please report any bugs.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(semPlot)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Registered S3 methods overwritten by &amp;#39;huge&amp;#39;:
+##   method    from   
+##   plot.sim  BDgraph
+##   print.sim BDgraph&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HolzingerSwineford1939 &amp;lt;- HolzingerSwineford1939
+
+mod.1 &amp;lt;- &amp;#39;visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9&amp;#39;
+
+fit.1 &amp;lt;- cfa(mod.1, data=HolzingerSwineford1939,meanstructure = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;semPaths(fit.1,  intercepts = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-10-09-week-6_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;semPaths(fit.1, &amp;quot;std&amp;quot;, intercepts = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-10-09-week-6_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;measurement-model&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Measurement model&lt;/h2&gt;
+&lt;p&gt;The first step of an SEM model with latent variables is to define them. This is called specifying the measurement model. It is up to you to specify how you think the latent variable is created. It is then up to you to compare that measurement model against alternative measurement models to see if it meaningful.&lt;/p&gt;
+&lt;p&gt;The key components are the a) factor loadings, b) residuals, and c) variance of latent variable.&lt;/p&gt;
+&lt;div id=&#34;classical-test-theory-interpretation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Classical test theory interpretation&lt;/h3&gt;
+&lt;p&gt;How can we think of a latent construct:&lt;/p&gt;
+&lt;p&gt;Latent construct = what the indicators share in common&lt;/p&gt;
+&lt;p&gt;The indicators represent the sum of True Score variance + Item specific variance + Random error&lt;/p&gt;
+&lt;p&gt;The variance of the latent variable represents the amount of common information in the latent variable. If your indicators are haphazardly chosen then there will be low variance. We want to maximize variance here as variance suggests meaningful differences can be made between people.&lt;/p&gt;
+&lt;p&gt;The residual errors (sometimes referred to as disturbances) represent the amount of information unique to each indicator. A combination of error and item-specific variance.&lt;/p&gt;
+&lt;p&gt;The extent of the connection between the latent variable and the indicators is represented as a factor loading.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;generizability-interpretation-of-latent-variables&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Generizability interpretation of latent variables&lt;/h3&gt;
+&lt;p&gt;Same as above, but…&lt;/p&gt;
+&lt;p&gt;True score variance can be thought of as consisting as a combination of
+1. Construct variance- this is the truest true score variance
+2. Method variance- see Campbell and Fiske or sludge factor of Meehl.
+3. Occasion- important for longitudinal, aging, and cohort analyses–and for this class.&lt;/p&gt;
+&lt;p&gt;For longitudinal models, occasion specific variance can lead to biased estimates. We want to separate the time specific variance from the overall construct variance. Or, we want to make sure that the time specific variance doesn’t make it appear that a construct is changing when really it is not.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;formative-indicators&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Formative indicators&lt;/h3&gt;
+&lt;p&gt;These pretty pictures imply that the latent variables “cause” the indicators. This is the standard view and are referred to as reflexive indicators. However, there is another approach, formative indicators, were indicators “cause” the latent variable. Or, in other words, the latent variable doesn’t actually exist. It is not real, only a combination of variables. An example of this is SES. SES does not ‘exist’ but is a socially constructed idea. Some people have argued that psychological constructs are of this kind, and that reflexive indiators are innapropriate. The arguments are mainly philisophpical and thus is beyond the scope of our discussion. Suffice to say, that most of the time there are few analytic differences. You can think of this as similar to the factor analysis vs principal component analysis debates.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;measurement-error&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Measurement error&lt;/h3&gt;
+&lt;p&gt;A major advantage is that each latent variable does not contain measurement error. It is as is if we measured our variable with an alpha = 1.&lt;/p&gt;
+&lt;p&gt;What does that do? Well, ideally that gets us closer to the population model, which could yield higher R2 and parameter estimates.&lt;/p&gt;
+&lt;p&gt;How does this happen? It is a direct result of capturing what is shared among the indicators. The measurement error associated with each indicator is uncorrelated with the latent variable.&lt;/p&gt;
+&lt;p&gt;Think about how this situation differs from creating a composite among variables. Think about how this differs from creating a factor score among variables within a simple factor analyses approach. How are all three different and similar? What does it mean if the error variances are correlated with one another?&lt;/p&gt;
+&lt;p&gt;Remember however, that it is theoretically error free. The latent variable is not only filled with true score variance. Instead it could have method and occasion variance. Unless you have multiple methods and occasions it is hard to parce them apart.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;regarding-means&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Regarding means&lt;/h3&gt;
+&lt;p&gt;SEM is also known as covariance structure analysis. You can do SEM using only variance-covariance matrices. These do not necessarily involve any direct information about their means. Means in SEM are optional. This is cool because you can technically reproduce the analyses of a paper if they give you a correlation matrix of study variables.&lt;/p&gt;
+&lt;p&gt;Given we are interested in change across time, however, we will be intersted in means. Latent variables by themselves do not have any inherent metric, it is up to us to choose the scale they are on. We can standardize them, use the original metric, and more! More later on how we define the mean of a latent variable.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;path-model&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Path model&lt;/h2&gt;
+&lt;p&gt;The path model component can be in addition to a measurement model or seperate from them. You have already worked with path models as a simple regression is a path model, so is a standard mediation. You can make the path models more complex than these though, by specifying relationships among many variables.&lt;/p&gt;
+&lt;p&gt;An example with no measurement model&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# generate data dataset:
+X &amp;lt;- rnorm(100)
+M &amp;lt;- rnorm(100)
+Y &amp;lt;- rnorm(100) 
+data &amp;lt;- data.frame(X, Y, M)
+
+# Two regressions:
+res1 &amp;lt;- lm(M ~ X, data = data)
+res2 &amp;lt;- lm(Y ~ X + M, data = data)
+
+# Plot mediation
+semPaths(res1 + res2, &amp;quot;model&amp;quot;, &amp;quot;est&amp;quot;, intercepts = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-10-09-week-6_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;mediation model with measurement model&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mod.2 &amp;lt;- &amp;#39;visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9
+
+speed ~ textual + visual
+textual ~ visual&amp;#39;
+
+fit.2 &amp;lt;- cfa(mod.2, data=HolzingerSwineford1939)
+semPaths(fit.2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-10-09-week-6_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;estimating-an-sem-model&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Estimating an SEM model&lt;/h2&gt;
+&lt;p&gt;Our goal when doing SEM is a creation of a model that specifies certain relationship among variables. This is done by creating a measurement or path model that we think is driven by the data generating process we are trying to study. In addition to setting the measurement model and paths we may want to put apriori constraining parameters (variances/covarainces/regressions) to reflect how we think variables are related.&lt;/p&gt;
+&lt;p&gt;E.g., Should these two variables be correlated or not?&lt;/p&gt;
+&lt;p&gt;Then we use or ML algorithm to get our model implied covariances/means as close as possible to the observed covariances/means.&lt;/p&gt;
+&lt;p&gt;Of note, SEM can handle any time of measured DV/IV or construct/indicators. If you have categorical indicators you can do SEM. However, it is hard to measure change using categorical indicators. But, categorical indicators are used for many latent variable models such as in measuring psychopathology.&lt;/p&gt;
+&lt;p&gt;If you have a categorical construct you can also do SEM. Here it is called latent transition analysis (if you also had categorical indicators) or latent class / latent mixture modeling if you had continuous indicators (i am counting ordinal as continuous).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;setting-the-scale-and-defining-variables&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Setting the scale and defining variables&lt;/h2&gt;
+&lt;p&gt;We are trying to measure clouds. How can we do this given that they are always moving? Need to define the scale of a latent variable because there is no inherent scale of measurement. Largely irrelevant as to what scale is chosen just as centering or standardizing yeild no substantive changes. Instead, scaling serves to establish a point of reference so as to interpret other parameters (much like the justifications for centering and standardizing).&lt;/p&gt;
+&lt;p&gt;3 options:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Fixed factor. Here you fix the variance of the latent variable to 1 (standardized).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Marker variable. Here you fix one factor loading to 1. All other loadings are relative to this loading. The variance of the latent variable can thus be anything. This is often the default of software programs.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Effect coding. Here you constrain loading to average to 1. This will be helpful for us as we can then put the scale of measurement into our original metric. For longitudinal models this is helpful in terms of how to interpret the amount of change.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;identification&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Identification&lt;/h2&gt;
+&lt;p&gt;Note that we have multiple parameters we are trying to estimate. Paths (regression coefficients), means, variances (of manifest variables and latent variables). This makes estiamting a little more tricky as you cannot have more unknowns than knowns. There are some tricks and rules of hand about what you can estimate or not. Typically however, it is suggested that you have 3 indicators per latent variable.&lt;/p&gt;
+&lt;p&gt;If you are asking too much for a model you can also constrain parameters to be the same. For example, you may assume that all residual variances are the same. This assumtpion can be built into your model and reduces the number of parameters you have to estimate.&lt;/p&gt;
+&lt;p&gt;More specifically, you need to compare the number of knows (variances and covariances) to the unknowns (model parameters).&lt;/p&gt;
+&lt;p&gt;Foe example, a three indicator latent variable has 7 unknowns. 3 Loadings, 3 error variances and the variance of the latent variable&lt;/p&gt;
+&lt;p&gt;The covariance matrix has 6 data points. Thus we need to add in one more known, in this case a fixed factor or a marker variable.&lt;/p&gt;
+&lt;p&gt;Knowns - unknowns = df. Note that df in this case df will not directly relate to sample size, so it is a little different than typical degree of freedom concepts.&lt;/p&gt;
+&lt;p&gt;However, we will use this version of a df because it corresponds to how we will test the fit of these models. Specifically, the difference in dfs between models is distributed as a chi-square.&lt;/p&gt;
+&lt;div id=&#34;types-of-identification&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Types of identification&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Just identified is where the number of knowns equal unknowns. Also known as saturated model. When you evaluate the fit of the model these will be perfect. So while these will estimate, we cannot examine whether or not our model is a good representation of the world, as we are simply recreating the observed covariance matrix (data). For some instances this may not be a problem, for others…&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Over identified is when you have more knowns than unknowns. This is good as we can fit a model that is more parsiminous than our data. Moreover, we can examine fit stats.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Under identified is when you have problems and have more unknowns than knowns. this is because there is more than one solution available and the algorithm cannot decide e.g,. 2 + X = Y. If we add a constraint or a known value then it becomes manageable 2 + X = 12&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;fit-indices&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Fit Indices&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;residuals. Good to check.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;modification indices. Check to see if missing parameters that residuals may suggest you didn’t include or should include. Can test with more advanced techniques. But eh… makes your models non-theoretical, could be over fitting, relying too much on sig tests…&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;chi-square. (Statistical fit) Implied versus observed data, tests to see if model are exact fit with data. But eh…too impacted by sample size&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;RMSEA or SRMR (Absolute fit). Does not compare to a null model. Judges distance from perfect fit.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Above .10 poor fit
+Below .08 acceptable&lt;/p&gt;
+&lt;ol start=&#34;5&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;CFI, TFI (Relative fit models). Compares relative to a null model. Judges distance from the worse fit ie a null model. Null models have no covariance among observed and latent variables.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;range from 0-1. Indicate % of improvement from the null model to a saturated i.e. just identified model.&lt;/p&gt;
+&lt;p&gt;Usually &amp;gt;.9 is okay. Some care about &amp;gt; .95&lt;/p&gt;
+&lt;p&gt;Minor changes to the model can improve fit.&lt;/p&gt;
+&lt;ol start=&#34;6&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Check the model parameters. Are they wonky? Easy to get negative variances or correlations above 1.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parcels&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parcels&lt;/h3&gt;
+&lt;p&gt;It is often necessary to simplify your model. One option to do so is with parcels where you combine indicators into a composite. This simplifies the model in that you have fewer parameters to fit. In addition to being a way to get a model identified, it also has benefits in terms of the assumptions of the indicator variables.&lt;/p&gt;
+&lt;p&gt;To do so, you can combine items however you want into 3 or 4 groups or parcels, averaging them together. You may balance highly loading with less highly loading items (item to construct technique) or you may pair pos and negatively keyed items together. It is up to you.&lt;/p&gt;
+&lt;p&gt;Some dislike it because you are aggregating without taking into account the association between the indicators; it is a blind procedure based on theory/assumptions rather than maths. ¯_(ツ)_/¯&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;types-of-longitudinal-models-other-than-growth-models-brief-intro&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Types of longitudinal models other than growth models (brief intro)&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;long &amp;lt;- read.csv(&amp;quot;~/Box/5165 Applied Longitudinal Data Analysis/SEM_workshop/longitudinal.csv&amp;quot;)
+
+summary(long)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     PosAFF11        PosAFF21         PosAFF31        NegAFF11      
+##  Min.   :1.365   Min.   :0.4152   Min.   :1.140   Min.   :-0.8584  
+##  1st Qu.:2.739   1st Qu.:2.6343   1st Qu.:2.797   1st Qu.: 1.1035  
+##  Median :3.209   Median :3.1143   Median :3.204   Median : 1.5075  
+##  Mean   :3.212   Mean   :3.1050   Mean   :3.248   Mean   : 1.5220  
+##  3rd Qu.:3.688   3rd Qu.:3.6216   3rd Qu.:3.775   3rd Qu.: 1.9815  
+##  Max.   :5.804   Max.   :6.1970   Max.   :6.048   Max.   : 3.2403  
+##     NegAFF21          NegAFF31          PosAFF12        PosAFF22     
+##  Min.   :-0.3991   Min.   :-0.5606   Min.   :1.528   Min.   :0.6575  
+##  1st Qu.: 1.0229   1st Qu.: 1.0100   1st Qu.:2.852   1st Qu.:2.6571  
+##  Median : 1.3718   Median : 1.4335   Median :3.215   Median :3.1206  
+##  Mean   : 1.3971   Mean   : 1.3981   Mean   :3.253   Mean   :3.1256  
+##  3rd Qu.: 1.7566   3rd Qu.: 1.8101   3rd Qu.:3.637   3rd Qu.:3.5467  
+##  Max.   : 2.9844   Max.   : 2.7674   Max.   :5.413   Max.   :5.4420  
+##     PosAFF32         NegAFF12         NegAFF22         NegAFF32       
+##  Min.   :0.7369   Min.   :0.1797   Min.   :0.1784   Min.   :-0.03494  
+##  1st Qu.:2.8484   1st Qu.:1.1464   1st Qu.:0.9963   1st Qu.: 1.02027  
+##  Median :3.2692   Median :1.3818   Median :1.3172   Median : 1.31692  
+##  Mean   :3.2737   Mean   :1.4115   Mean   :1.3237   Mean   : 1.30002  
+##  3rd Qu.:3.7170   3rd Qu.:1.7251   3rd Qu.:1.6382   3rd Qu.: 1.56441  
+##  Max.   :5.9676   Max.   :2.5033   Max.   :2.5587   Max.   : 2.44236  
+##     PosAFF13        PosAFF23         PosAFF33        NegAFF13       
+##  Min.   :1.307   Min.   :0.8057   Min.   :1.629   Min.   :-0.01837  
+##  1st Qu.:2.979   1st Qu.:2.7147   1st Qu.:2.858   1st Qu.: 1.15739  
+##  Median :3.299   Median :3.0832   Median :3.325   Median : 1.43937  
+##  Mean   :3.302   Mean   :3.0945   Mean   :3.280   Mean   : 1.43015  
+##  3rd Qu.:3.683   3rd Qu.:3.5296   3rd Qu.:3.698   3rd Qu.: 1.73650  
+##  Max.   :4.712   Max.   :4.8007   Max.   :5.014   Max.   : 2.75085  
+##     NegAFF23        NegAFF33     
+##  Min.   :0.147   Min.   :0.3145  
+##  1st Qu.:1.009   1st Qu.:1.0261  
+##  Median :1.294   Median :1.3154  
+##  Mean   :1.281   Mean   :1.2974  
+##  3rd Qu.:1.560   3rd Qu.:1.5583  
+##  Max.   :2.447   Max.   :2.6385&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;longitudinal-cfa&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Longitudinal CFA&lt;/h3&gt;
+&lt;p&gt;key concerns:
+1. Should the correlations be the same across time?
+2. Should the error variances be correlated?
+3. Are the loadings the same across time? (more on this later)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;long.cfa &amp;lt;- &amp;#39;
+## define latent variables
+Pos1 =~ PosAFF11 + PosAFF21 + PosAFF31
+Pos2 =~ PosAFF12 + PosAFF22 + PosAFF32
+Pos3 =~ PosAFF13 + PosAFF23 + PosAFF33
+Neg1 =~ NegAFF11 + NegAFF21 + NegAFF31
+Neg2 =~ NegAFF12 + NegAFF22 + NegAFF32
+Neg3 =~ NegAFF13 + NegAFF23 + NegAFF33
+
+## correlated residuals across time
+PosAFF11 ~~ PosAFF12 + PosAFF13
+PosAFF12 ~~ PosAFF13
+PosAFF21 ~~ PosAFF22 + PosAFF23
+PosAFF22 ~~ PosAFF23
+PosAFF31 ~~ PosAFF32 + PosAFF33
+PosAFF32 ~~ PosAFF33
+
+NegAFF11 ~~ NegAFF12 + NegAFF13
+NegAFF12 ~~ NegAFF13
+NegAFF21 ~~ NegAFF22 + NegAFF23
+NegAFF22 ~~ NegAFF23
+NegAFF31 ~~ NegAFF32 + NegAFF33
+NegAFF32 ~~ NegAFF33
+
+&amp;#39;
+
+fit.long.cfa &amp;lt;- cfa(long.cfa, data=long, std.lv=TRUE)
+
+summary(fit.long.cfa, standardized=TRUE, fit.measures=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 128 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         69
+## 
+##   Number of observations                           368
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     119.443
+##   Degrees of freedom                               102
+##   P-value (Chi-square)                           0.114
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             5253.085
+##   Degrees of freedom                               153
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.997
+##   Tucker-Lewis Index (TLI)                       0.995
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3060.353
+##   Loglikelihood unrestricted model (H1)      -3000.632
+## 
+##   Number of free parameters                         69
+##   Akaike (AIC)                                6258.707
+##   Bayesian (BIC)                              6528.365
+##   Sample-size adjusted Bayesian (BIC)         6309.453
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.022
+##   90 Percent Confidence Interval          0.000  0.036
+##   P-value RMSEA &amp;lt;= 0.05                          1.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.028
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   Pos1 =~                                                               
+##     PosAFF11          0.654    0.030   21.936    0.000    0.654    0.903
+##     PosAFF21          0.651    0.031   20.864    0.000    0.651    0.875
+##     PosAFF31          0.685    0.031   22.361    0.000    0.685    0.912
+##   Pos2 =~                                                               
+##     PosAFF12          0.556    0.026   21.256    0.000    0.556    0.883
+##     PosAFF22          0.638    0.030   21.448    0.000    0.638    0.887
+##     PosAFF32          0.644    0.027   23.567    0.000    0.644    0.940
+##   Pos3 =~                                                               
+##     PosAFF13          0.508    0.024   21.028    0.000    0.508    0.887
+##     PosAFF23          0.545    0.027   20.347    0.000    0.545    0.867
+##     PosAFF33          0.538    0.026   20.827    0.000    0.538    0.879
+##   Neg1 =~                                                               
+##     NegAFF11          0.563    0.028   20.465    0.000    0.563    0.868
+##     NegAFF21          0.479    0.024   19.856    0.000    0.479    0.847
+##     NegAFF31          0.555    0.025   22.373    0.000    0.555    0.920
+##   Neg2 =~                                                               
+##     NegAFF12          0.365    0.019   18.989    0.000    0.365    0.826
+##     NegAFF22          0.375    0.017   21.452    0.000    0.375    0.889
+##     NegAFF32          0.368    0.017   21.383    0.000    0.368    0.896
+##   Neg3 =~                                                               
+##     NegAFF13          0.363    0.021   17.128    0.000    0.363    0.782
+##     NegAFF23          0.341    0.017   19.493    0.000    0.341    0.855
+##     NegAFF33          0.344    0.017   19.700    0.000    0.344    0.869
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##  .PosAFF11 ~~                                                           
+##    .PosAFF12          0.004    0.007    0.578    0.563    0.004    0.043
+##    .PosAFF13          0.000    0.007    0.037    0.971    0.000    0.003
+##  .PosAFF12 ~~                                                           
+##    .PosAFF13          0.004    0.006    0.674    0.500    0.004    0.050
+##  .PosAFF21 ~~                                                           
+##    .PosAFF22          0.008    0.008    1.020    0.308    0.008    0.071
+##    .PosAFF23          0.008    0.008    0.991    0.322    0.008    0.070
+##  .PosAFF22 ~~                                                           
+##    .PosAFF23          0.011    0.007    1.470    0.142    0.011    0.104
+##  .PosAFF31 ~~                                                           
+##    .PosAFF32          0.004    0.007    0.616    0.538    0.004    0.057
+##    .PosAFF33          0.016    0.007    2.182    0.029    0.016    0.177
+##  .PosAFF32 ~~                                                           
+##    .PosAFF33          0.004    0.006    0.690    0.490    0.004    0.061
+##  .NegAFF11 ~~                                                           
+##    .NegAFF12          0.005    0.005    0.966    0.334    0.005    0.065
+##    .NegAFF13          0.006    0.006    1.036    0.300    0.006    0.070
+##  .NegAFF12 ~~                                                           
+##    .NegAFF13          0.007    0.005    1.528    0.126    0.007    0.099
+##  .NegAFF21 ~~                                                           
+##    .NegAFF22          0.015    0.004    3.605    0.000    0.015    0.267
+##    .NegAFF23          0.011    0.005    2.387    0.017    0.011    0.173
+##  .NegAFF22 ~~                                                           
+##    .NegAFF23          0.010    0.003    3.145    0.002    0.010    0.253
+##  .NegAFF31 ~~                                                           
+##    .NegAFF32         -0.006    0.004   -1.607    0.108   -0.006   -0.147
+##    .NegAFF33         -0.008    0.004   -1.778    0.075   -0.008   -0.163
+##  .NegAFF32 ~~                                                           
+##    .NegAFF33         -0.001    0.003   -0.481    0.630   -0.001   -0.041
+##   Pos1 ~~                                                               
+##     Pos2              0.473    0.044   10.663    0.000    0.473    0.473
+##     Pos3              0.399    0.048    8.228    0.000    0.399    0.399
+##     Neg1             -0.436    0.047   -9.358    0.000   -0.436   -0.436
+##     Neg2             -0.297    0.052   -5.706    0.000   -0.297   -0.297
+##     Neg3             -0.169    0.056   -3.003    0.003   -0.169   -0.169
+##   Pos2 ~~                                                               
+##     Pos3              0.449    0.046    9.777    0.000    0.449    0.449
+##     Neg1             -0.179    0.054   -3.279    0.001   -0.179   -0.179
+##     Neg2             -0.543    0.041  -13.203    0.000   -0.543   -0.543
+##     Neg3             -0.198    0.055   -3.578    0.000   -0.198   -0.198
+##   Pos3 ~~                                                               
+##     Neg1             -0.074    0.057   -1.304    0.192   -0.074   -0.074
+##     Neg2             -0.167    0.056   -2.989    0.003   -0.167   -0.167
+##     Neg3             -0.292    0.054   -5.442    0.000   -0.292   -0.292
+##   Neg1 ~~                                                               
+##     Neg2              0.526    0.043   12.317    0.000    0.526    0.526
+##     Neg3              0.351    0.052    6.778    0.000    0.351    0.351
+##   Neg2 ~~                                                               
+##     Neg3              0.435    0.048    9.006    0.000    0.435    0.435
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .PosAFF11          0.096    0.011    8.497    0.000    0.096    0.184
+##    .PosAFF21          0.130    0.013    9.956    0.000    0.130    0.235
+##    .PosAFF31          0.095    0.012    7.944    0.000    0.095    0.168
+##    .PosAFF12          0.087    0.009   10.044    0.000    0.087    0.220
+##    .PosAFF22          0.110    0.011    9.883    0.000    0.110    0.213
+##    .PosAFF32          0.055    0.009    6.438    0.000    0.055    0.117
+##    .PosAFF13          0.070    0.008    8.319    0.000    0.070    0.214
+##    .PosAFF23          0.098    0.011    9.317    0.000    0.098    0.249
+##    .PosAFF33          0.085    0.010    8.716    0.000    0.085    0.227
+##    .NegAFF11          0.104    0.011    9.546    0.000    0.104    0.246
+##    .NegAFF21          0.091    0.009   10.363    0.000    0.091    0.283
+##    .NegAFF31          0.056    0.009    6.475    0.000    0.056    0.153
+##    .NegAFF12          0.062    0.006   10.835    0.000    0.062    0.317
+##    .NegAFF22          0.037    0.004    8.445    0.000    0.037    0.209
+##    .NegAFF32          0.033    0.004    7.917    0.000    0.033    0.198
+##    .NegAFF13          0.084    0.008   10.660    0.000    0.084    0.389
+##    .NegAFF23          0.043    0.005    8.170    0.000    0.043    0.270
+##    .NegAFF33          0.038    0.005    7.372    0.000    0.038    0.245
+##     Pos1              1.000                               1.000    1.000
+##     Pos2              1.000                               1.000    1.000
+##     Pos3              1.000                               1.000    1.000
+##     Neg1              1.000                               1.000    1.000
+##     Neg2              1.000                               1.000    1.000
+##     Neg3              1.000                               1.000    1.000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;semPaths(fit.long.cfa)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-10-09-week-6_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;longitudinal-path-model&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Longitudinal Path Model&lt;/h3&gt;
+&lt;p&gt;key concerns:
+1. Should the regressions be the same across time?
+2. Should the error variances be correlated?
+3. Are the loadings the same across time? (more on this later)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;long.path &amp;lt;- &amp;#39;
+## define latent variables
+Pos1 =~ L1*PosAFF11 + L2*PosAFF21 + L3*PosAFF31
+Pos2 =~ L1*PosAFF12 + L2*PosAFF22 + L3*PosAFF32
+Pos3 =~ L1*PosAFF13 + L2*PosAFF23 + L3*PosAFF33
+Neg1 =~ L4*NegAFF11 + L5*NegAFF21 + L6*NegAFF31
+Neg2 =~ L4*NegAFF12 + L5*NegAFF22 + L6*NegAFF32
+Neg3 =~ L4*NegAFF13 + L5*NegAFF23 + L6*NegAFF33
+
+## free latent variances at later times (only set the scale once)
+Pos2 ~~ NA*Pos2
+Pos3 ~~ NA*Pos3
+Neg2 ~~ NA*Neg2
+Neg3 ~~ NA*Neg3
+Pos1 ~~ Neg1
+Pos2 ~~ Neg2
+Pos3 ~~ Neg3
+
+## directional regression paths
+Pos2 ~ Pos1
+Pos3 ~ Pos2
+Neg2 ~ Neg1
+Neg3 ~ Neg2
+
+## correlated residuals across time
+PosAFF11 ~~ PosAFF12 + PosAFF13
+PosAFF12 ~~ PosAFF13
+PosAFF21 ~~ PosAFF22 + PosAFF23
+PosAFF22 ~~ PosAFF23
+PosAFF31 ~~ PosAFF32 + PosAFF33
+PosAFF32 ~~ PosAFF33
+
+NegAFF11 ~~ NegAFF12 + NegAFF13
+NegAFF12 ~~ NegAFF13
+NegAFF21 ~~ NegAFF22 + NegAFF23
+NegAFF22 ~~ NegAFF23
+NegAFF31 ~~ NegAFF32 + NegAFF33
+NegAFF32 ~~ NegAFF33
+&amp;#39;
+
+fit.long.path &amp;lt;- sem(long.path, data=long, std.lv=TRUE)
+
+summary(fit.long.path, standardized=TRUE, fit.measures=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 133 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         65
+##   Number of equality constraints                    12
+##   Row rank of the constraints matrix                12
+## 
+##   Number of observations                           368
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     170.843
+##   Degrees of freedom                               118
+##   P-value (Chi-square)                           0.001
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             5253.085
+##   Degrees of freedom                               153
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.990
+##   Tucker-Lewis Index (TLI)                       0.987
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3086.053
+##   Loglikelihood unrestricted model (H1)      -3000.632
+## 
+##   Number of free parameters                         53
+##   Akaike (AIC)                                6278.107
+##   Bayesian (BIC)                              6485.235
+##   Sample-size adjusted Bayesian (BIC)         6317.086
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.035
+##   90 Percent Confidence Interval          0.023  0.046
+##   P-value RMSEA &amp;lt;= 0.05                          0.989
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.055
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   Pos1 =~                                                               
+##     PosAFF11  (L1)    0.630    0.027   23.609    0.000    0.630    0.892
+##     PosAFF21  (L2)    0.673    0.029   23.387    0.000    0.673    0.884
+##     PosAFF31  (L3)    0.686    0.029   23.966    0.000    0.686    0.913
+##   Pos2 =~                                                               
+##     PosAFF12  (L1)    0.630    0.027   23.609    0.000    0.575    0.893
+##     PosAFF22  (L2)    0.673    0.029   23.387    0.000    0.614    0.878
+##     PosAFF32  (L3)    0.686    0.029   23.966    0.000    0.626    0.932
+##   Pos3 =~                                                               
+##     PosAFF13  (L1)    0.630    0.027   23.609    0.000    0.504    0.884
+##     PosAFF23  (L2)    0.673    0.029   23.387    0.000    0.539    0.861
+##     PosAFF33  (L3)    0.686    0.029   23.966    0.000    0.549    0.887
+##   Neg1 =~                                                               
+##     NegAFF11  (L4)    0.546    0.024   22.398    0.000    0.546    0.859
+##     NegAFF21  (L5)    0.510    0.023   22.505    0.000    0.510    0.868
+##     NegAFF31  (L6)    0.537    0.023   23.717    0.000    0.537    0.908
+##   Neg2 =~                                                               
+##     NegAFF12  (L4)    0.546    0.024   22.398    0.000    0.384    0.841
+##     NegAFF22  (L5)    0.510    0.023   22.505    0.000    0.358    0.871
+##     NegAFF32  (L6)    0.537    0.023   23.717    0.000    0.377    0.904
+##   Neg3 =~                                                               
+##     NegAFF13  (L4)    0.546    0.024   22.398    0.000    0.362    0.780
+##     NegAFF23  (L5)    0.510    0.023   22.505    0.000    0.338    0.847
+##     NegAFF33  (L6)    0.537    0.023   23.717    0.000    0.356    0.883
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   Pos2 ~                                                                
+##     Pos1              0.416    0.042   10.020    0.000    0.456    0.456
+##   Pos3 ~                                                                
+##     Pos2              0.404    0.044    9.207    0.000    0.460    0.460
+##   Neg2 ~                                                                
+##     Neg1              0.382    0.031   12.203    0.000    0.544    0.544
+##   Neg3 ~                                                                
+##     Neg2              0.432    0.049    8.867    0.000    0.457    0.457
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   Pos1 ~~                                                               
+##     Neg1             -0.441    0.046   -9.502    0.000   -0.441   -0.441
+##  .Pos2 ~~                                                               
+##    .Neg2             -0.269    0.036   -7.544    0.000   -0.561   -0.561
+##  .Pos3 ~~                                                               
+##    .Neg3             -0.125    0.027   -4.596    0.000   -0.298   -0.298
+##  .PosAFF11 ~~                                                           
+##    .PosAFF12          0.004    0.007    0.536    0.592    0.004    0.039
+##    .PosAFF13          0.003    0.007    0.386    0.699    0.003    0.030
+##  .PosAFF12 ~~                                                           
+##    .PosAFF13          0.003    0.006    0.585    0.559    0.003    0.044
+##  .PosAFF21 ~~                                                           
+##    .PosAFF22          0.007    0.008    0.865    0.387    0.007    0.061
+##    .PosAFF23          0.008    0.008    1.030    0.303    0.008    0.074
+##  .PosAFF22 ~~                                                           
+##    .PosAFF23          0.011    0.007    1.516    0.130    0.011    0.106
+##  .PosAFF31 ~~                                                           
+##    .PosAFF32          0.005    0.007    0.705    0.481    0.005    0.064
+##    .PosAFF33          0.016    0.007    2.173    0.030    0.016    0.180
+##  .PosAFF32 ~~                                                           
+##    .PosAFF33          0.004    0.006    0.580    0.562    0.004    0.051
+##  .NegAFF11 ~~                                                           
+##    .NegAFF12          0.005    0.005    0.947    0.344    0.005    0.064
+##    .NegAFF13          0.007    0.006    1.107    0.268    0.007    0.073
+##  .NegAFF12 ~~                                                           
+##    .NegAFF13          0.007    0.005    1.539    0.124    0.007    0.100
+##  .NegAFF21 ~~                                                           
+##    .NegAFF22          0.015    0.004    3.399    0.001    0.015    0.249
+##    .NegAFF23          0.010    0.005    2.217    0.027    0.010    0.163
+##  .NegAFF22 ~~                                                           
+##    .NegAFF23          0.011    0.003    3.430    0.001    0.011    0.259
+##  .NegAFF31 ~~                                                           
+##    .NegAFF32         -0.007    0.004   -1.724    0.085   -0.007   -0.155
+##    .NegAFF33         -0.007    0.004   -1.587    0.113   -0.007   -0.143
+##  .NegAFF32 ~~                                                           
+##    .NegAFF33         -0.002    0.003   -0.734    0.463   -0.002   -0.066
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .Pos2              0.660    0.075    8.760    0.000    0.792    0.792
+##    .Pos3              0.504    0.058    8.628    0.000    0.788    0.788
+##    .Neg2              0.347    0.041    8.458    0.000    0.704    0.704
+##    .Neg3              0.347    0.041    8.409    0.000    0.791    0.791
+##    .PosAFF11          0.102    0.011    9.329    0.000    0.102    0.204
+##    .PosAFF21          0.126    0.013    9.699    0.000    0.126    0.218
+##    .PosAFF31          0.094    0.012    8.132    0.000    0.094    0.166
+##    .PosAFF12          0.084    0.009    9.650    0.000    0.084    0.202
+##    .PosAFF22          0.112    0.011   10.307    0.000    0.112    0.229
+##    .PosAFF32          0.059    0.008    7.215    0.000    0.059    0.131
+##    .PosAFF13          0.071    0.008    8.813    0.000    0.071    0.218
+##    .PosAFF23          0.101    0.010    9.833    0.000    0.101    0.259
+##    .PosAFF33          0.082    0.009    8.703    0.000    0.082    0.214
+##    .NegAFF11          0.106    0.010   10.098    0.000    0.106    0.262
+##    .NegAFF21          0.085    0.009    9.768    0.000    0.085    0.247
+##    .NegAFF31          0.062    0.008    7.633    0.000    0.062    0.176
+##    .NegAFF12          0.061    0.006   10.625    0.000    0.061    0.292
+##    .NegAFF22          0.041    0.004    9.619    0.000    0.041    0.242
+##    .NegAFF32          0.032    0.004    7.781    0.000    0.032    0.182
+##    .NegAFF13          0.084    0.008   11.031    0.000    0.084    0.392
+##    .NegAFF23          0.045    0.005    9.102    0.000    0.045    0.282
+##    .NegAFF33          0.036    0.005    7.466    0.000    0.036    0.221
+##     Pos1              1.000                               1.000    1.000
+##     Neg1              1.000                               1.000    1.000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;semPaths(fit.long.path, layout = &amp;quot;tree3&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-10-09-week-6_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## layout can also be done manually to get publications worthy plots&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;longitudinal-cross-lagged-model&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Longitudinal Cross lagged model&lt;/h3&gt;
+&lt;p&gt;key concerns:
+1. Should the regressions (both cross lagged and autoregressive) be the same across time?
+2. Should the indicator error variances be correlated (within time or within construct)?
+3. Are the loadings the same across time? (more on this later)
+4. Are the latent error variances the same or different?
+5. Are the latent error variances correlated the same or different across time?
+6. Are there more lagged effects?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;long.cross &amp;lt;- &amp;#39;
+## define latent variables
+Pos1 =~ L1*PosAFF11 + L2*PosAFF21 + L3*PosAFF31
+Pos2 =~ L1*PosAFF12 + L2*PosAFF22 + L3*PosAFF32
+Pos3 =~ L1*PosAFF13 + L2*PosAFF23 + L3*PosAFF33
+Neg1 =~ L4*NegAFF11 + L5*NegAFF21 + L6*NegAFF31
+Neg2 =~ L4*NegAFF12 + L5*NegAFF22 + L6*NegAFF32
+Neg3 =~ L4*NegAFF13 + L5*NegAFF23 + L6*NegAFF33
+
+## free latent variances at later times (only set the scale once)
+Pos2 ~~ NA*Pos2
+Pos3 ~~ NA*Pos3
+Neg2 ~~ NA*Neg2
+Neg3 ~~ NA*Neg3
+
+Pos1 ~~ Neg1
+Pos2 ~~ Neg2
+Pos3 ~~ Neg3
+
+## directional regression paths
+Pos2 ~ Pos1 + Neg1
+Neg2 ~ Pos1 + Neg1
+Pos3 ~ Pos2 + Neg2
+Neg3 ~ Pos2 + Neg2
+
+## correlated residuals across time
+PosAFF11 ~~ PosAFF12 + PosAFF13
+PosAFF12 ~~ PosAFF13
+PosAFF21 ~~ PosAFF22 + PosAFF23
+PosAFF22 ~~ PosAFF23
+PosAFF31 ~~ PosAFF32 + PosAFF33
+PosAFF32 ~~ PosAFF33
+
+NegAFF11 ~~ NegAFF12 + NegAFF13
+NegAFF12 ~~ NegAFF13
+NegAFF21 ~~ NegAFF22 + NegAFF23
+NegAFF22 ~~ NegAFF23
+NegAFF31 ~~ NegAFF32 + NegAFF33
+NegAFF32 ~~ NegAFF33
+&amp;#39;
+
+fit.long.cross &amp;lt;- sem(long.cross,data=long, std.lv=TRUE)
+
+summary(fit.long.cross, standardized=TRUE, fit.measures=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 137 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         69
+##   Number of equality constraints                    12
+##   Row rank of the constraints matrix                12
+## 
+##   Number of observations                           368
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     163.406
+##   Degrees of freedom                               114
+##   P-value (Chi-square)                           0.002
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             5253.085
+##   Degrees of freedom                               153
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.990
+##   Tucker-Lewis Index (TLI)                       0.987
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3082.335
+##   Loglikelihood unrestricted model (H1)      -3000.632
+## 
+##   Number of free parameters                         57
+##   Akaike (AIC)                                6278.669
+##   Bayesian (BIC)                              6501.430
+##   Sample-size adjusted Bayesian (BIC)         6320.590
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.034
+##   90 Percent Confidence Interval          0.022  0.046
+##   P-value RMSEA &amp;lt;= 0.05                          0.990
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.051
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   Pos1 =~                                                               
+##     PosAFF11  (L1)    0.630    0.027   23.619    0.000    0.630    0.892
+##     PosAFF21  (L2)    0.673    0.029   23.393    0.000    0.673    0.884
+##     PosAFF31  (L3)    0.686    0.029   23.990    0.000    0.686    0.914
+##   Pos2 =~                                                               
+##     PosAFF12  (L1)    0.630    0.027   23.619    0.000    0.582    0.896
+##     PosAFF22  (L2)    0.673    0.029   23.393    0.000    0.622    0.880
+##     PosAFF32  (L3)    0.686    0.029   23.990    0.000    0.634    0.933
+##   Pos3 =~                                                               
+##     PosAFF13  (L1)    0.630    0.027   23.619    0.000    0.503    0.884
+##     PosAFF23  (L2)    0.673    0.029   23.393    0.000    0.537    0.861
+##     PosAFF33  (L3)    0.686    0.029   23.990    0.000    0.547    0.886
+##   Neg1 =~                                                               
+##     NegAFF11  (L4)    0.547    0.024   22.394    0.000    0.547    0.860
+##     NegAFF21  (L5)    0.510    0.023   22.488    0.000    0.510    0.868
+##     NegAFF31  (L6)    0.538    0.023   23.710    0.000    0.538    0.908
+##   Neg2 =~                                                               
+##     NegAFF12  (L4)    0.547    0.024   22.394    0.000    0.382    0.840
+##     NegAFF22  (L5)    0.510    0.023   22.488    0.000    0.356    0.869
+##     NegAFF32  (L6)    0.538    0.023   23.710    0.000    0.375    0.903
+##   Neg3 =~                                                               
+##     NegAFF13  (L4)    0.547    0.024   22.394    0.000    0.358    0.777
+##     NegAFF23  (L5)    0.510    0.023   22.488    0.000    0.334    0.844
+##     NegAFF33  (L6)    0.538    0.023   23.710    0.000    0.352    0.881
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   Pos2 ~                                                                
+##     Pos1              0.463    0.052    8.829    0.000    0.501    0.501
+##     Neg1              0.039    0.053    0.746    0.456    0.042    0.042
+##   Neg2 ~                                                                
+##     Pos1             -0.057    0.039   -1.454    0.146   -0.081   -0.081
+##     Neg1              0.347    0.039    8.812    0.000    0.498    0.498
+##   Pos3 ~                                                                
+##     Pos2              0.451    0.054    8.307    0.000    0.522    0.522
+##     Neg2              0.134    0.073    1.843    0.065    0.117    0.117
+##   Neg3 ~                                                                
+##     Pos2              0.046    0.046    1.000    0.317    0.065    0.065
+##     Neg2              0.446    0.062    7.239    0.000    0.475    0.475
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   Pos1 ~~                                                               
+##     Neg1             -0.437    0.047   -9.375    0.000   -0.437   -0.437
+##  .Pos2 ~~                                                               
+##    .Neg2             -0.269    0.036   -7.567    0.000   -0.566   -0.566
+##  .Pos3 ~~                                                               
+##    .Neg3             -0.127    0.027   -4.710    0.000   -0.308   -0.308
+##  .PosAFF11 ~~                                                           
+##    .PosAFF12          0.004    0.007    0.529    0.597    0.004    0.039
+##    .PosAFF13          0.002    0.007    0.371    0.711    0.002    0.028
+##  .PosAFF12 ~~                                                           
+##    .PosAFF13          0.003    0.006    0.569    0.569    0.003    0.043
+##  .PosAFF21 ~~                                                           
+##    .PosAFF22          0.007    0.008    0.869    0.385    0.007    0.061
+##    .PosAFF23          0.008    0.008    0.964    0.335    0.008    0.069
+##  .PosAFF22 ~~                                                           
+##    .PosAFF23          0.011    0.007    1.416    0.157    0.011    0.099
+##  .PosAFF31 ~~                                                           
+##    .PosAFF32          0.004    0.007    0.649    0.516    0.004    0.059
+##    .PosAFF33          0.016    0.007    2.257    0.024    0.016    0.187
+##  .PosAFF32 ~~                                                           
+##    .PosAFF33          0.004    0.006    0.580    0.562    0.004    0.050
+##  .NegAFF11 ~~                                                           
+##    .NegAFF12          0.005    0.005    0.986    0.324    0.005    0.067
+##    .NegAFF13          0.007    0.006    1.088    0.277    0.007    0.072
+##  .NegAFF12 ~~                                                           
+##    .NegAFF13          0.007    0.005    1.537    0.124    0.007    0.100
+##  .NegAFF21 ~~                                                           
+##    .NegAFF22          0.015    0.004    3.440    0.001    0.015    0.252
+##    .NegAFF23          0.010    0.005    2.238    0.025    0.010    0.165
+##  .NegAFF22 ~~                                                           
+##    .NegAFF23          0.011    0.003    3.397    0.001    0.011    0.256
+##  .NegAFF31 ~~                                                           
+##    .NegAFF32         -0.007    0.004   -1.748    0.080   -0.007   -0.157
+##    .NegAFF33         -0.007    0.004   -1.602    0.109   -0.007   -0.145
+##  .NegAFF32 ~~                                                           
+##    .NegAFF33         -0.002    0.003   -0.751    0.453   -0.002   -0.068
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .Pos2              0.653    0.075    8.735    0.000    0.765    0.765
+##    .Pos3              0.496    0.058    8.594    0.000    0.780    0.780
+##    .Neg2              0.346    0.041    8.475    0.000    0.710    0.710
+##    .Neg3              0.345    0.041    8.396    0.000    0.804    0.804
+##    .PosAFF11          0.102    0.011    9.359    0.000    0.102    0.205
+##    .PosAFF21          0.127    0.013    9.731    0.000    0.127    0.219
+##    .PosAFF31          0.093    0.012    8.100    0.000    0.093    0.165
+##    .PosAFF12          0.083    0.009    9.656    0.000    0.083    0.198
+##    .PosAFF22          0.113    0.011   10.344    0.000    0.113    0.226
+##    .PosAFF32          0.060    0.008    7.270    0.000    0.060    0.129
+##    .PosAFF13          0.071    0.008    8.814    0.000    0.071    0.219
+##    .PosAFF23          0.101    0.010    9.817    0.000    0.101    0.259
+##    .PosAFF33          0.082    0.009    8.730    0.000    0.082    0.216
+##    .NegAFF11          0.105    0.010   10.063    0.000    0.105    0.260
+##    .NegAFF21          0.085    0.009    9.775    0.000    0.085    0.247
+##    .NegAFF31          0.062    0.008    7.599    0.000    0.062    0.176
+##    .NegAFF12          0.061    0.006   10.647    0.000    0.061    0.295
+##    .NegAFF22          0.041    0.004    9.668    0.000    0.041    0.245
+##    .NegAFF32          0.032    0.004    7.810    0.000    0.032    0.184
+##    .NegAFF13          0.084    0.008   11.023    0.000    0.084    0.396
+##    .NegAFF23          0.045    0.005    9.106    0.000    0.045    0.287
+##    .NegAFF33          0.036    0.005    7.452    0.000    0.036    0.224
+##     Pos1              1.000                               1.000    1.000
+##     Neg1              1.000                               1.000    1.000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;semPaths(fit.long.cross)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-10-09-week-6_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;semPaths(fit.long.cross, layout = &amp;quot;tree3&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-10-09-week-6_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;longitudinal-mediation-model&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Longitudinal mediation model&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Do Self-Reported Social Experiences Mediate the Effect of Extraversion on Life Satisfaction and Happiness?
+#number close friends
+library(readr)
+TSS_sub &amp;lt;- read_csv(&amp;quot;~/Box/5165 Applied Longitudinal Data Analysis/Longitudinal/TSS_sub.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Missing column names filled in: &amp;#39;X1&amp;#39; [1]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   f1acode = col_character(),
+##   h1acode = col_character(),
+##   h1lbf01 = col_character(),
+##   h1dtf01 = col_character(),
+##   h1aef01 = col_character(),
+##   j1free = col_character(),
+##   k1major = col_character(),
+##   k1attpar = col_character(),
+##   m1major = col_character(),
+##   m1attpar = col_character(),
+##   i1knwots = col_character(),
+##   i2knwots = col_character(),
+##   i3knwots = col_character(),
+##   i4knwots = col_logical(),
+##   n1knwots = col_character(),
+##   n2knwots = col_character(),
+##   n3knwots = col_character(),
+##   n4knwots = col_character()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## See spec(...) for full column specifications.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;scon.model6&amp;lt;-&amp;#39;
+# definine extraversion
+bfie =~ a1bfi01 + a1bfi06r + a1bfi11 + a1bfi16 + a1bfi21r + a1bfi26 + a1bfi31r + a1bfi36
+
+# correlated residuals
+a1bfi11 ~~  a1bfi16
+a1bfi06r ~~ a1bfi21r + a1bfi31r
+a1bfi21r ~~ a1bfi31r + a1bfi01
+
+#define social connection at 4 waves
+hconnect=~h1clrel + h1satfr + h1sosat + h1ced05
+jconnect=~j1clrel + j1satfr + j1sosat + j1ced05
+kconnect=~k1clrel + k1satfr + k1sosat + k1ced05
+mconnect=~m1clrel + m1satfr + m1sosat + m1ced05
+
+#correlate residuals
+h1clrel ~~ j1clrel + k1clrel + m1clrel
+j1clrel ~~ k1clrel + m1clrel
+k1clrel ~~ m1clrel
+h1satfr ~~ j1satfr + k1satfr + m1satfr
+j1satfr ~~ k1satfr + m1satfr
+k1satfr ~~ m1satfr 
+h1sosat ~~ j1sosat + k1sosat + m1sosat 
+j1sosat ~~ k1sosat + m1sosat 
+k1sosat ~~ m1sosat
+h1ced05 ~~ j1ced05 + k1ced05 + m1ced05
+j1ced05 ~~ k1ced05 + m1ced05
+k1ced05 ~~ m1ced05
+
+# same time covariances between extraversion, connection, satisfaction
+bfie~~a1swls
+hconnect ~~ h1swls
+jconnect ~~ j1swls
+kconnect ~~ k1swls
+
+#regressions to calculate indiret effects
+hconnect ~ a1*bfie + d1*a1swls 
+jconnect ~ a2*bfie + d2*h1swls + m1*hconnect
+kconnect ~ a3*bfie + d3*j1swls + m2*jconnect
+mconnect ~ a4*bfie + d4*k1swls + m3*kconnect
+h1swls ~ y1*a1swls + c1*bfie 
+j1swls ~ y2*h1swls + c2*bfie + b1*hconnect
+k1swls ~ y3*j1swls + c3*bfie + b2*jconnect 
+m1swls ~ y4*k1swls + c4*bfie + b3*kconnect
+
+#effects 
+# extraversion -&amp;gt; connect (a)
+# connect -&amp;gt;  swb (b)
+# extraversion -&amp;gt; swb (c)
+# auto-regressive connection (m)
+# auto-regressive swb (y)
+
+ind:= a1*b1*y3*y4 + a1*m1*b2*y4 + a1*m1*m2*b3 + a2*b2*y4 + a2*m2*b3 + a3*b3
+total:= ind + c4 + c3*y4 + c2*y3*y4 + c1*y2*y3*y4
+&amp;#39;
+scon62 &amp;lt;- sem(scon.model6, data=TSS_sub, missing = &amp;quot;ml&amp;quot;, fixed.x = FALSE)
+summary(scon62, standardized=T, fit.measures=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 113 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                        138
+## 
+##   Number of observations                           393
+##   Number of missing patterns                        30
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     600.051
+##   Degrees of freedom                               326
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             4447.119
+##   Degrees of freedom                               406
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.932
+##   Tucker-Lewis Index (TLI)                       0.916
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -13558.593
+##   Loglikelihood unrestricted model (H1)     -13258.568
+## 
+##   Number of free parameters                        138
+##   Akaike (AIC)                               27393.187
+##   Bayesian (BIC)                             27941.573
+##   Sample-size adjusted Bayesian (BIC)        27503.702
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.046
+##   90 Percent Confidence Interval          0.040  0.052
+##   P-value RMSEA &amp;lt;= 0.05                          0.854
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.068
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Observed
+##   Observed information based on                Hessian
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   bfie =~                                                               
+##     a1bfi01           1.000                               0.905    0.728
+##     a1bfi06r          0.813    0.072   11.336    0.000    0.735    0.601
+##     a1bfi11           0.605    0.056   10.808    0.000    0.547    0.592
+##     a1bfi16           0.603    0.054   11.084    0.000    0.545    0.604
+##     a1bfi21r          0.951    0.063   15.013    0.000    0.860    0.700
+##     a1bfi26           0.806    0.067   12.066    0.000    0.729    0.648
+##     a1bfi31r          0.823    0.072   11.471    0.000    0.744    0.618
+##     a1bfi36           1.064    0.068   15.561    0.000    0.962    0.871
+##   hconnect =~                                                           
+##     h1clrel           1.000                               1.006    0.681
+##     h1satfr           1.014    0.119    8.552    0.000    1.020    0.589
+##     h1sosat           1.086    0.116    9.389    0.000    1.093    0.747
+##     h1ced05          -0.562    0.066   -8.470    0.000   -0.565   -0.644
+##   jconnect =~                                                           
+##     j1clrel           1.000                               0.876    0.661
+##     j1satfr           1.226    0.126    9.754    0.000    1.074    0.645
+##     j1sosat           1.145    0.114   10.055    0.000    1.003    0.754
+##     j1ced05          -0.567    0.066   -8.548    0.000   -0.497   -0.597
+##   kconnect =~                                                           
+##     k1clrel           1.000                               0.830    0.635
+##     k1satfr           1.221    0.144    8.485    0.000    1.014    0.611
+##     k1sosat           1.097    0.137    7.984    0.000    0.911    0.607
+##     k1ced05          -0.612    0.076   -8.028    0.000   -0.508   -0.574
+##   mconnect =~                                                           
+##     m1clrel           1.000                               0.755    0.662
+##     m1satfr           1.172    0.109   10.797    0.000    0.885    0.622
+##     m1sosat           1.261    0.120   10.492    0.000    0.952    0.693
+##     m1ced05          -0.656    0.068   -9.580    0.000   -0.495   -0.598
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   hconnect ~                                                            
+##     bfie      (a1)    0.224    0.082    2.728    0.006    0.202    0.202
+##     a1swls    (d1)    0.372    0.062    5.963    0.000    0.370    0.427
+##   jconnect ~                                                            
+##     bfie      (a2)    0.099    0.071    1.403    0.161    0.102    0.102
+##     h1swls    (d2)    0.034    0.065    0.528    0.597    0.039    0.054
+##     hconnect  (m1)    0.385    0.113    3.417    0.001    0.443    0.443
+##   kconnect ~                                                            
+##     bfie      (a3)    0.153    0.062    2.455    0.014    0.167    0.167
+##     j1swls    (d3)    0.142    0.060    2.380    0.017    0.172    0.209
+##     jconnect  (m2)    0.391    0.101    3.858    0.000    0.412    0.412
+##   mconnect ~                                                            
+##     bfie      (a4)    0.170    0.051    3.302    0.001    0.204    0.204
+##     k1swls    (d4)   -0.070    0.052   -1.352    0.177   -0.093   -0.120
+##     kconnect  (m3)    0.671    0.110    6.085    0.000    0.738    0.738
+##   h1swls ~                                                              
+##     a1swls    (y1)    0.564    0.068    8.289    0.000    0.564    0.468
+##     bfie      (c1)    0.070    0.093    0.754    0.451    0.063    0.046
+##   j1swls ~                                                              
+##     h1swls    (y2)    0.364    0.075    4.839    0.000    0.364    0.415
+##     bfie      (c2)    0.079    0.082    0.958    0.338    0.071    0.059
+##     hconnect  (b1)    0.097    0.129    0.746    0.455    0.097    0.080
+##   k1swls ~                                                              
+##     j1swls    (y3)    0.538    0.076    7.091    0.000    0.538    0.507
+##     bfie      (c3)    0.271    0.079    3.446    0.001    0.245    0.190
+##     jconnect  (b2)    0.009    0.126    0.072    0.943    0.008    0.006
+##   m1swls ~                                                              
+##     k1swls    (y4)    0.338    0.068    4.944    0.000    0.338    0.362
+##     bfie      (c4)    0.005    0.066    0.076    0.940    0.004    0.004
+##     kconnect  (b3)    0.562    0.137    4.112    0.000    0.466    0.387
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##  .a1bfi11 ~~                                                            
+##    .a1bfi16           0.181    0.032    5.659    0.000    0.181    0.337
+##  .a1bfi06r ~~                                                           
+##    .a1bfi21r          0.355    0.052    6.900    0.000    0.355    0.414
+##    .a1bfi31r          0.325    0.056    5.786    0.000    0.325    0.351
+##  .a1bfi21r ~~                                                           
+##    .a1bfi31r          0.342    0.050    6.837    0.000    0.342    0.411
+##  .a1bfi01 ~~                                                            
+##    .a1bfi21r          0.178    0.040    4.518    0.000    0.178    0.238
+##  .h1clrel ~~                                                            
+##    .j1clrel           0.225    0.090    2.494    0.013    0.225    0.210
+##    .k1clrel           0.234    0.090    2.603    0.009    0.234    0.215
+##    .m1clrel           0.358    0.073    4.883    0.000    0.358    0.386
+##  .j1clrel ~~                                                            
+##    .k1clrel           0.334    0.082    4.100    0.000    0.334    0.333
+##    .m1clrel           0.257    0.061    4.189    0.000    0.257    0.302
+##  .k1clrel ~~                                                            
+##    .m1clrel           0.277    0.065    4.259    0.000    0.277    0.321
+##  .h1satfr ~~                                                            
+##    .j1satfr           0.238    0.136    1.753    0.080    0.238    0.134
+##    .k1satfr           0.273    0.145    1.886    0.059    0.273    0.149
+##    .m1satfr           0.274    0.108    2.539    0.011    0.274    0.176
+##  .j1satfr ~~                                                            
+##    .k1satfr           0.471    0.127    3.700    0.000    0.471    0.282
+##    .m1satfr           0.417    0.099    4.231    0.000    0.417    0.294
+##  .k1satfr ~~                                                            
+##    .m1satfr           0.662    0.107    6.207    0.000    0.662    0.452
+##  .h1sosat ~~                                                            
+##    .j1sosat           0.010    0.078    0.129    0.897    0.010    0.012
+##    .k1sosat           0.021    0.107    0.198    0.843    0.021    0.018
+##    .m1sosat           0.003    0.077    0.039    0.969    0.003    0.003
+##  .j1sosat ~~                                                            
+##    .k1sosat           0.135    0.088    1.546    0.122    0.135    0.130
+##    .m1sosat           0.070    0.069    1.005    0.315    0.070    0.080
+##  .k1sosat ~~                                                            
+##    .m1sosat           0.301    0.092    3.256    0.001    0.301    0.254
+##  .h1ced05 ~~                                                            
+##    .j1ced05           0.122    0.034    3.624    0.000    0.122    0.272
+##    .k1ced05           0.094    0.037    2.562    0.010    0.094    0.194
+##    .m1ced05           0.069    0.032    2.128    0.033    0.069    0.154
+##  .j1ced05 ~~                                                            
+##    .k1ced05           0.101    0.034    2.968    0.003    0.101    0.209
+##    .m1ced05           0.101    0.029    3.466    0.001    0.101    0.229
+##  .k1ced05 ~~                                                            
+##    .m1ced05           0.171    0.035    4.898    0.000    0.171    0.355
+##   bfie ~~                                                               
+##     a1swls            0.379    0.062    6.098    0.000    0.418    0.363
+##  .hconnect ~~                                                           
+##    .h1swls            0.569    0.091    6.242    0.000    0.668    0.551
+##  .jconnect ~~                                                           
+##    .j1swls            0.452    0.070    6.470    0.000    0.605    0.571
+##  .kconnect ~~                                                           
+##    .k1swls            0.378    0.063    6.020    0.000    0.587    0.558
+##  .mconnect ~~                                                           
+##    .m1swls            0.203    0.041    5.001    0.000    0.406    0.463
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .a1bfi01           3.594    0.063   57.181    0.000    3.594    2.891
+##    .a1bfi06r          2.762    0.062   44.674    0.000    2.762    2.259
+##    .a1bfi11           3.944    0.047   84.305    0.000    3.944    4.263
+##    .a1bfi16           3.706    0.046   81.133    0.000    3.706    4.103
+##    .a1bfi21r          3.016    0.062   48.523    0.000    3.016    2.453
+##    .a1bfi26           3.604    0.057   63.320    0.000    3.604    3.202
+##    .a1bfi31r          2.594    0.061   42.551    0.000    2.594    2.152
+##    .a1bfi36           3.663    0.056   65.581    0.000    3.663    3.316
+##    .h1clrel           3.756    0.344   10.908    0.000    3.756    2.542
+##    .h1satfr           3.575    0.383    9.342    0.000    3.575    2.065
+##    .h1sosat           2.697    0.372    7.243    0.000    2.697    1.844
+##    .h1ced05           2.987    0.204   14.615    0.000    2.987    3.403
+##    .j1clrel           4.785    0.267   17.946    0.000    4.785    3.609
+##    .j1satfr           4.346    0.330   13.187    0.000    4.346    2.609
+##    .j1sosat           3.799    0.300   12.661    0.000    3.799    2.855
+##    .j1ced05           2.587    0.153   16.899    0.000    2.587    3.108
+##    .k1clrel           4.744    0.280   16.970    0.000    4.744    3.631
+##    .k1satfr           4.190    0.342   12.258    0.000    4.190    2.524
+##    .k1sosat           3.367    0.311   10.835    0.000    3.367    2.241
+##    .k1ced05           2.733    0.178   15.350    0.000    2.733    3.086
+##    .m1clrel           5.734    0.247   23.230    0.000    5.734    5.023
+##    .m1satfr           5.387    0.291   18.491    0.000    5.387    3.786
+##    .m1sosat           4.568    0.314   14.554    0.000    4.568    3.323
+##    .m1ced05           2.252    0.165   13.670    0.000    2.252    2.719
+##    .h1swls            2.189    0.371    5.895    0.000    2.189    1.576
+##    .j1swls            3.088    0.264   11.692    0.000    3.088    2.541
+##    .k1swls            2.369    0.326    7.269    0.000    2.369    1.838
+##    .m1swls            2.952    0.272   10.840    0.000    2.952    2.448
+##     a1swls            5.341    0.058   91.684    0.000    5.341    4.635
+##     bfie              0.000                               0.000    0.000
+##    .hconnect          0.000                               0.000    0.000
+##    .jconnect          0.000                               0.000    0.000
+##    .kconnect          0.000                               0.000    0.000
+##    .mconnect          0.000                               0.000    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .a1bfi01           0.727    0.063   11.517    0.000    0.727    0.470
+##    .a1bfi06r          0.955    0.075   12.655    0.000    0.955    0.638
+##    .a1bfi11           0.556    0.043   12.809    0.000    0.556    0.650
+##    .a1bfi16           0.519    0.041   12.766    0.000    0.519    0.636
+##    .a1bfi21r          0.771    0.061   12.625    0.000    0.771    0.510
+##    .a1bfi26           0.735    0.059   12.378    0.000    0.735    0.580
+##    .a1bfi31r          0.899    0.071   12.650    0.000    0.899    0.619
+##    .a1bfi36           0.295    0.040    7.450    0.000    0.295    0.242
+##    .h1clrel           1.170    0.138    8.506    0.000    1.170    0.536
+##    .h1satfr           1.955    0.203    9.647    0.000    1.955    0.653
+##    .h1sosat           0.946    0.119    7.956    0.000    0.946    0.442
+##    .h1ced05           0.451    0.047    9.522    0.000    0.451    0.585
+##    .j1clrel           0.990    0.102    9.736    0.000    0.990    0.563
+##    .j1satfr           1.621    0.164    9.870    0.000    1.621    0.584
+##    .j1sosat           0.765    0.094    8.152    0.000    0.765    0.432
+##    .j1ced05           0.446    0.042   10.670    0.000    0.446    0.644
+##    .k1clrel           1.018    0.108    9.423    0.000    1.018    0.596
+##    .k1satfr           1.727    0.174    9.912    0.000    1.727    0.627
+##    .k1sosat           1.426    0.148    9.668    0.000    1.426    0.632
+##    .k1ced05           0.526    0.052   10.109    0.000    0.526    0.671
+##    .m1clrel           0.733    0.068   10.788    0.000    0.733    0.562
+##    .m1satfr           1.241    0.109   11.352    0.000    1.241    0.613
+##    .m1sosat           0.983    0.095   10.399    0.000    0.983    0.520
+##    .m1ced05           0.440    0.037   11.974    0.000    0.440    0.642
+##    .h1swls            1.471    0.128   11.501    0.000    1.471    0.763
+##    .j1swls            1.123    0.095   11.824    0.000    1.123    0.760
+##    .k1swls            1.109    0.095   11.633    0.000    1.109    0.667
+##    .m1swls            0.771    0.068   11.279    0.000    0.771    0.530
+##     a1swls            1.328    0.095   13.990    0.000    1.328    1.000
+##     bfie              0.818    0.104    7.882    0.000    1.000    1.000
+##    .hconnect          0.724    0.136    5.331    0.000    0.715    0.715
+##    .jconnect          0.556    0.101    5.518    0.000    0.725    0.725
+##    .kconnect          0.414    0.085    4.865    0.000    0.600    0.600
+##    .mconnect          0.249    0.047    5.346    0.000    0.437    0.437
+## 
+## Defined Parameters:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##     ind               0.131    0.046    2.864    0.004    0.119    0.098
+##     total             0.247    0.071    3.479    0.001    0.223    0.185&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# use se = &amp;quot;bootstrap&amp;quot; in the fit function to get bootstrapped se&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;summary-of-panel-sem-models.&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Summary of panel SEM models.&lt;/h3&gt;
+&lt;p&gt;These models are well suited to address between subjects questions, but does not get at a within subjects questions at all. To do so you need to turn to…&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Week #7</title>
+      <link>/workshops/week-6/</link>
+      <pubDate>Wed, 09 Oct 2019 00:00:00 +0000</pubDate>
+      <guid>/workshops/week-6/</guid>
+      <description>
+
+
+&lt;div id=&#34;lavaan&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;lavaan&lt;/h1&gt;
+&lt;p&gt;Easy to use SEM program in R&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(lavaan)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## This is lavaan 0.6-4&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan is BETA software! Please report any bugs.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Does most of what other sem packages do and just as well except for:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;advanced Multilevel SEM&lt;/li&gt;
+&lt;li&gt;Latent class models/mixture models&lt;/li&gt;
+&lt;li&gt;Bayesian SEM&lt;/li&gt;
+&lt;li&gt;“Dynamic” SEM&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Two useful add on packages are&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(semTools)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ###############################################################################&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## This is semTools 0.5-1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## All users of R (or SEM) are invited to submit functions or ideas for functions.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ###############################################################################&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(semPlot)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Registered S3 methods overwritten by &amp;#39;huge&amp;#39;:
+##   method    from   
+##   plot.sim  BDgraph
+##   print.sim BDgraph&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A related package that uses similar syntax for Bayesian models is&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(blavaan)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required package: Rcpp&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## This is blavaan 0.3-6&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Major changes from blavaan 0.3-4:
+##   - The default target is now &amp;#39;stan&amp;#39; instead of &amp;#39;jags&amp;#39;.
+##   - To use JAGS, you now need to explicitly set target = &amp;#39;jags&amp;#39;.
+##   - To use the old Stan approach, set target = &amp;#39;stanclassic&amp;#39;.
+##   - Priors on variance parameters now default to gamma(1,.5) on the SD.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lavaan-language&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;lavaan language&lt;/h1&gt;
+&lt;p&gt;All you need to know (almost) is here:
+&lt;a href=&#34;http://lavaan.ugent.be/tutorial/&#34; class=&#34;uri&#34;&gt;http://lavaan.ugent.be/tutorial/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;A quick recap of that:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Paths between variables is the same as our linear model syntax&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y ~ x1 + x2 + x3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;~ can be read as “is regressed on”&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;defining latent variables&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y =~ x1 + x2 + x3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;=~ can be read as “measured by”&lt;/p&gt;
+&lt;p&gt;Y is measured by the variables x1 - x3. This will define the factor loadings.&lt;/p&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;defining variances and covariances&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y ~~ x1 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Y covaries with X1.&lt;/p&gt;
+&lt;p&gt;The beautify of lavaan is that it will decide for you if you are interested in a variance or a covariance or a residual (co)variance.&lt;/p&gt;
+&lt;ol start=&#34;4&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;intercept&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y ~ 1 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Much as we saw with our lmer models where 1 served an important role, 1 here also is special in that it references the mean (intercept) of the variable. This will come in handy when we want to constrain or make the means of variables similar to one another.&lt;/p&gt;
+&lt;ol start=&#34;5&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;constraints&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y =~ NA*x1 + 1*x2 + a*x3 + a*x4&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;NA serves to free a lavaan imposed constraint. Here, the default is to set the first factor loading to 1 to define the latent variable. NA* serves to say there is no constraint.&lt;/p&gt;
+&lt;p&gt;1* pre-multiples the loading by a particular number. In this case it is 1, to define the latent variable, but it could be any number. R doesn’t know if it makes sense or not.&lt;/p&gt;
+&lt;p&gt;a* (or and other character strings) serves as an equality constraint by estimating the same parameter for each term with that label. In this case x3 and x4 will have the same factor loading, referred to as a.&lt;/p&gt;
+&lt;div id=&#34;how-to-run-lavaan&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;How to run lavaan&lt;/h2&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Specify your model&lt;/li&gt;
+&lt;li&gt;Fit the model&lt;/li&gt;
+&lt;li&gt;Display the summary output&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#1. Specify your model
+
+HS.model &amp;lt;- &amp;#39; visual  =~ x1 + x2 + x3      
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 &amp;#39;
+
+#2. Fit the model
+
+fit &amp;lt;- cfa(HS.model, data=HolzingerSwineford1939)
+
+  # other functions include sem, growth, and lavaan. All have different defaults (See below). we will use growth a lot. 
+
+
+#3. Display the summary output
+
+summary(fit, fit.measures=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lavaan-defaults&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;lavaan defaults&lt;/h2&gt;
+&lt;p&gt;First, by default, the factor loading of the first indicator of a latent variable is fixed to 1, thereby fixing the scale of the latent variable. Second, residual variances are added automatically. And third, all exogenous latent variables are correlated by default.&lt;/p&gt;
+&lt;p&gt;lets work with a dataset from the lavaan package&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HolzingerSwineford1939 &amp;lt;- HolzingerSwineford1939
+
+mod.1 &amp;lt;- &amp;#39;visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9&amp;#39;
+
+fit.1 &amp;lt;- cfa(mod.1, data=HolzingerSwineford1939)
+
+summary(fit.1, fit.measures=TRUE, standardized=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 35 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         21
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                24
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic              918.852
+##   Degrees of freedom                                36
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.931
+##   Tucker-Lewis Index (TLI)                       0.896
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3737.745
+##   Loglikelihood unrestricted model (H1)      -3695.092
+## 
+##   Number of free parameters                         21
+##   Akaike (AIC)                                7517.490
+##   Bayesian (BIC)                              7595.339
+##   Sample-size adjusted Bayesian (BIC)         7528.739
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.092
+##   90 Percent Confidence Interval          0.071  0.114
+##   P-value RMSEA &amp;lt;= 0.05                          0.001
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.065
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   visual =~                                                             
+##     x1                1.000                               0.900    0.772
+##     x2                0.554    0.100    5.554    0.000    0.498    0.424
+##     x3                0.729    0.109    6.685    0.000    0.656    0.581
+##   textual =~                                                            
+##     x4                1.000                               0.990    0.852
+##     x5                1.113    0.065   17.014    0.000    1.102    0.855
+##     x6                0.926    0.055   16.703    0.000    0.917    0.838
+##   speed =~                                                              
+##     x7                1.000                               0.619    0.570
+##     x8                1.180    0.165    7.152    0.000    0.731    0.723
+##     x9                1.082    0.151    7.155    0.000    0.670    0.665
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   visual ~~                                                             
+##     textual           0.408    0.074    5.552    0.000    0.459    0.459
+##     speed             0.262    0.056    4.660    0.000    0.471    0.471
+##   textual ~~                                                            
+##     speed             0.173    0.049    3.518    0.000    0.283    0.283
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .x1                0.549    0.114    4.833    0.000    0.549    0.404
+##    .x2                1.134    0.102   11.146    0.000    1.134    0.821
+##    .x3                0.844    0.091    9.317    0.000    0.844    0.662
+##    .x4                0.371    0.048    7.779    0.000    0.371    0.275
+##    .x5                0.446    0.058    7.642    0.000    0.446    0.269
+##    .x6                0.356    0.043    8.277    0.000    0.356    0.298
+##    .x7                0.799    0.081    9.823    0.000    0.799    0.676
+##    .x8                0.488    0.074    6.573    0.000    0.488    0.477
+##    .x9                0.566    0.071    8.003    0.000    0.566    0.558
+##     visual            0.809    0.145    5.564    0.000    1.000    1.000
+##     textual           0.979    0.112    8.737    0.000    1.000    1.000
+##     speed             0.384    0.086    4.451    0.000    1.000    1.000&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;coding-revisited&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Coding revisited&lt;/h3&gt;
+&lt;p&gt;Marker variable: if you are lazy; default. Residual variances won’t change, but the loadings do, as does the variance of the latent factor. The latent factors variance is the reliable variance of the marker variable, and the mean of the marker variable if you fit a mean. The latent variable takes on the identity, if you will, of the marker variable chosen. For this to work, one of the assumptions is that all indicators are equivalent to one another.&lt;/p&gt;
+&lt;p&gt;Fixed factor: standardized, unit-free estimates. Has some nice-ities. Does not arbitrarily give more weight to one indicator. If more than one latent factor is estimated, the estimates between the factors gives the correlation. If you square the loadings and add the residual it equals 1.&lt;/p&gt;
+&lt;p&gt;Effects coding: if the original metric is meaningful, keeps the latent variable in the metric of your scale. Residual variance is the same. Loadings average to 1. Latent variance is the average amount of reliable variance. To estimate you use the equation: indicator 1 = (number of indicators) - indicator N, indicator N-1… E.g. if you have three indicators (a,b,c) then: a = 3 - b - c. It would be the same if you changed it to b = 3 - a - c. &lt;/p&gt;
+&lt;p&gt;Lets use a fixed factor approach rather than a marker variable approach&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mod.2 &amp;lt;- &amp;#39;visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9&amp;#39;
+
+fit.2 &amp;lt;- cfa(mod.2, std.lv=TRUE, data=HolzingerSwineford1939)
+
+summary(fit.2, fit.measures=TRUE, standardized=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 20 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         21
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                24
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic              918.852
+##   Degrees of freedom                                36
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.931
+##   Tucker-Lewis Index (TLI)                       0.896
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3737.745
+##   Loglikelihood unrestricted model (H1)      -3695.092
+## 
+##   Number of free parameters                         21
+##   Akaike (AIC)                                7517.490
+##   Bayesian (BIC)                              7595.339
+##   Sample-size adjusted Bayesian (BIC)         7528.739
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.092
+##   90 Percent Confidence Interval          0.071  0.114
+##   P-value RMSEA &amp;lt;= 0.05                          0.001
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.065
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   visual =~                                                             
+##     x1                0.900    0.081   11.128    0.000    0.900    0.772
+##     x2                0.498    0.077    6.429    0.000    0.498    0.424
+##     x3                0.656    0.074    8.817    0.000    0.656    0.581
+##   textual =~                                                            
+##     x4                0.990    0.057   17.474    0.000    0.990    0.852
+##     x5                1.102    0.063   17.576    0.000    1.102    0.855
+##     x6                0.917    0.054   17.082    0.000    0.917    0.838
+##   speed =~                                                              
+##     x7                0.619    0.070    8.903    0.000    0.619    0.570
+##     x8                0.731    0.066   11.090    0.000    0.731    0.723
+##     x9                0.670    0.065   10.305    0.000    0.670    0.665
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   visual ~~                                                             
+##     textual           0.459    0.064    7.189    0.000    0.459    0.459
+##     speed             0.471    0.073    6.461    0.000    0.471    0.471
+##   textual ~~                                                            
+##     speed             0.283    0.069    4.117    0.000    0.283    0.283
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .x1                0.549    0.114    4.833    0.000    0.549    0.404
+##    .x2                1.134    0.102   11.146    0.000    1.134    0.821
+##    .x3                0.844    0.091    9.317    0.000    0.844    0.662
+##    .x4                0.371    0.048    7.779    0.000    0.371    0.275
+##    .x5                0.446    0.058    7.642    0.000    0.446    0.269
+##    .x6                0.356    0.043    8.277    0.000    0.356    0.298
+##    .x7                0.799    0.081    9.823    0.000    0.799    0.676
+##    .x8                0.488    0.074    6.573    0.000    0.488    0.477
+##    .x9                0.566    0.071    8.003    0.000    0.566    0.558
+##     visual            1.000                               1.000    1.000
+##     textual           1.000                               1.000    1.000
+##     speed             1.000                               1.000    1.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And now an effect coded one&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mod.3 &amp;lt;- &amp;#39; 
+     visual  =~ NA*x1 + v1*x1 + v2*x2 + v3*x3 
+     textual =~ NA*x4 + t1*x4 + t2*x5 + t3*x6 
+     speed   =~ NA*x7 + s1*x7 + s2*x8 + s3*x9 
+     
+# constraints for loading
+     v1 == 3 - v2 - v3 
+     t1 == 3 - t2 - t3 
+     s1 == 3 - s2 - s3 
+&amp;#39; 
+
+# Note that the number 3 will change depending on how many indicators you have
+
+fit.3 &amp;lt;- cfa(mod.3, data=HolzingerSwineford1939) 
+summary(fit.3, fit.measures=TRUE, standardized=TRUE) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 31 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         24
+##   Number of equality constraints                     3
+##   Row rank of the constraints matrix                 3
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                24
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic              918.852
+##   Degrees of freedom                                36
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.931
+##   Tucker-Lewis Index (TLI)                       0.896
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3737.745
+##   Loglikelihood unrestricted model (H1)      -3695.092
+## 
+##   Number of free parameters                         21
+##   Akaike (AIC)                                7517.490
+##   Bayesian (BIC)                              7595.339
+##   Sample-size adjusted Bayesian (BIC)         7528.739
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.092
+##   90 Percent Confidence Interval          0.071  0.114
+##   P-value RMSEA &amp;lt;= 0.05                          0.001
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.065
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   visual =~                                                             
+##     x1        (v1)    1.314    0.101   13.037    0.000    0.900    0.772
+##     x2        (v2)    0.727    0.091    8.006    0.000    0.498    0.424
+##     x3        (v3)    0.958    0.089   10.744    0.000    0.656    0.581
+##   textual =~                                                            
+##     x4        (t1)    0.987    0.034   29.056    0.000    0.990    0.852
+##     x5        (t2)    1.099    0.036   30.883    0.000    1.102    0.855
+##     x6        (t3)    0.914    0.033   27.627    0.000    0.917    0.838
+##   speed =~                                                              
+##     x7        (s1)    0.920    0.078   11.725    0.000    0.619    0.570
+##     x8        (s2)    1.085    0.081   13.381    0.000    0.731    0.723
+##     x9        (s3)    0.995    0.078   12.789    0.000    0.670    0.665
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   visual ~~                                                             
+##     textual           0.315    0.055    5.736    0.000    0.459    0.459
+##     speed             0.217    0.041    5.295    0.000    0.471    0.471
+##   textual ~~                                                            
+##     speed             0.191    0.051    3.775    0.000    0.283    0.283
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .x1                0.549    0.114    4.833    0.000    0.549    0.404
+##    .x2                1.134    0.102   11.146    0.000    1.134    0.821
+##    .x3                0.844    0.091    9.317    0.000    0.844    0.662
+##    .x4                0.371    0.048    7.779    0.000    0.371    0.275
+##    .x5                0.446    0.058    7.642    0.000    0.446    0.269
+##    .x6                0.356    0.043    8.277    0.000    0.356    0.298
+##    .x7                0.799    0.081    9.823    0.000    0.799    0.676
+##    .x8                0.488    0.074    6.573    0.000    0.488    0.477
+##    .x9                0.566    0.071    8.003    0.000    0.566    0.558
+##     visual            0.469    0.062    7.549    0.000    1.000    1.000
+##     textual           1.005    0.093   10.823    0.000    1.000    1.000
+##     speed             0.454    0.055    8.271    0.000    1.000    1.000
+## 
+## Constraints:
+##                                                |Slack|
+##     v1 - (3-v2-v3)                               0.000
+##     t1 - (3-t2-t3)                               0.000
+##     s1 - (3-s2-s3)                               0.000&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lets-try-with-means&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Lets try with means&lt;/h3&gt;
+&lt;p&gt;Now an effect coded one with means.&lt;/p&gt;
+&lt;p&gt;First lest see what we get when we ask for a mean structures&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mod.1m &amp;lt;- &amp;#39;visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9
+
+&amp;#39;
+
+fit.1m &amp;lt;- cfa(mod.1m, meanstructure= TRUE, data=HolzingerSwineford1939)
+
+summary(fit.1m)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 35 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         30
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                24
+##   P-value (Chi-square)                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   visual =~                                           
+##     x1                1.000                           
+##     x2                0.554    0.100    5.554    0.000
+##     x3                0.729    0.109    6.685    0.000
+##   textual =~                                          
+##     x4                1.000                           
+##     x5                1.113    0.065   17.014    0.000
+##     x6                0.926    0.055   16.703    0.000
+##   speed =~                                            
+##     x7                1.000                           
+##     x8                1.180    0.165    7.152    0.000
+##     x9                1.082    0.151    7.155    0.000
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   visual ~~                                           
+##     textual           0.408    0.074    5.552    0.000
+##     speed             0.262    0.056    4.660    0.000
+##   textual ~~                                          
+##     speed             0.173    0.049    3.518    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .x1                4.936    0.067   73.473    0.000
+##    .x2                6.088    0.068   89.855    0.000
+##    .x3                2.250    0.065   34.579    0.000
+##    .x4                3.061    0.067   45.694    0.000
+##    .x5                4.341    0.074   58.452    0.000
+##    .x6                2.186    0.063   34.667    0.000
+##    .x7                4.186    0.063   66.766    0.000
+##    .x8                5.527    0.058   94.854    0.000
+##    .x9                5.374    0.058   92.546    0.000
+##     visual            0.000                           
+##     textual           0.000                           
+##     speed             0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .x1                0.549    0.114    4.833    0.000
+##    .x2                1.134    0.102   11.146    0.000
+##    .x3                0.844    0.091    9.317    0.000
+##    .x4                0.371    0.048    7.779    0.000
+##    .x5                0.446    0.058    7.642    0.000
+##    .x6                0.356    0.043    8.277    0.000
+##    .x7                0.799    0.081    9.823    0.000
+##    .x8                0.488    0.074    6.573    0.000
+##    .x9                0.566    0.071    8.003    0.000
+##     visual            0.809    0.145    5.564    0.000
+##     textual           0.979    0.112    8.737    0.000
+##     speed             0.384    0.086    4.451    0.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note for both the marker and fixed factor give you the same means. This is because the latent variable means need to be scaled to zero to make the model identifiable (in this case).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mod.2m &amp;lt;- &amp;#39;visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9
+
+
+&amp;#39;
+
+fit.2m &amp;lt;- cfa(mod.2m, std.lv=TRUE, meanstructure = TRUE, data=HolzingerSwineford1939)
+
+summary(fit.2m)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 20 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         30
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                24
+##   P-value (Chi-square)                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   visual =~                                           
+##     x1                0.900    0.081   11.128    0.000
+##     x2                0.498    0.077    6.429    0.000
+##     x3                0.656    0.074    8.817    0.000
+##   textual =~                                          
+##     x4                0.990    0.057   17.474    0.000
+##     x5                1.102    0.063   17.576    0.000
+##     x6                0.917    0.054   17.082    0.000
+##   speed =~                                            
+##     x7                0.619    0.070    8.903    0.000
+##     x8                0.731    0.066   11.090    0.000
+##     x9                0.670    0.065   10.305    0.000
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   visual ~~                                           
+##     textual           0.459    0.064    7.189    0.000
+##     speed             0.471    0.073    6.461    0.000
+##   textual ~~                                          
+##     speed             0.283    0.069    4.117    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .x1                4.936    0.067   73.473    0.000
+##    .x2                6.088    0.068   89.855    0.000
+##    .x3                2.250    0.065   34.579    0.000
+##    .x4                3.061    0.067   45.694    0.000
+##    .x5                4.341    0.074   58.452    0.000
+##    .x6                2.186    0.063   34.667    0.000
+##    .x7                4.186    0.063   66.766    0.000
+##    .x8                5.527    0.058   94.854    0.000
+##    .x9                5.374    0.058   92.546    0.000
+##     visual            0.000                           
+##     textual           0.000                           
+##     speed             0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .x1                0.549    0.114    4.833    0.000
+##    .x2                1.134    0.102   11.146    0.000
+##    .x3                0.844    0.091    9.317    0.000
+##    .x4                0.371    0.048    7.779    0.000
+##    .x5                0.446    0.058    7.642    0.000
+##    .x6                0.356    0.043    8.277    0.000
+##    .x7                0.799    0.081    9.823    0.000
+##    .x8                0.488    0.074    6.573    0.000
+##    .x9                0.566    0.071    8.003    0.000
+##     visual            1.000                           
+##     textual           1.000                           
+##     speed             1.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can relax this assumption with the effect coding method using a newly implemented method&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mod.3m &amp;lt;- &amp;#39; 
+     visual  =~  x1 + x2 + x3 
+
+
+&amp;#39; 
+
+
+fit.3m &amp;lt;- sem(mod.3m, meanstructure = TRUE, effect.coding = c(&amp;quot;loadings&amp;quot;, &amp;quot;intercepts&amp;quot;),  data=HolzingerSwineford1939) 
+summary(fit.3m) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 46 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         11
+##   Number of equality constraints                     2
+##   Row rank of the constraints matrix                 2
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       0.000
+##   Degrees of freedom                                 0
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   visual =~                                           
+##     x1                0.772    0.061   12.695    0.000
+##     x2                0.601    0.077    7.783    0.000
+##     x3                0.855    0.107    7.969    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .x1                0.249    0.371    0.671    0.502
+##    .x2                2.442    0.471    5.181    0.000
+##    .x3               -2.939    0.653   -4.502    0.000
+##     visual            6.070    0.069   87.822    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .x1                0.835    0.118    7.064    0.000
+##    .x2                1.065    0.105   10.177    0.000
+##    .x3                0.633    0.129    4.899    0.000
+##     visual            0.878    0.125    7.021    0.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;or with more code&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mod.3e &amp;lt;- &amp;#39; 
+     visual  =~ NA*x1 + v1*x1 + v2*x2 + v3*x3 
+     textual =~ NA*x4 + t1*x4 + t2*x5 + t3*x6
+     speed   =~ NA*x7 + s1*x7 + s2*x8 + s3*x9
+
+# specifying means
+x1 ~ (m1)*1
+x2 ~ (m2)*1
+x3 ~ (m3)*1
+x4 ~ (m4)*1
+x5 ~ (m5)*1
+x6 ~ (m6)*1
+x7 ~ (m7)*1
+x8 ~ (m8)*1
+x9 ~ (m9)*1
+
+visual ~ 1
+textual ~ 1
+speed ~ 1
+
+# constraints for means
+m1 == 0 - m2 - m3
+m4 == 0 - m5 - m6
+m7 == 0 - m8 - m9
+
+
+&amp;#39; 
+
+
+fit.3e &amp;lt;- sem(mod.3e, meanstructure = TRUE, data=HolzingerSwineford1939) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_model_vcov(lavmodel = lavmodel2, lavsamplestats = lavsamplestats, : lavaan WARNING:
+##     The variance-covariance matrix of the estimated parameters (vcov)
+##     does not appear to be positive definite! The smallest eigenvalue
+##     (= 9.868366e-18) is close to zero. This may be a symptom that the
+##     model is not identified.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(fit.3e) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 85 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         36
+##   Number of equality constraints                     3
+##   Row rank of the constraints matrix                 3
+## 
+##   Number of observations                           301
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      85.306
+##   Degrees of freedom                                21
+##   P-value (Chi-square)                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   visual =~                                           
+##     x1        (v1)    1.910    0.135   14.174    0.000
+##     x2        (v2)    1.057    0.138    7.645    0.000
+##     x3        (v3)    1.393    0.132   10.515    0.000
+##   textual =~                                          
+##     x4        (t1)    1.160    0.043   27.239    0.000
+##     x5        (t2)    1.291    0.044   29.042    0.000
+##     x6        (t3)    1.074    0.042   25.799    0.000
+##   speed =~                                            
+##     x7        (s1)    1.292    0.112   11.540    0.000
+##     x8        (s2)    1.525    0.113   13.546    0.000
+##     x9        (s3)    1.398    0.110   12.732    0.000
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   visual ~~                                           
+##     textual           0.184    0.031    5.909    0.000
+##     speed             0.106    0.020    5.349    0.000
+##   textual ~~                                          
+##     speed             0.116    0.030    3.813    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .x1        (m1)   -0.879    0.448   -1.962    0.050
+##    .x2        (m2)    2.870    0.405    7.085    0.000
+##    .x3        (m3)   -1.991    0.397   -5.013    0.000
+##    .x4        (m4)   -0.094    0.112   -0.832    0.405
+##    .x5        (m5)    0.829    0.118    7.049    0.000
+##    .x6        (m6)   -0.736    0.110   -6.716    0.000
+##    .x7        (m7)   -0.440    0.397   -1.109    0.267
+##    .x8        (m8)    0.069    0.409    0.168    0.867
+##    .x9        (m9)    0.371    0.393    0.945    0.345
+##     visual            3.044    0.026  117.478    0.000
+##     textual           2.720    0.032   86.335    0.000
+##     speed             3.579    0.012  293.501    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .x1                0.549    0.114    4.833    0.000
+##    .x2                1.134    0.102   11.146    0.000
+##    .x3                0.844    0.091    9.317    0.000
+##    .x4                0.371    0.048    7.779    0.000
+##    .x5                0.446    0.058    7.642    0.000
+##    .x6                0.356    0.043    8.277    0.000
+##    .x7                0.799    0.081    9.823    0.000
+##    .x8                0.488    0.074    6.573    0.000
+##    .x9                0.566    0.071    8.003    0.000
+##     visual            0.222    0.028    7.794    0.000
+##     textual           0.728    0.058   12.451    0.000
+##     speed             0.230    0.027    8.357    0.000
+## 
+## Constraints:
+##                                                |Slack|
+##     m1 - (0-m2-m3)                               0.000
+##     m4 - (0-m5-m6)                               0.000
+##     m7 - (0-m8-m9)                               0.000&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;comparing-models&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Comparing models&lt;/h3&gt;
+&lt;p&gt;Can compare models as in mlm.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;anova(model1, model2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Use AIC and BIC, just as with MLM. Smaller values indicate a better fit.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;estimators&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Estimators&lt;/h3&gt;
+&lt;p&gt;Default in lavaan is the ML estimator, which we have seen before. There are many other options too, some of which require complete data (though see multiple imputation discussion next class).&lt;/p&gt;
+&lt;p&gt;There are a number of “robust” estimates that are uniformly better. MLR is my personal choice if you go this route, but others are just as good and maybe better if you have complete data.&lt;/p&gt;
+&lt;p&gt;To confuse things, there are other methods to get robust standard errors. When data are missing one can request standard errors via a number of different methods. To do so one needs to first specify that data are missing via missing = “ML” in the fitting function. Then use the se function to specify what you want.&lt;/p&gt;
+&lt;p&gt;Bootstrapped estimates are also available with se = “bootstrap”&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Homework #3</title>
@@ -4246,6 +6191,59 @@ head(sim.1)&lt;/code&gt;&lt;/pre&gt;
 &lt;li&gt;Mean level/ absolute change. Takes into account mean structure and indexes absolute levels of a construct. A strong assumption is that the construct means (not a pun) the same thing across time. That is, my measure of depression is interpreted the same for a 40 year old and a 90 year old if I want to look at absolute differences between the two ages.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Mean level change is not dependent at all on rank order consistency. Can have no mean level change and high rank order consistency and vice versa.&lt;/p&gt;
+&lt;p&gt;Perfect rank order, mean level increase&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
+## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
+## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
+## ✔ readr   1.3.1          ✔ forcats 0.4.0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;simp&amp;lt;- tribble(
+  ~ID,  ~Y, ~time,
+1,5,1,
+1,7,2,
+2,4,1,
+2,6,2,
+3,3,1,
+3,5,2,
+4,2,1,
+4,4,2,
+5,1,1,
+5,3,2)
+
+ro.ml &amp;lt;- ggplot(simp, aes(x=time, y=Y)) +
+    geom_point() +   
+   stat_summary(fun.y = mean, geom=&amp;quot;line&amp;quot;, size = 4) +
+    geom_smooth(aes(group = ID), method=lm,  
+                se=FALSE)  
+
+ggsave(&amp;quot;ro.ml.png&amp;quot;, ro.ml)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Saving 7 x 5 in image&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;No rank order, mean level increase&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+simp&amp;lt;- tribble(
+  ~ID,  ~Y, ~time,
+1,1,1,
+1,5,2,
+2,1.5,1,
+2,4.5,2,
+3,2,1,
+3,4,2,
+4,2.5,1,
+4,3.5,2,
+5,3,1,
+5,3,2)
+
+noro.ml&amp;lt;- ggplot(simp, aes(x=time, y=Y)) +
+    geom_point() +   
+   stat_summary(fun.y = mean, geom=&amp;quot;line&amp;quot;, size = 4) +
+    geom_smooth(aes(group = ID), method=lm,  
+                se=FALSE)  
+ggsave(&amp;quot;noro.ml.png&amp;quot;, noro.ml)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Saving 7 x 5 in image&lt;/code&gt;&lt;/pre&gt;
 &lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;&lt;p&gt;Individual differences in change. Rank order and mean level provide an index of change and or stability for the sample. Here this provides an assessment of change for an individual. For example, if it is typical to decline in cognitive ability do some people buck the trend and stay at their past level? Individual differences in change get at both mean level changes as well as the tendency of the sample to show stability. It is the type of change that we will focus on the most.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Structural. Does the construct (or measure) change across time? The assumption for mean level change assumes that the measurement properties stays the same. But maybe it is theoretically interesting to ask whether what you are measuring changes. Examples include practice effects, age effects (cog ability in kids vs adults), differences due to health and life events.&lt;/p&gt;&lt;/li&gt;
@@ -4279,21 +6277,13 @@ head(sim.1)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Thinking through longitudinal data example&lt;/h2&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
 library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Attaching packages ─────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ✔ tibble  2.1.3           ✔ dplyr   0.8.3      
-## ✔ tidyr   0.8.99.9000     ✔ stringr 1.4.0      
-## ✔ readr   1.3.1           ✔ forcats 0.4.0      
-## ✔ purrr   0.3.2&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Conflicts ─────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Using some resting state imaging data, lets think about how we can model and think about this data using our current skills (ie standard regression and plotting)&lt;/p&gt;
 &lt;p&gt;We defined time as year in study. How would this look if we used age?&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg1 &amp;lt;- ggplot(example,
    aes(x = year, y = SMN7, group = ID)) + geom_point()  
 print(gg1)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The above graph just plots datapoints. Do we have repeated assessments per person? Lets find out.&lt;/p&gt;
 &lt;div id=&#34;person-level&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Person level&lt;/h3&gt;
@@ -4301,7 +6291,7 @@ print(gg1)&lt;/code&gt;&lt;/pre&gt;
    aes(x = year, y = SMN7, group = ID)) + geom_line()  
 gg2&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_path).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;
 Note that some people start at different levels. Some people have more data in terms of assessment points and years. Note that the shape of change isn’t necessarily a straight line.&lt;/p&gt;
 &lt;p&gt;We often want to look at this at a per person level to get more info.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg3 &amp;lt;- ggplot(example,
@@ -4309,18 +6299,18 @@ Note that some people start at different levels. Some people have more data in t
 gg3&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_path).&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;
 As part of our dataset we have different groups. A question we may have is if they change differently across time. Lets take a look at this.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg4 &amp;lt;- ggplot(example,
    aes(x = year, y = SMN7, group = ID)) + geom_line() + facet_grid(. ~ group)
 gg4&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_path).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We’re not in Kansas anymore - look at the technocolor.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg5 &amp;lt;-  gg2 + aes(colour = factor(ID)) + guides(colour=FALSE) 
 gg5&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_path).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Okay, beside the occular technique, we’re going to need to do something more to address our theoretical questions. Lets look at some random people in the sample and run some regressions.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(11)
 ex.random &amp;lt;- example %&amp;gt;% 
@@ -4345,7 +6335,7 @@ gg6&lt;/code&gt;&lt;/pre&gt;
 ## Warning in qt((1 - level)/2, df): NaNs produced
 
 ## Warning in qt((1 - level)/2, df): NaNs produced&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Lets look at individual level regressions&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
 library(broom)
@@ -4395,14 +6385,14 @@ gg7&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using method = &amp;#39;loess&amp;#39; and formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing non-finite values (stat_smooth).&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;That lowess line is a little strange. How about a linear estimate.&lt;/p&gt;
 &lt;p&gt;Split up by group&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg8 &amp;lt;-  ggplot(example, aes(x = year, y = SMN7)) + geom_point() + stat_smooth(method = &amp;quot;lm&amp;quot;) + facet_grid(. ~ group)
 gg8&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing non-finite values (stat_smooth).&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;But I also want to see the individual slopes, not just the average.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg9 &amp;lt;- ggplot(example, aes(x = year, y = SMN7, group = ID)) + geom_point(alpha = 0.05) + stat_smooth(method = &amp;quot;lm&amp;quot;, se = FALSE)   
 
@@ -4416,7 +6406,7 @@ gg11&lt;/code&gt;&lt;/pre&gt;
 
 ## Warning: Removed 9 rows containing non-finite values (stat_smooth).&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 9 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/02-LDA-basics_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;doing-this-with-mlm-and-sem&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Doing this with MLM (and SEM)&lt;/h3&gt;
@@ -5261,21 +7251,21 @@ Grading consists of 3 aspects:
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td&gt;7&lt;/td&gt;
 &lt;td&gt;10/10&lt;/td&gt;
-&lt;td&gt;Group models&lt;/td&gt;
+&lt;td&gt;SEM and simple path models&lt;/td&gt;
 &lt;td&gt;tidybayes and bayesplot&lt;/td&gt;
 &lt;td&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td&gt;8&lt;/td&gt;
 &lt;td&gt;10/17&lt;/td&gt;
-&lt;td&gt;SEM and simple path models&lt;/td&gt;
+&lt;td&gt;Latent Grown (curve) Models&lt;/td&gt;
 &lt;td&gt;lavaan&lt;/td&gt;
 &lt;td&gt;Hw#4&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td&gt;9&lt;/td&gt;
 &lt;td&gt;10/24&lt;/td&gt;
-&lt;td&gt;Latent Grown (curve) Models&lt;/td&gt;
+&lt;td&gt;Group models&lt;/td&gt;
 &lt;td&gt;amelia&lt;/td&gt;
 &lt;td&gt;Hw#5&lt;/td&gt;
 &lt;/tr&gt;
@@ -5344,7 +7334,7 @@ Grading consists of 3 aspects:
 &lt;li&gt;&lt;a href=&#34;#mcmc-estimation&#34;&gt;MCMC Estimation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#comparing-lmer-with-brms&#34;&gt;Comparing lmer with brms&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#what-priors-did-we-use&#34;&gt;What priors did we use?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#differenes-in-random-effects-with-brms&#34;&gt;Differenes in random effects with brms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#differences-in-random-effects-with-brms&#34;&gt;Differences in random effects with brms&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#more-models&#34;&gt;More models&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#ex-1&#34;&gt;Ex 1&lt;/a&gt;&lt;/li&gt;
@@ -5361,8 +7351,13 @@ Grading consists of 3 aspects:
 &lt;li&gt;&lt;a href=&#34;#priors-choice&#34;&gt;Priors choice&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#comparing-models&#34;&gt;Comparing models&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#random-effects-revisited&#34;&gt;Random effects revisited&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tidybayes&#34;&gt;tidybayes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bayesplot&#34;&gt;Bayesplot&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#level-1-predictors&#34;&gt;Level 1 predictors&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#variance-explained&#34;&gt;Variance explained&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#hypothesis-function&#34;&gt;Hypothesis function&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#posterior-predictive-checks&#34;&gt;Posterior-predictive checks&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#missing-data&#34;&gt;Missing data&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#nonlinear&#34;&gt;Nonlinear&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
@@ -5379,28 +7374,28 @@ The models we have been working with can easily be done in a Bayesian Framework.
 &lt;div id=&#34;how-is-this-different&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;How is this different?&lt;/h1&gt;
 &lt;p&gt;Bayesian analysis differs in two major ways from our traditional MLMs that we have been working with. First, the end result is different in that it uses probability differently to derive estimates and to interpret the results. The lucky thing for us is that this will not be drastically different if we dont want it to be. In other words, we can keep with our focuses on estimates and precision around those estimates, same way as we would in standard stats world. Once you progress further, you can better understand the nuances, but right now lets not get bogged down by technical differences.&lt;/p&gt;
-&lt;p&gt;The second major difference is that prior are used. Priors are a way to incorporate your beliefs into the model. At first blush it feels as if this is wrong, and is the justification for many for why the standard approach is correct and Bayesian is wrong. I mean, most people are taught frequentist approaches, thus how can 10 million SPSS users be wrong? (The reason for the popularity of frequentist approaches is two fold: computers and history. Computation power is needed, which was lacking until recently and thus curtailed general use, the same way that computation power held back adoption of SEM and before that multivariate approaches like factor analysis, and before that multiple regression with continuous predictors. The second reason, history, is, like much of history, driven by disagreements between dead white guys. Fisher, you’ve heard of him, populated the p-value and disliked Bayes, so long story short, it went out of fashion)&lt;/p&gt;
+&lt;p&gt;The second major difference is that prior are used. Priors are a way to incorporate your beliefs into the model. At first blush it feels as if this is wrong, and is the justification for many for why the standard approach is correct and Bayesian is wrong. I mean, most people are taught frequentest approaches, thus how can 10 million SPSS users be wrong? (The reason for the popularity of frequentest approaches is two fold: computers and history. Computation power is needed, which was lacking until recently and thus curtailed general use, the same way that computation power held back adoption of SEM and before that multivariate approaches like factor analysis, and before that multiple regression with continuous predictors. The second reason, history, is, like much of history, driven by disagreements between dead white guys. Fisher, you’ve heard of him, populated the p-value and disliked Bayes, so long story short, it went out of fashion)&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;the-basic-parts&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;The basic parts&lt;/h1&gt;
-&lt;p&gt;Bayes Theorm
+&lt;p&gt;Bayes Theorem
 &lt;span class=&#34;math display&#34;&gt;\[ P(\theta | y) =  \frac{P(y | \theta) P(\theta)}{P(y)}. \]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This is often rewritten for when we want to estimate some value, $ $. Note that the &lt;span class=&#34;math inline&#34;&gt;\(P(y)\)&lt;/span&gt; drops out, as it does not vary across $ $. In our case y is will be the data, and the data will be collected only once, thus considered fixed. The probabiliy o y was included in the above equation to rescale the equation and create some nice properities eg integrating to 1. We don’t care about that as we are going to look at relative likelihoods of each theta conditioned on y.&lt;/p&gt;
+&lt;p&gt;This is often rewritten for when we want to estimate some value, $ $. Note that the &lt;span class=&#34;math inline&#34;&gt;\(P(y)\)&lt;/span&gt; drops out, as it does not vary across $ $. In our case y is will be the data, and the data will be collected only once, thus considered fixed. The probability o y was included in the above equation to re scale the equation and create some nice properties eg integrating to 1. We don’t care about that as we are going to look at relative likelihoods of each theta conditioned on y.&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ P(\theta | y) \propto P(y | \theta) P(\theta)\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This reads as the conditional probability of theta, given y is proportional to the probability of y given theta, multiplied by the probability of theta. The this, likely, sounds like gobblygook unless you have taken a bunch of probability classes. Instead the more helpful way to think about this is:&lt;/p&gt;
+&lt;p&gt;This reads as the conditional probability of theta, given y is proportional to the probability of y given theta, multiplied by the probability of theta. The this, likely, sounds like gobbledygook unless you have taken a bunch of probability classes. Instead the more helpful way to think about this is:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ p(hypothesis|data) \propto p(data|hypothesis)p(hypothesis)\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This is what we get: the probability our hypothesis. Not the standard p value interpretation of the probability of our data given some hypothesis like the null distribution.&lt;/p&gt;
 &lt;p&gt;Bayesian stats gives names to each of these terms:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ posterior \propto likelihood * prior \]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Prior - Allows us to provide a priori intuition about what the findings are. It is of the form of a probability distribution. E.g., “Extrodanary claims require extrodinary evidene.” Note we will note use this as “guesses” of what will happen. Instead we will use this as a regularization tool, similar to partial pooling in MLM.&lt;/p&gt;
+&lt;p&gt;Prior - Allows us to provide a priori intuition about what the findings are. It is of the form of a probability distribution. E.g., “Extraordinary claims require extraordinary evidence.” Note we will note use this as “guesses” of what will happen. Instead we will use this as a regularization tool, similar to partial pooling in MLM.&lt;/p&gt;
 &lt;p&gt;Likelihood - Distribution of the likelihood of various hypothesis. Probability attaches to possible results; likelihood attaches to hypotheses. It is akin to flipping coins, something we did with binomials.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ───────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
 ## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
 ## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
 ## ✔ readr   1.3.1          ✔ forcats 0.4.0&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ───────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;For 7 successes out of 10 trials, what is the likelihood of different probabilities?&lt;/p&gt;
@@ -5506,7 +7501,7 @@ h_i  \sim \text{Normal}(\mu_i, \sigma) \\
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[Y_{i}  \sim \text{Normal}(\mu_i, \sigma) \]&lt;/span&gt;
 This specifies the DGP and the family argument within &lt;code&gt;brms&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ \mu_i  = \beta \times Predictor_i \]&lt;/span&gt;
-This specifies themodel we are fitting. Here it is just a standard regression.&lt;/p&gt;
+This specifies the model we are fitting. Here it is just a standard regression.&lt;/p&gt;
 &lt;p&gt;The above two lines are what is implicitly implied in almost all regressions. Namely, we have some variable that is being generated from a normal distribution, with a mean &lt;span class=&#34;math inline&#34;&gt;\(\mu\)&lt;/span&gt; and standard deviation &lt;span class=&#34;math inline&#34;&gt;\(\sigma\)&lt;/span&gt;. That &lt;span class=&#34;math inline&#34;&gt;\(\mu\)&lt;/span&gt; is going to be described as the relationship between some (fixed) regression coefficient and a person specific predictor variable.&lt;/p&gt;
 &lt;p&gt;Below is where we get into some new stuff, where we describe what we think the estimated parameters will look like (ie format a prior).&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math inline&#34;&gt;\(\alpha \sim \text{Normal}(0, 10) \\\)&lt;/span&gt;
@@ -5526,8 +7521,8 @@ Same idea for the residual, the prior specifies what we expect is plausible.&lt;
   stat_function(fun = dcauchy, n = 200, args = list(0, 1)) +
   labs(title = &amp;quot;Half Cauchy distribution&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Note that we do two important things here. First, we describe the data generating processes (DGP) we think our data are coming from. Often we will just assume Gaussian normal, but this does not need to be the case. For our residual we specify a half cauchy to make sure it is above zero and that lower terms are more likely than higher terms.&lt;/p&gt;
-&lt;p&gt;Second, we are specifying a prior. Here we are saying we expect our regression parameter to be centered around zero but that it could vary widely from that and we wouldn’t be suprised. The prior distribution for Beta is defined by a mean of 0 and an SD of 10. But we have control if we want to make this different. Same thing with the half cauchy for the variance. We expect that it cannot be negative, that it is likely closer to zero than not. Again, it is up to us in terms of how we want to specify it.&lt;/p&gt;
+&lt;p&gt;Note that we do two important things here. First, we describe the data generating processes (DGP) we think our data are coming from. Often we will just assume Gaussian normal, but this does not need to be the case. For our residual we specify a half Cauchy to make sure it is above zero and that lower terms are more likely than higher terms.&lt;/p&gt;
+&lt;p&gt;Second, we are specifying a prior. Here we are saying we expect our regression parameter to be centered around zero but that it could vary widely from that and we wouldn’t be surprised. The prior distribution for Beta is defined by a mean of 0 and an SD of 10. But we have control if we want to make this different. Same thing with the half Cauchy for the variance. We expect that it cannot be negative, that it is likely closer to zero than not. Again, it is up to us in terms of how we want to specify it.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;mcmc-estimation&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;MCMC Estimation&lt;/h1&gt;
@@ -5645,10 +7640,10 @@ summary(sleep_lmer)&lt;/code&gt;&lt;/pre&gt;
 ## 9                               sd Intercept Subject                      
 ## 10   student_t(3, 0, 59)     sigma&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;*Note that there are flat priors as the default for fixed effects. This essentially disregards the prior and spits back the likelihood, equivalent to the ML estimate.&lt;/p&gt;
-&lt;p&gt;The ts have three parameters: degress of freedom, mean, and then an SD.&lt;/p&gt;
+&lt;p&gt;The ts have three parameters: degrees of freedom, mean, and then an SD.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;differenes-in-random-effects-with-brms&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Differenes in random effects with brms&lt;/h2&gt;
+&lt;div id=&#34;differences-in-random-effects-with-brms&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Differences in random effects with brms&lt;/h2&gt;
 &lt;p&gt;We often summarize the &lt;span class=&#34;math inline&#34;&gt;\(\gamma_{0j}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\gamma_{1j}\)&lt;/span&gt; deviations as &lt;span class=&#34;math inline&#34;&gt;\(\sigma_0^2\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\sigma_1^2\)&lt;/span&gt;, respectively. And importantly, these variance parameters have a covariance &lt;span class=&#34;math inline&#34;&gt;\(\sigma_{01}\)&lt;/span&gt;. However, &lt;strong&gt;brms&lt;/strong&gt; parameterizes these in the standard-deviation metric. That is, in &lt;strong&gt;brms&lt;/strong&gt;, these are expressed as &lt;span class=&#34;math inline&#34;&gt;\(\sigma_0\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\sigma_1\)&lt;/span&gt;. Similarly, the &lt;span class=&#34;math inline&#34;&gt;\(\sigma_{01}\)&lt;/span&gt; presented in &lt;strong&gt;brms&lt;/strong&gt; output is in a correlation metric, rather than a covariance.&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
 \begin{align*}
@@ -5671,7 +7666,7 @@ U \sim \text{N} (\mathbf{0}, \mathbf{\Sigma})
 \mathbf{\Omega} &amp;amp; = \begin{bmatrix} 1 &amp;amp; \rho \\ \rho &amp;amp; 1 \end{bmatrix}
 \end{align*}
 \]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Thus &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{D}\)&lt;/span&gt; is the diagonal matrix of standard deviations and &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{\Omega}\)&lt;/span&gt; is the correlation matrix. As we will see later, we will need to specify priors for each of these components, the SDs of our random effects and the correlation between them. By splitting them into these two different matrixes we can handle that easier.&lt;/p&gt;
+&lt;p&gt;Thus &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{D}\)&lt;/span&gt; is the diagonal matrix of standard deviations and &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{\Omega}\)&lt;/span&gt; is the correlation matrix. As we will see later, we will need to specify priors for each of these components, the SDs of our random effects and the correlation between them. By splitting them into these two different matrices we can handle that easier.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(sleep_brm)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-12-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
@@ -5680,7 +7675,7 @@ U \sim \text{N} (\mathbf{0}, \mathbf{\Sigma})
 &lt;h1&gt;More models&lt;/h1&gt;
 &lt;div id=&#34;ex-1&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Ex 1&lt;/h2&gt;
-&lt;p&gt;Here we’ll use a dataset from Singer &amp;amp; Willet, chapter 3, lookng at cognitive performance across time for children who under went an intervention or not.&lt;/p&gt;
+&lt;p&gt;Here we’ll use a dataset from Singer &amp;amp; Willet, chapter 3, looking at cognitive performance across time for children who under went an intervention or not.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;##       zeta_0     zeta_1
 ## 1 10.7586672 -3.0908765
 ## 2  3.4258938 -0.4186497
@@ -5869,7 +7864,7 @@ print(ex1.nc)&lt;/code&gt;&lt;/pre&gt;
 ## X1    1 309 102.35 15.42    102  102.27 16.31  64 155    91 0.12    -0.16
 ##      se
 ## X1 0.88&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;A few take aways: 1. not much has changed. Why? Because our data overwelm the prior. Again, priors are not &lt;em&gt;that&lt;/em&gt; big of a deal.
+&lt;p&gt;A few take aways: 1. not much has changed. Why? Because our data overwhelm the prior. Again, priors are not &lt;em&gt;that&lt;/em&gt; big of a deal.
 2. We can forget about all of this if we do not use default priors. More on that later.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -6026,7 +8021,7 @@ head()&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;ex-2&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Ex 2&lt;/h2&gt;
-&lt;p&gt;Load the data, here from chapter 4 of Singer and Willet. It is a three wave longitudinal study of adolescents. We are looking at alcohol use during the previous year, meausred from 0 - 7. COA is a variable indicating the child’s parents are alocholics.&lt;/p&gt;
+&lt;p&gt;Load the data, here from chapter 4 of Singer and Willet. It is a three wave longitudinal study of adolescents. We are looking at alcohol use during the previous year, measured from 0 - 7. COA is a variable indicating the child’s parents are alcoholics.&lt;/p&gt;
 &lt;p&gt;Data generating model we are fitting. You can also write this with L1 and L2 convention.&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
 alcuse  \sim \text{Normal} (\mu_{ij}, \sigma_{ij}) \\
@@ -6287,7 +8282,7 @@ head(f)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;priors-choice&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Priors choice&lt;/h3&gt;
-&lt;p&gt;Here we can change the prior to our regression coefficents&lt;/p&gt;
+&lt;p&gt;Here we can change the prior to our regression coefficients&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ex2.fit3.prior &amp;lt;-
   brm(data = alcohol1_pp, 
       file = &amp;quot;fit6&amp;quot;,
@@ -6323,7 +8318,7 @@ head(f)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;comparing-models&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Comparing models&lt;/h3&gt;
-&lt;p&gt;As it turns out, we Bayesians use the log-likelihood (LL), too. Recall how the numerator in the right-hand side of Bayes’ Theorem was &lt;span class=&#34;math inline&#34;&gt;\(p(\text{data} | \theta) p(\theta)\)&lt;/span&gt;? That first part, &lt;span class=&#34;math inline&#34;&gt;\(p(\text{data} | \theta)\)&lt;/span&gt;, is the likelihood. In words, the likelihood is the &lt;em&gt;probability of the data given the parameters&lt;/em&gt;. And we take the log of the likelihood rather than the likelihood itself because it’s easier to work with statistically.&lt;/p&gt;
+&lt;p&gt;As it turns out, we Bayesian use the log-likelihood (LL), too. Recall how the numerator in the right-hand side of Bayes’ Theorem was &lt;span class=&#34;math inline&#34;&gt;\(p(\text{data} | \theta) p(\theta)\)&lt;/span&gt;? That first part, &lt;span class=&#34;math inline&#34;&gt;\(p(\text{data} | \theta)\)&lt;/span&gt;, is the likelihood. In words, the likelihood is the &lt;em&gt;probability of the data given the parameters&lt;/em&gt;. And we take the log of the likelihood rather than the likelihood itself because it’s easier to work with statistically.&lt;/p&gt;
 &lt;p&gt;When you’re working with &lt;strong&gt;brms&lt;/strong&gt;, you can extract the LL with the &lt;code&gt;log_lik()&lt;/code&gt; function. Here’s an example with &lt;code&gt;fit1&lt;/code&gt;, our unconditional means model.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;log_lik(ex2) %&amp;gt;%
   str()&lt;/code&gt;&lt;/pre&gt;
@@ -6345,7 +8340,7 @@ head(f)&lt;/code&gt;&lt;/pre&gt;
   theme(panel.grid = element_blank())&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-61-1.png&#34; width=&#34;576&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The AIC is frequentist and cannot handle models with priors. The BIC isis a misnomer as it is not Bayesian. The Widely Applicable Information Criterion (WAIC) is used instead.&lt;/p&gt;
-&lt;p&gt;The distinguishing feature of WAIC is that it is &lt;em&gt;pointwise&lt;/em&gt;. This means that uncertainty in prediction is considered case-by-case, or point-by-point, in the data. This is useful, because some observations are much harder to predict than others and may also have different uncertainty. You can think of WAIC as handling uncertainty where it actually matters: for each independent observation.&lt;/p&gt;
+&lt;p&gt;The distinguishing feature of WAIC is that it is &lt;em&gt;point wise&lt;/em&gt;. This means that uncertainty in prediction is considered case-by-case, or point-by-point, in the data. This is useful, because some observations are much harder to predict than others and may also have different uncertainty. You can think of WAIC as handling uncertainty where it actually matters: for each independent observation.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;waic(ex2)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
 ## Computed from 4000 by 246 log-likelihood matrix
@@ -6476,7 +8471,7 @@ head(post_23)&lt;/code&gt;&lt;/pre&gt;
   theme(panel.grid = element_blank()) +
   facet_wrap(~key, labeller = label_parsed, scales = &amp;quot;free_y&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-72-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Yet this approach neglects the &lt;span class=&#34;math inline&#34;&gt;\(U\)&lt;/span&gt;s. That is, it would be the same for everyone with COA = 1. W’ve been extracting the &lt;span class=&#34;math inline&#34;&gt;\(U\)&lt;/span&gt;s with &lt;code&gt;ranef()&lt;/code&gt;. We also get them when we use &lt;code&gt;posterior_samples()&lt;/code&gt;. Here we’ll extract both the &lt;span class=&#34;math inline&#34;&gt;\(\gamma\)&lt;/span&gt;s as well as the &lt;span class=&#34;math inline&#34;&gt;\(U\)&lt;/span&gt;s for &lt;code&gt;id == 23&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Yet this approach neglects the &lt;span class=&#34;math inline&#34;&gt;\(U\)&lt;/span&gt;s. That is, it would be the same for everyone with COA = 1. We’ve been extracting the &lt;span class=&#34;math inline&#34;&gt;\(U\)&lt;/span&gt;s with &lt;code&gt;ranef()&lt;/code&gt;. We also get them when we use &lt;code&gt;posterior_samples()&lt;/code&gt;. Here we’ll extract both the &lt;span class=&#34;math inline&#34;&gt;\(\gamma\)&lt;/span&gt;s as well as the &lt;span class=&#34;math inline&#34;&gt;\(U\)&lt;/span&gt;s for &lt;code&gt;id == 23&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;post_23.r &amp;lt;-
   posterior_samples(ex2.fit3) %&amp;gt;%
   select(starts_with(&amp;quot;b_&amp;quot;), contains(&amp;quot;23&amp;quot;))
@@ -6532,11 +8527,182 @@ glimpse(post_23.r)&lt;/code&gt;&lt;/pre&gt;
   facet_wrap(~key, labeller = label_parsed, scales = &amp;quot;free_y&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-76-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;tidybayes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;tidybayes&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidybayes)
+get_variables(ex1.nc)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   [1] &amp;quot;b_Intercept&amp;quot;              &amp;quot;b_age_c&amp;quot;                 
+##   [3] &amp;quot;b_program&amp;quot;                &amp;quot;b_age_c:program&amp;quot;         
+##   [5] &amp;quot;sd_id__Intercept&amp;quot;         &amp;quot;sd_id__age_c&amp;quot;            
+##   [7] &amp;quot;cor_id__Intercept__age_c&amp;quot; &amp;quot;sigma&amp;quot;                   
+##   [9] &amp;quot;r_id[1,Intercept]&amp;quot;        &amp;quot;r_id[2,Intercept]&amp;quot;       
+##  [11] &amp;quot;r_id[3,Intercept]&amp;quot;        &amp;quot;r_id[4,Intercept]&amp;quot;       
+##  [13] &amp;quot;r_id[5,Intercept]&amp;quot;        &amp;quot;r_id[6,Intercept]&amp;quot;       
+##  [15] &amp;quot;r_id[7,Intercept]&amp;quot;        &amp;quot;r_id[8,Intercept]&amp;quot;       
+##  [17] &amp;quot;r_id[9,Intercept]&amp;quot;        &amp;quot;r_id[10,Intercept]&amp;quot;      
+##  [19] &amp;quot;r_id[11,Intercept]&amp;quot;       &amp;quot;r_id[12,Intercept]&amp;quot;      
+##  [21] &amp;quot;r_id[13,Intercept]&amp;quot;       &amp;quot;r_id[14,Intercept]&amp;quot;      
+##  [23] &amp;quot;r_id[15,Intercept]&amp;quot;       &amp;quot;r_id[16,Intercept]&amp;quot;      
+##  [25] &amp;quot;r_id[17,Intercept]&amp;quot;       &amp;quot;r_id[18,Intercept]&amp;quot;      
+##  [27] &amp;quot;r_id[19,Intercept]&amp;quot;       &amp;quot;r_id[20,Intercept]&amp;quot;      
+##  [29] &amp;quot;r_id[21,Intercept]&amp;quot;       &amp;quot;r_id[22,Intercept]&amp;quot;      
+##  [31] &amp;quot;r_id[23,Intercept]&amp;quot;       &amp;quot;r_id[24,Intercept]&amp;quot;      
+##  [33] &amp;quot;r_id[25,Intercept]&amp;quot;       &amp;quot;r_id[26,Intercept]&amp;quot;      
+##  [35] &amp;quot;r_id[27,Intercept]&amp;quot;       &amp;quot;r_id[28,Intercept]&amp;quot;      
+##  [37] &amp;quot;r_id[29,Intercept]&amp;quot;       &amp;quot;r_id[30,Intercept]&amp;quot;      
+##  [39] &amp;quot;r_id[31,Intercept]&amp;quot;       &amp;quot;r_id[32,Intercept]&amp;quot;      
+##  [41] &amp;quot;r_id[33,Intercept]&amp;quot;       &amp;quot;r_id[34,Intercept]&amp;quot;      
+##  [43] &amp;quot;r_id[35,Intercept]&amp;quot;       &amp;quot;r_id[36,Intercept]&amp;quot;      
+##  [45] &amp;quot;r_id[37,Intercept]&amp;quot;       &amp;quot;r_id[38,Intercept]&amp;quot;      
+##  [47] &amp;quot;r_id[39,Intercept]&amp;quot;       &amp;quot;r_id[40,Intercept]&amp;quot;      
+##  [49] &amp;quot;r_id[41,Intercept]&amp;quot;       &amp;quot;r_id[42,Intercept]&amp;quot;      
+##  [51] &amp;quot;r_id[43,Intercept]&amp;quot;       &amp;quot;r_id[44,Intercept]&amp;quot;      
+##  [53] &amp;quot;r_id[45,Intercept]&amp;quot;       &amp;quot;r_id[46,Intercept]&amp;quot;      
+##  [55] &amp;quot;r_id[47,Intercept]&amp;quot;       &amp;quot;r_id[48,Intercept]&amp;quot;      
+##  [57] &amp;quot;r_id[49,Intercept]&amp;quot;       &amp;quot;r_id[50,Intercept]&amp;quot;      
+##  [59] &amp;quot;r_id[51,Intercept]&amp;quot;       &amp;quot;r_id[52,Intercept]&amp;quot;      
+##  [61] &amp;quot;r_id[53,Intercept]&amp;quot;       &amp;quot;r_id[54,Intercept]&amp;quot;      
+##  [63] &amp;quot;r_id[68,Intercept]&amp;quot;       &amp;quot;r_id[70,Intercept]&amp;quot;      
+##  [65] &amp;quot;r_id[71,Intercept]&amp;quot;       &amp;quot;r_id[72,Intercept]&amp;quot;      
+##  [67] &amp;quot;r_id[902,Intercept]&amp;quot;      &amp;quot;r_id[904,Intercept]&amp;quot;     
+##  [69] &amp;quot;r_id[906,Intercept]&amp;quot;      &amp;quot;r_id[908,Intercept]&amp;quot;     
+##  [71] &amp;quot;r_id[955,Intercept]&amp;quot;      &amp;quot;r_id[956,Intercept]&amp;quot;     
+##  [73] &amp;quot;r_id[957,Intercept]&amp;quot;      &amp;quot;r_id[958,Intercept]&amp;quot;     
+##  [75] &amp;quot;r_id[959,Intercept]&amp;quot;      &amp;quot;r_id[960,Intercept]&amp;quot;     
+##  [77] &amp;quot;r_id[961,Intercept]&amp;quot;      &amp;quot;r_id[962,Intercept]&amp;quot;     
+##  [79] &amp;quot;r_id[963,Intercept]&amp;quot;      &amp;quot;r_id[964,Intercept]&amp;quot;     
+##  [81] &amp;quot;r_id[965,Intercept]&amp;quot;      &amp;quot;r_id[966,Intercept]&amp;quot;     
+##  [83] &amp;quot;r_id[967,Intercept]&amp;quot;      &amp;quot;r_id[968,Intercept]&amp;quot;     
+##  [85] &amp;quot;r_id[969,Intercept]&amp;quot;      &amp;quot;r_id[970,Intercept]&amp;quot;     
+##  [87] &amp;quot;r_id[971,Intercept]&amp;quot;      &amp;quot;r_id[972,Intercept]&amp;quot;     
+##  [89] &amp;quot;r_id[973,Intercept]&amp;quot;      &amp;quot;r_id[974,Intercept]&amp;quot;     
+##  [91] &amp;quot;r_id[975,Intercept]&amp;quot;      &amp;quot;r_id[976,Intercept]&amp;quot;     
+##  [93] &amp;quot;r_id[977,Intercept]&amp;quot;      &amp;quot;r_id[978,Intercept]&amp;quot;     
+##  [95] &amp;quot;r_id[979,Intercept]&amp;quot;      &amp;quot;r_id[980,Intercept]&amp;quot;     
+##  [97] &amp;quot;r_id[981,Intercept]&amp;quot;      &amp;quot;r_id[982,Intercept]&amp;quot;     
+##  [99] &amp;quot;r_id[983,Intercept]&amp;quot;      &amp;quot;r_id[984,Intercept]&amp;quot;     
+## [101] &amp;quot;r_id[985,Intercept]&amp;quot;      &amp;quot;r_id[986,Intercept]&amp;quot;     
+## [103] &amp;quot;r_id[987,Intercept]&amp;quot;      &amp;quot;r_id[988,Intercept]&amp;quot;     
+## [105] &amp;quot;r_id[989,Intercept]&amp;quot;      &amp;quot;r_id[990,Intercept]&amp;quot;     
+## [107] &amp;quot;r_id[991,Intercept]&amp;quot;      &amp;quot;r_id[992,Intercept]&amp;quot;     
+## [109] &amp;quot;r_id[993,Intercept]&amp;quot;      &amp;quot;r_id[994,Intercept]&amp;quot;     
+## [111] &amp;quot;r_id[995,Intercept]&amp;quot;      &amp;quot;r_id[1,age_c]&amp;quot;           
+## [113] &amp;quot;r_id[2,age_c]&amp;quot;            &amp;quot;r_id[3,age_c]&amp;quot;           
+## [115] &amp;quot;r_id[4,age_c]&amp;quot;            &amp;quot;r_id[5,age_c]&amp;quot;           
+## [117] &amp;quot;r_id[6,age_c]&amp;quot;            &amp;quot;r_id[7,age_c]&amp;quot;           
+## [119] &amp;quot;r_id[8,age_c]&amp;quot;            &amp;quot;r_id[9,age_c]&amp;quot;           
+## [121] &amp;quot;r_id[10,age_c]&amp;quot;           &amp;quot;r_id[11,age_c]&amp;quot;          
+## [123] &amp;quot;r_id[12,age_c]&amp;quot;           &amp;quot;r_id[13,age_c]&amp;quot;          
+## [125] &amp;quot;r_id[14,age_c]&amp;quot;           &amp;quot;r_id[15,age_c]&amp;quot;          
+## [127] &amp;quot;r_id[16,age_c]&amp;quot;           &amp;quot;r_id[17,age_c]&amp;quot;          
+## [129] &amp;quot;r_id[18,age_c]&amp;quot;           &amp;quot;r_id[19,age_c]&amp;quot;          
+## [131] &amp;quot;r_id[20,age_c]&amp;quot;           &amp;quot;r_id[21,age_c]&amp;quot;          
+## [133] &amp;quot;r_id[22,age_c]&amp;quot;           &amp;quot;r_id[23,age_c]&amp;quot;          
+## [135] &amp;quot;r_id[24,age_c]&amp;quot;           &amp;quot;r_id[25,age_c]&amp;quot;          
+## [137] &amp;quot;r_id[26,age_c]&amp;quot;           &amp;quot;r_id[27,age_c]&amp;quot;          
+## [139] &amp;quot;r_id[28,age_c]&amp;quot;           &amp;quot;r_id[29,age_c]&amp;quot;          
+## [141] &amp;quot;r_id[30,age_c]&amp;quot;           &amp;quot;r_id[31,age_c]&amp;quot;          
+## [143] &amp;quot;r_id[32,age_c]&amp;quot;           &amp;quot;r_id[33,age_c]&amp;quot;          
+## [145] &amp;quot;r_id[34,age_c]&amp;quot;           &amp;quot;r_id[35,age_c]&amp;quot;          
+## [147] &amp;quot;r_id[36,age_c]&amp;quot;           &amp;quot;r_id[37,age_c]&amp;quot;          
+## [149] &amp;quot;r_id[38,age_c]&amp;quot;           &amp;quot;r_id[39,age_c]&amp;quot;          
+## [151] &amp;quot;r_id[40,age_c]&amp;quot;           &amp;quot;r_id[41,age_c]&amp;quot;          
+## [153] &amp;quot;r_id[42,age_c]&amp;quot;           &amp;quot;r_id[43,age_c]&amp;quot;          
+## [155] &amp;quot;r_id[44,age_c]&amp;quot;           &amp;quot;r_id[45,age_c]&amp;quot;          
+## [157] &amp;quot;r_id[46,age_c]&amp;quot;           &amp;quot;r_id[47,age_c]&amp;quot;          
+## [159] &amp;quot;r_id[48,age_c]&amp;quot;           &amp;quot;r_id[49,age_c]&amp;quot;          
+## [161] &amp;quot;r_id[50,age_c]&amp;quot;           &amp;quot;r_id[51,age_c]&amp;quot;          
+## [163] &amp;quot;r_id[52,age_c]&amp;quot;           &amp;quot;r_id[53,age_c]&amp;quot;          
+## [165] &amp;quot;r_id[54,age_c]&amp;quot;           &amp;quot;r_id[68,age_c]&amp;quot;          
+## [167] &amp;quot;r_id[70,age_c]&amp;quot;           &amp;quot;r_id[71,age_c]&amp;quot;          
+## [169] &amp;quot;r_id[72,age_c]&amp;quot;           &amp;quot;r_id[902,age_c]&amp;quot;         
+## [171] &amp;quot;r_id[904,age_c]&amp;quot;          &amp;quot;r_id[906,age_c]&amp;quot;         
+## [173] &amp;quot;r_id[908,age_c]&amp;quot;          &amp;quot;r_id[955,age_c]&amp;quot;         
+## [175] &amp;quot;r_id[956,age_c]&amp;quot;          &amp;quot;r_id[957,age_c]&amp;quot;         
+## [177] &amp;quot;r_id[958,age_c]&amp;quot;          &amp;quot;r_id[959,age_c]&amp;quot;         
+## [179] &amp;quot;r_id[960,age_c]&amp;quot;          &amp;quot;r_id[961,age_c]&amp;quot;         
+## [181] &amp;quot;r_id[962,age_c]&amp;quot;          &amp;quot;r_id[963,age_c]&amp;quot;         
+## [183] &amp;quot;r_id[964,age_c]&amp;quot;          &amp;quot;r_id[965,age_c]&amp;quot;         
+## [185] &amp;quot;r_id[966,age_c]&amp;quot;          &amp;quot;r_id[967,age_c]&amp;quot;         
+## [187] &amp;quot;r_id[968,age_c]&amp;quot;          &amp;quot;r_id[969,age_c]&amp;quot;         
+## [189] &amp;quot;r_id[970,age_c]&amp;quot;          &amp;quot;r_id[971,age_c]&amp;quot;         
+## [191] &amp;quot;r_id[972,age_c]&amp;quot;          &amp;quot;r_id[973,age_c]&amp;quot;         
+## [193] &amp;quot;r_id[974,age_c]&amp;quot;          &amp;quot;r_id[975,age_c]&amp;quot;         
+## [195] &amp;quot;r_id[976,age_c]&amp;quot;          &amp;quot;r_id[977,age_c]&amp;quot;         
+## [197] &amp;quot;r_id[978,age_c]&amp;quot;          &amp;quot;r_id[979,age_c]&amp;quot;         
+## [199] &amp;quot;r_id[980,age_c]&amp;quot;          &amp;quot;r_id[981,age_c]&amp;quot;         
+## [201] &amp;quot;r_id[982,age_c]&amp;quot;          &amp;quot;r_id[983,age_c]&amp;quot;         
+## [203] &amp;quot;r_id[984,age_c]&amp;quot;          &amp;quot;r_id[985,age_c]&amp;quot;         
+## [205] &amp;quot;r_id[986,age_c]&amp;quot;          &amp;quot;r_id[987,age_c]&amp;quot;         
+## [207] &amp;quot;r_id[988,age_c]&amp;quot;          &amp;quot;r_id[989,age_c]&amp;quot;         
+## [209] &amp;quot;r_id[990,age_c]&amp;quot;          &amp;quot;r_id[991,age_c]&amp;quot;         
+## [211] &amp;quot;r_id[992,age_c]&amp;quot;          &amp;quot;r_id[993,age_c]&amp;quot;         
+## [213] &amp;quot;r_id[994,age_c]&amp;quot;          &amp;quot;r_id[995,age_c]&amp;quot;         
+## [215] &amp;quot;lp__&amp;quot;                     &amp;quot;accept_stat__&amp;quot;           
+## [217] &amp;quot;stepsize__&amp;quot;               &amp;quot;treedepth__&amp;quot;             
+## [219] &amp;quot;n_leapfrog__&amp;quot;             &amp;quot;divergent__&amp;quot;             
+## [221] &amp;quot;energy__&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ex1.nc %&amp;gt;% 
+spread_draws(`b_age_c`, r_id[id,])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 824,000 x 6
+## # Groups:   id [103]
+##    .chain .iteration .draw b_age_c    id   r_id
+##     &amp;lt;int&amp;gt;      &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;dbl&amp;gt;
+##  1      1          1     1   -21.4     1   5.31
+##  2      1          1     1   -21.4     2   1.72
+##  3      1          1     1   -21.4     3  -1.54
+##  4      1          1     1   -21.4     4  14.0 
+##  5      1          1     1   -21.4     5   4.89
+##  6      1          1     1   -21.4     6   7.20
+##  7      1          1     1   -21.4     7   1.42
+##  8      1          1     1   -21.4     8 -12.2 
+##  9      1          1     1   -21.4     9  12.0 
+## 10      1          1     1   -21.4    10  -5.30
+## # … with 823,990 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ex1.nc %&amp;gt;% 
+spread_draws(`b_age_c`, r_id[id,]) %&amp;gt;% 
+   median_qi(slope_mean = b_age_c + r_id) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 103 x 7
+##       id slope_mean .lower .upper .width .point .interval
+##    &amp;lt;int&amp;gt;      &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;    
+##  1     1      -18.8  -27.7  -7.07   0.95 median qi       
+##  2     2      -20.2  -30.4 -10.0    0.95 median qi       
+##  3     3      -21.6  -32.5 -12.7    0.95 median qi       
+##  4     4      -18.9  -34.1  -2.63   0.95 median qi       
+##  5     5      -21.1  -33.2 -10.5    0.95 median qi       
+##  6     6      -22.4  -35.0 -12.4    0.95 median qi       
+##  7     7      -20.3  -31.4  -8.73   0.95 median qi       
+##  8     8      -27.2  -45.8 -11.1    0.95 median qi       
+##  9     9      -17.4  -27.7  -3.78   0.95 median qi       
+## 10    10      -25.0  -39.7 -13.5    0.95 median qi       
+## # … with 93 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ex1.nc %&amp;gt;% 
+spread_draws(`b_age_c`, r_id[id,]) %&amp;gt;% 
+   median_qi(slope_mean = b_age_c + r_id) %&amp;gt;% 
+    ggplot(aes(y = as.factor(id), x = slope_mean)) +
+    geom_pointintervalh() &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-80-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bayesplot&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Bayesplot&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(bayesplot)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## This is bayesplot version 1.7.0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## - Online documentation and vignettes at mc-stan.org/bayesplot&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## - bayesplot theme set to bayesplot::theme_default()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    * Does _not_ affect other ggplot2 plots&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    * See ?bayesplot_theme_set for details on theme setting&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;level-1-predictors&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Level 1 predictors&lt;/h3&gt;
+&lt;/div&gt;
 &lt;div id=&#34;variance-explained&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Variance explained&lt;/h3&gt;
 &lt;/div&gt;
 &lt;div id=&#34;hypothesis-function&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Hypothesis function&lt;/h3&gt;
+&lt;/div&gt;
+&lt;div id=&#34;posterior-predictive-checks&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Posterior-predictive checks&lt;/h3&gt;
 &lt;/div&gt;
 &lt;div id=&#34;missing-data&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Missing data&lt;/h3&gt;

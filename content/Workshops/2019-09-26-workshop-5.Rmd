@@ -32,20 +32,20 @@ http://babieslearninglanguage.blogspot.com/2018/02/mixed-effects-models-is-it-ti
 # How is this different? 
 Bayesian analysis differs in two major ways from our traditional MLMs that we have been working with.  First, the end result is different in that it uses probability differently to derive estimates and to interpret the results. The lucky thing for us is that this will not be drastically different if we dont want it to be. In other words, we can keep with our focuses on estimates and precision around those estimates, same way as we would in standard stats world. Once you progress further, you can better understand the nuances, but right now lets not get bogged down by technical differences. 
 
-The second major difference is that prior are used. Priors are a way to incorporate your beliefs into the model. At first blush it feels as if this is wrong, and is the justification for many for why the standard approach is correct and Bayesian is wrong. I mean, most people are taught frequentist approaches, thus how can 10 million SPSS users be wrong? (The reason for the popularity of frequentist approaches is two fold: computers and history. Computation power is needed, which was lacking until recently and thus curtailed general use, the same way that computation power held back adoption of SEM and before that multivariate approaches like factor analysis, and before that multiple regression with continuous predictors. The second reason, history, is, like much of history, driven by disagreements between dead white guys. Fisher, you've heard of him, populated the p-value and disliked Bayes, so long story short, it went out of fashion)
+The second major difference is that prior are used. Priors are a way to incorporate your beliefs into the model. At first blush it feels as if this is wrong, and is the justification for many for why the standard approach is correct and Bayesian is wrong. I mean, most people are taught frequentest approaches, thus how can 10 million SPSS users be wrong? (The reason for the popularity of frequentest approaches is two fold: computers and history. Computation power is needed, which was lacking until recently and thus curtailed general use, the same way that computation power held back adoption of SEM and before that multivariate approaches like factor analysis, and before that multiple regression with continuous predictors. The second reason, history, is, like much of history, driven by disagreements between dead white guys. Fisher, you've heard of him, populated the p-value and disliked Bayes, so long story short, it went out of fashion)
 
 
 # The basic parts
 
-Bayes Theorm
+Bayes Theorem
 $$ P(\theta | y) =  \frac{P(y | \theta) P(\theta)}{P(y)}. $$
 
 
-This is often rewritten for when we want to estimate some value, $ \theta$. Note that the $P(y)$ drops out, as it does not vary across $ \theta$. In our case y is will be the data, and the data will be collected only once, thus considered fixed. The probabiliy o y was included in the above equation to rescale the equation and create some nice properities eg integrating to 1. We don't care about that as we are going to look at relative likelihoods of each theta conditioned on y. 
+This is often rewritten for when we want to estimate some value, $ \theta$. Note that the $P(y)$ drops out, as it does not vary across $ \theta$. In our case y is will be the data, and the data will be collected only once, thus considered fixed. The probability o y was included in the above equation to re scale the equation and create some nice properties eg integrating to 1. We don't care about that as we are going to look at relative likelihoods of each theta conditioned on y. 
 
 $$ P(\theta | y) \propto P(y | \theta) P(\theta)$$
 
-This reads as the conditional probability of theta, given y is proportional to the probability of y given theta, multiplied by the probability of theta. The this, likely, sounds like gobblygook unless you have taken a bunch of probability classes. Instead the more helpful way to think about this is: 
+This reads as the conditional probability of theta, given y is proportional to the probability of y given theta, multiplied by the probability of theta. The this, likely, sounds like gobbledygook unless you have taken a bunch of probability classes. Instead the more helpful way to think about this is: 
 
 $$ p(hypothesis|data) \propto p(data|hypothesis)p(hypothesis)$$
 
@@ -55,7 +55,7 @@ Bayesian stats gives names to each of these terms:
 
 $$ posterior \propto likelihood * prior $$
 
-Prior - Allows us to provide a priori intuition about what the findings are. It is of the form of a probability distribution. E.g., "Extrodanary claims require extrodinary evidene." Note we will note use this as "guesses" of what will happen. Instead we will use this as a regularization tool, similar to partial pooling in MLM. 
+Prior - Allows us to provide a priori intuition about what the findings are. It is of the form of a probability distribution. E.g., "Extraordinary claims require extraordinary evidence." Note we will note use this as "guesses" of what will happen. Instead we will use this as a regularization tool, similar to partial pooling in MLM. 
 
 
 
@@ -186,7 +186,7 @@ $$Y_{i}  \sim \text{Normal}(\mu_i, \sigma) $$
 This specifies the DGP and the family argument within `brms`
 
 $$ \mu_i  = \beta \times Predictor_i $$
-This specifies themodel we are fitting. Here it is just a standard regression. 
+This specifies the model we are fitting. Here it is just a standard regression. 
 
 
 The above two lines are what is implicitly implied in almost all regressions. Namely, we have some variable that is being generated from a normal distribution, with a mean $\mu$ and standard deviation $\sigma$. That $\mu$ is going to be described as the relationship between some (fixed) regression coefficient and a person specific predictor variable.  
@@ -219,9 +219,9 @@ ggplot() +
 ```
 
 
-Note that we do two important things here. First, we describe the data generating processes (DGP) we think our data are coming from. Often we will just assume Gaussian normal, but this does not need to be the case. For our residual we specify a half cauchy to make sure it is above zero and that lower terms are more likely than higher terms. 
+Note that we do two important things here. First, we describe the data generating processes (DGP) we think our data are coming from. Often we will just assume Gaussian normal, but this does not need to be the case. For our residual we specify a half Cauchy to make sure it is above zero and that lower terms are more likely than higher terms. 
 
-Second, we are specifying a prior. Here we are saying we expect our regression parameter to be centered around zero but that it could vary widely from that and we wouldn't be suprised. The prior distribution for Beta is defined by a mean of 0 and an SD of 10. But we have control if we want to make this different. Same thing with the half cauchy for the variance. We expect that it cannot be negative, that it is likely closer to zero than not. Again, it is up to us in terms of how we want to specify it. 
+Second, we are specifying a prior. Here we are saying we expect our regression parameter to be centered around zero but that it could vary widely from that and we wouldn't be surprised. The prior distribution for Beta is defined by a mean of 0 and an SD of 10. But we have control if we want to make this different. Same thing with the half Cauchy for the variance. We expect that it cannot be negative, that it is likely closer to zero than not. Again, it is up to us in terms of how we want to specify it. 
 
 # MCMC Estimation 
 
@@ -268,9 +268,9 @@ brms::get_prior(Reaction ~ Days + (1 + Days|Subject), data = sleepstudy)
 ```
 *Note that there are flat priors as the default for fixed effects. This essentially disregards the prior and spits back the likelihood, equivalent to the ML estimate. 
 
- The ts have three parameters: degress of freedom, mean, and then an SD.
+ The ts have three parameters: degrees of freedom, mean, and then an SD.
 
-## Differenes in random effects with brms
+## Differences in random effects with brms
 
 We often summarize the $\gamma_{0j}$ and $\gamma_{1j}$ deviations as $\sigma_0^2$ and $\sigma_1^2$, respectively. And importantly, these variance parameters have a covariance $\sigma_{01}$. However, **brms** parameterizes these in the standard-deviation metric. That is, in **brms**, these are expressed as $\sigma_0$ and $\sigma_1$. Similarly, the $\sigma_{01}$ presented in **brms** output is in a correlation metric, rather than a covariance. 
 
@@ -303,7 +303,7 @@ $$
 \end{align*}
 $$
 
-Thus $\mathbf{D}$ is the diagonal matrix of standard deviations and $\mathbf{\Omega}$ is the correlation matrix. As we will see later, we will need to specify priors for each of these components, the SDs of our random effects and the correlation between them. By splitting them into these two different matrixes we can handle that easier.  
+Thus $\mathbf{D}$ is the diagonal matrix of standard deviations and $\mathbf{\Omega}$ is the correlation matrix. As we will see later, we will need to specify priors for each of these components, the SDs of our random effects and the correlation between them. By splitting them into these two different matrices we can handle that easier.  
 
 
 ```{r}
@@ -315,7 +315,7 @@ plot(sleep_brm)
 
 # More models
 ## Ex 1 
-Here we'll use a dataset from Singer & Willet, chapter 3, lookng at cognitive performance across time for children who under went an intervention or not. 
+Here we'll use a dataset from Singer & Willet, chapter 3, looking at cognitive performance across time for children who under went an intervention or not. 
 
 ```{r, echo = FALSE}
 
@@ -516,7 +516,7 @@ describe(early_int_sim$cog)
 
 
 
-A few take aways: 1. not much has changed. Why? Because our data overwelm the prior. Again, priors are not *that* big of a deal. 
+A few take aways: 1. not much has changed. Why? Because our data overwhelm the prior. Again, priors are not *that* big of a deal. 
 2. We can forget about all of this if we do not use default priors. More on that later. 
 
 ## What does the posterior look like? 
@@ -615,7 +615,7 @@ posterior_samples(ex1) %>%
 
 
 ## Ex 2
-Load the data, here from chapter 4 of Singer and Willet. It is a three wave longitudinal study of adolescents. We are looking at alcohol use during the previous year, meausred from 0 - 7. COA is a variable indicating the child's parents are alocholics. 
+Load the data, here from chapter 4 of Singer and Willet. It is a three wave longitudinal study of adolescents. We are looking at alcohol use during the previous year, measured from 0 - 7. COA is a variable indicating the child's parents are alcoholics. 
 
 ```{r, warning = F, message = F, echo = F}
 
@@ -888,7 +888,7 @@ f %>%
 
 ### Priors choice
 
-Here we can change the prior to our regression coefficents
+Here we can change the prior to our regression coefficients
 
 ```{r, cache = T, warning = F, message = F, results = "hide"}
 ex2.fit3.prior <-
@@ -940,7 +940,7 @@ I will suggest the use of regularizing priors. Regularizing priors are centered 
 
 ### Comparing models
 
-As it turns out, we Bayesians use the log-likelihood (LL), too. Recall how the numerator in the right-hand side of Bayes’ Theorem was $p(\text{data} | \theta) p(\theta)$? That first part, $p(\text{data} | \theta)$, is the likelihood. In words, the likelihood is the *probability of the data given the parameters*. And we take the log of the likelihood rather than the likelihood itself because it’s easier to work with statistically. 
+As it turns out, we Bayesian use the log-likelihood (LL), too. Recall how the numerator in the right-hand side of Bayes’ Theorem was $p(\text{data} | \theta) p(\theta)$? That first part, $p(\text{data} | \theta)$, is the likelihood. In words, the likelihood is the *probability of the data given the parameters*. And we take the log of the likelihood rather than the likelihood itself because it’s easier to work with statistically. 
 
 When you’re working with **brms**, you can extract the LL with the `log_lik()` function. Here’s an example with `fit1`, our unconditional means model.
 
@@ -974,7 +974,7 @@ ll %>%
 
  The AIC is frequentist and cannot handle models with priors. The BIC isis a  misnomer as it is not Bayesian. The Widely Applicable Information Criterion (WAIC) is used instead. 
 
-The distinguishing feature of WAIC is that it is *pointwise*. This means that uncertainty in prediction is considered case-by-case, or point-by-point, in the data. This is useful, because some observations are much harder to predict than others and may also have different uncertainty. You can think of WAIC as handling uncertainty where it actually matters: for each independent observation.
+The distinguishing feature of WAIC is that it is *point wise*. This means that uncertainty in prediction is considered case-by-case, or point-by-point, in the data. This is useful, because some observations are much harder to predict than others and may also have different uncertainty. You can think of WAIC as handling uncertainty where it actually matters: for each independent observation.
 
 
 ```{r}
@@ -1086,7 +1086,7 @@ post_23 %>%
   facet_wrap(~key, labeller = label_parsed, scales = "free_y")
 ```
 
-Yet this approach neglects the $U$s. That is, it would be the same for everyone with COA = 1. W've been extracting the $U$s with `ranef()`. We also get them when we use `posterior_samples()`. Here we'll extract both the $\gamma$s as well as the $U$s for `id == 23`.
+Yet this approach neglects the $U$s. That is, it would be the same for everyone with COA = 1. We've been extracting the $U$s with `ranef()`. We also get them when we use `posterior_samples()`. Here we'll extract both the $\gamma$s as well as the $U$s for `id == 23`.
 
 ```{r}
 post_23.r <-
@@ -1135,10 +1135,50 @@ post_23.r %>%
   facet_wrap(~key, labeller = label_parsed, scales = "free_y")
 ```
 
+## tidybayes
+
+```{r}
+library(tidybayes)
+get_variables(ex1.nc)
+```
+
+```{r}
+ex1.nc %>% 
+spread_draws(`b_age_c`, r_id[id,])
+```
 
 
+
+```{r}
+ex1.nc %>% 
+spread_draws(`b_age_c`, r_id[id,]) %>% 
+   median_qi(slope_mean = b_age_c + r_id) 
+
+
+```
+
+
+
+```{r}
+ex1.nc %>% 
+spread_draws(`b_age_c`, r_id[id,]) %>% 
+   median_qi(slope_mean = b_age_c + r_id) %>% 
+    ggplot(aes(y = as.factor(id), x = slope_mean)) +
+    geom_pointintervalh() 
+
+```
+
+## Bayesplot
+
+```{r}
+library(bayesplot)
+```
+
+
+### Level 1 predictors
 ### Variance explained
 ### Hypothesis function
+### Posterior-predictive checks
 ### Missing data
 ### Nonlinear
 

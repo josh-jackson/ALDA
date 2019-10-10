@@ -404,7 +404,7 @@
 <li><a href="#mcmc-estimation">MCMC Estimation</a></li>
 <li><a href="#comparing-lmer-with-brms">Comparing lmer with brms</a><ul>
 <li><a href="#what-priors-did-we-use">What priors did we use?</a></li>
-<li><a href="#differenes-in-random-effects-with-brms">Differenes in random effects with brms</a></li>
+<li><a href="#differences-in-random-effects-with-brms">Differences in random effects with brms</a></li>
 </ul></li>
 <li><a href="#more-models">More models</a><ul>
 <li><a href="#ex-1">Ex 1</a></li>
@@ -421,8 +421,13 @@
 <li><a href="#priors-choice">Priors choice</a></li>
 <li><a href="#comparing-models">Comparing models</a></li>
 <li><a href="#random-effects-revisited">Random effects revisited</a></li>
+</ul></li>
+<li><a href="#tidybayes">tidybayes</a></li>
+<li><a href="#bayesplot">Bayesplot</a><ul>
+<li><a href="#level-1-predictors">Level 1 predictors</a></li>
 <li><a href="#variance-explained">Variance explained</a></li>
 <li><a href="#hypothesis-function">Hypothesis function</a></li>
+<li><a href="#posterior-predictive-checks">Posterior-predictive checks</a></li>
 <li><a href="#missing-data">Missing data</a></li>
 <li><a href="#nonlinear">Nonlinear</a></li>
 </ul></li>
@@ -439,28 +444,28 @@ The models we have been working with can easily be done in a Bayesian Framework.
 <div id="how-is-this-different" class="section level1">
 <h1>How is this different?</h1>
 <p>Bayesian analysis differs in two major ways from our traditional MLMs that we have been working with. First, the end result is different in that it uses probability differently to derive estimates and to interpret the results. The lucky thing for us is that this will not be drastically different if we dont want it to be. In other words, we can keep with our focuses on estimates and precision around those estimates, same way as we would in standard stats world. Once you progress further, you can better understand the nuances, but right now lets not get bogged down by technical differences.</p>
-<p>The second major difference is that prior are used. Priors are a way to incorporate your beliefs into the model. At first blush it feels as if this is wrong, and is the justification for many for why the standard approach is correct and Bayesian is wrong. I mean, most people are taught frequentist approaches, thus how can 10 million SPSS users be wrong? (The reason for the popularity of frequentist approaches is two fold: computers and history. Computation power is needed, which was lacking until recently and thus curtailed general use, the same way that computation power held back adoption of SEM and before that multivariate approaches like factor analysis, and before that multiple regression with continuous predictors. The second reason, history, is, like much of history, driven by disagreements between dead white guys. Fisher, you’ve heard of him, populated the p-value and disliked Bayes, so long story short, it went out of fashion)</p>
+<p>The second major difference is that prior are used. Priors are a way to incorporate your beliefs into the model. At first blush it feels as if this is wrong, and is the justification for many for why the standard approach is correct and Bayesian is wrong. I mean, most people are taught frequentest approaches, thus how can 10 million SPSS users be wrong? (The reason for the popularity of frequentest approaches is two fold: computers and history. Computation power is needed, which was lacking until recently and thus curtailed general use, the same way that computation power held back adoption of SEM and before that multivariate approaches like factor analysis, and before that multiple regression with continuous predictors. The second reason, history, is, like much of history, driven by disagreements between dead white guys. Fisher, you’ve heard of him, populated the p-value and disliked Bayes, so long story short, it went out of fashion)</p>
 </div>
 <div id="the-basic-parts" class="section level1">
 <h1>The basic parts</h1>
-<p>Bayes Theorm
+<p>Bayes Theorem
 <span class="math display">\[ P(\theta | y) =  \frac{P(y | \theta) P(\theta)}{P(y)}. \]</span></p>
-<p>This is often rewritten for when we want to estimate some value, $ $. Note that the <span class="math inline">\(P(y)\)</span> drops out, as it does not vary across $ $. In our case y is will be the data, and the data will be collected only once, thus considered fixed. The probabiliy o y was included in the above equation to rescale the equation and create some nice properities eg integrating to 1. We don’t care about that as we are going to look at relative likelihoods of each theta conditioned on y.</p>
+<p>This is often rewritten for when we want to estimate some value, $ $. Note that the <span class="math inline">\(P(y)\)</span> drops out, as it does not vary across $ $. In our case y is will be the data, and the data will be collected only once, thus considered fixed. The probability o y was included in the above equation to re scale the equation and create some nice properties eg integrating to 1. We don’t care about that as we are going to look at relative likelihoods of each theta conditioned on y.</p>
 <p><span class="math display">\[ P(\theta | y) \propto P(y | \theta) P(\theta)\]</span></p>
-<p>This reads as the conditional probability of theta, given y is proportional to the probability of y given theta, multiplied by the probability of theta. The this, likely, sounds like gobblygook unless you have taken a bunch of probability classes. Instead the more helpful way to think about this is:</p>
+<p>This reads as the conditional probability of theta, given y is proportional to the probability of y given theta, multiplied by the probability of theta. The this, likely, sounds like gobbledygook unless you have taken a bunch of probability classes. Instead the more helpful way to think about this is:</p>
 <p><span class="math display">\[ p(hypothesis|data) \propto p(data|hypothesis)p(hypothesis)\]</span></p>
 <p>This is what we get: the probability our hypothesis. Not the standard p value interpretation of the probability of our data given some hypothesis like the null distribution.</p>
 <p>Bayesian stats gives names to each of these terms:</p>
 <p><span class="math display">\[ posterior \propto likelihood * prior \]</span></p>
-<p>Prior - Allows us to provide a priori intuition about what the findings are. It is of the form of a probability distribution. E.g., “Extrodanary claims require extrodinary evidene.” Note we will note use this as “guesses” of what will happen. Instead we will use this as a regularization tool, similar to partial pooling in MLM.</p>
+<p>Prior - Allows us to provide a priori intuition about what the findings are. It is of the form of a probability distribution. E.g., “Extraordinary claims require extraordinary evidence.” Note we will note use this as “guesses” of what will happen. Instead we will use this as a regularization tool, similar to partial pooling in MLM.</p>
 <p>Likelihood - Distribution of the likelihood of various hypothesis. Probability attaches to possible results; likelihood attaches to hypotheses. It is akin to flipping coins, something we did with binomials.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
 ## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
 ## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
 ## ✔ readr   1.3.1          ✔ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ───────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <p>For 7 successes out of 10 trials, what is the likelihood of different probabilities?</p>
@@ -566,7 +571,7 @@ h_i  \sim \text{Normal}(\mu_i, \sigma) \\
 <p><span class="math display">\[Y_{i}  \sim \text{Normal}(\mu_i, \sigma) \]</span>
 This specifies the DGP and the family argument within <code>brms</code></p>
 <p><span class="math display">\[ \mu_i  = \beta \times Predictor_i \]</span>
-This specifies themodel we are fitting. Here it is just a standard regression.</p>
+This specifies the model we are fitting. Here it is just a standard regression.</p>
 <p>The above two lines are what is implicitly implied in almost all regressions. Namely, we have some variable that is being generated from a normal distribution, with a mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>. That <span class="math inline">\(\mu\)</span> is going to be described as the relationship between some (fixed) regression coefficient and a person specific predictor variable.</p>
 <p>Below is where we get into some new stuff, where we describe what we think the estimated parameters will look like (ie format a prior).</p>
 <p><span class="math inline">\(\alpha \sim \text{Normal}(0, 10) \\\)</span>
@@ -586,8 +591,8 @@ Same idea for the residual, the prior specifies what we expect is plausible.</p>
   stat_function(fun = dcauchy, n = 200, args = list(0, 1)) +
   labs(title = &quot;Half Cauchy distribution&quot;)</code></pre>
 <p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>Note that we do two important things here. First, we describe the data generating processes (DGP) we think our data are coming from. Often we will just assume Gaussian normal, but this does not need to be the case. For our residual we specify a half cauchy to make sure it is above zero and that lower terms are more likely than higher terms.</p>
-<p>Second, we are specifying a prior. Here we are saying we expect our regression parameter to be centered around zero but that it could vary widely from that and we wouldn’t be suprised. The prior distribution for Beta is defined by a mean of 0 and an SD of 10. But we have control if we want to make this different. Same thing with the half cauchy for the variance. We expect that it cannot be negative, that it is likely closer to zero than not. Again, it is up to us in terms of how we want to specify it.</p>
+<p>Note that we do two important things here. First, we describe the data generating processes (DGP) we think our data are coming from. Often we will just assume Gaussian normal, but this does not need to be the case. For our residual we specify a half Cauchy to make sure it is above zero and that lower terms are more likely than higher terms.</p>
+<p>Second, we are specifying a prior. Here we are saying we expect our regression parameter to be centered around zero but that it could vary widely from that and we wouldn’t be surprised. The prior distribution for Beta is defined by a mean of 0 and an SD of 10. But we have control if we want to make this different. Same thing with the half Cauchy for the variance. We expect that it cannot be negative, that it is likely closer to zero than not. Again, it is up to us in terms of how we want to specify it.</p>
 </div>
 <div id="mcmc-estimation" class="section level1">
 <h1>MCMC Estimation</h1>
@@ -705,10 +710,10 @@ summary(sleep_lmer)</code></pre>
 ## 9                               sd Intercept Subject                      
 ## 10   student_t(3, 0, 59)     sigma</code></pre>
 <p>*Note that there are flat priors as the default for fixed effects. This essentially disregards the prior and spits back the likelihood, equivalent to the ML estimate.</p>
-<p>The ts have three parameters: degress of freedom, mean, and then an SD.</p>
+<p>The ts have three parameters: degrees of freedom, mean, and then an SD.</p>
 </div>
-<div id="differenes-in-random-effects-with-brms" class="section level2">
-<h2>Differenes in random effects with brms</h2>
+<div id="differences-in-random-effects-with-brms" class="section level2">
+<h2>Differences in random effects with brms</h2>
 <p>We often summarize the <span class="math inline">\(\gamma_{0j}\)</span> and <span class="math inline">\(\gamma_{1j}\)</span> deviations as <span class="math inline">\(\sigma_0^2\)</span> and <span class="math inline">\(\sigma_1^2\)</span>, respectively. And importantly, these variance parameters have a covariance <span class="math inline">\(\sigma_{01}\)</span>. However, <strong>brms</strong> parameterizes these in the standard-deviation metric. That is, in <strong>brms</strong>, these are expressed as <span class="math inline">\(\sigma_0\)</span> and <span class="math inline">\(\sigma_1\)</span>. Similarly, the <span class="math inline">\(\sigma_{01}\)</span> presented in <strong>brms</strong> output is in a correlation metric, rather than a covariance.</p>
 <p><span class="math display">\[
 \begin{align*}
@@ -731,7 +736,7 @@ U \sim \text{N} (\mathbf{0}, \mathbf{\Sigma})
 \mathbf{\Omega} &amp; = \begin{bmatrix} 1 &amp; \rho \\ \rho &amp; 1 \end{bmatrix}
 \end{align*}
 \]</span></p>
-<p>Thus <span class="math inline">\(\mathbf{D}\)</span> is the diagonal matrix of standard deviations and <span class="math inline">\(\mathbf{\Omega}\)</span> is the correlation matrix. As we will see later, we will need to specify priors for each of these components, the SDs of our random effects and the correlation between them. By splitting them into these two different matrixes we can handle that easier.</p>
+<p>Thus <span class="math inline">\(\mathbf{D}\)</span> is the diagonal matrix of standard deviations and <span class="math inline">\(\mathbf{\Omega}\)</span> is the correlation matrix. As we will see later, we will need to specify priors for each of these components, the SDs of our random effects and the correlation between them. By splitting them into these two different matrices we can handle that easier.</p>
 <pre class="r"><code>plot(sleep_brm)</code></pre>
 <p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-12-1.png" width="672" /><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
 </div>
@@ -740,7 +745,7 @@ U \sim \text{N} (\mathbf{0}, \mathbf{\Sigma})
 <h1>More models</h1>
 <div id="ex-1" class="section level2">
 <h2>Ex 1</h2>
-<p>Here we’ll use a dataset from Singer &amp; Willet, chapter 3, lookng at cognitive performance across time for children who under went an intervention or not.</p>
+<p>Here we’ll use a dataset from Singer &amp; Willet, chapter 3, looking at cognitive performance across time for children who under went an intervention or not.</p>
 <pre><code>##       zeta_0     zeta_1
 ## 1 10.7586672 -3.0908765
 ## 2  3.4258938 -0.4186497
@@ -929,7 +934,7 @@ print(ex1.nc)</code></pre>
 ## X1    1 309 102.35 15.42    102  102.27 16.31  64 155    91 0.12    -0.16
 ##      se
 ## X1 0.88</code></pre>
-<p>A few take aways: 1. not much has changed. Why? Because our data overwelm the prior. Again, priors are not <em>that</em> big of a deal.
+<p>A few take aways: 1. not much has changed. Why? Because our data overwhelm the prior. Again, priors are not <em>that</em> big of a deal.
 2. We can forget about all of this if we do not use default priors. More on that later.</p>
 </div>
 </div>
@@ -1086,7 +1091,7 @@ head()</code></pre>
 </div>
 <div id="ex-2" class="section level2">
 <h2>Ex 2</h2>
-<p>Load the data, here from chapter 4 of Singer and Willet. It is a three wave longitudinal study of adolescents. We are looking at alcohol use during the previous year, meausred from 0 - 7. COA is a variable indicating the child’s parents are alocholics.</p>
+<p>Load the data, here from chapter 4 of Singer and Willet. It is a three wave longitudinal study of adolescents. We are looking at alcohol use during the previous year, measured from 0 - 7. COA is a variable indicating the child’s parents are alcoholics.</p>
 <p>Data generating model we are fitting. You can also write this with L1 and L2 convention.</p>
 <p><span class="math display">\[
 alcuse  \sim \text{Normal} (\mu_{ij}, \sigma_{ij}) \\
@@ -1347,7 +1352,7 @@ head(f)</code></pre>
 </div>
 <div id="priors-choice" class="section level3">
 <h3>Priors choice</h3>
-<p>Here we can change the prior to our regression coefficents</p>
+<p>Here we can change the prior to our regression coefficients</p>
 <pre class="r"><code>ex2.fit3.prior &lt;-
   brm(data = alcohol1_pp, 
       file = &quot;fit6&quot;,
@@ -1383,7 +1388,7 @@ head(f)</code></pre>
 </div>
 <div id="comparing-models" class="section level3">
 <h3>Comparing models</h3>
-<p>As it turns out, we Bayesians use the log-likelihood (LL), too. Recall how the numerator in the right-hand side of Bayes’ Theorem was <span class="math inline">\(p(\text{data} | \theta) p(\theta)\)</span>? That first part, <span class="math inline">\(p(\text{data} | \theta)\)</span>, is the likelihood. In words, the likelihood is the <em>probability of the data given the parameters</em>. And we take the log of the likelihood rather than the likelihood itself because it’s easier to work with statistically.</p>
+<p>As it turns out, we Bayesian use the log-likelihood (LL), too. Recall how the numerator in the right-hand side of Bayes’ Theorem was <span class="math inline">\(p(\text{data} | \theta) p(\theta)\)</span>? That first part, <span class="math inline">\(p(\text{data} | \theta)\)</span>, is the likelihood. In words, the likelihood is the <em>probability of the data given the parameters</em>. And we take the log of the likelihood rather than the likelihood itself because it’s easier to work with statistically.</p>
 <p>When you’re working with <strong>brms</strong>, you can extract the LL with the <code>log_lik()</code> function. Here’s an example with <code>fit1</code>, our unconditional means model.</p>
 <pre class="r"><code>log_lik(ex2) %&gt;%
   str()</code></pre>
@@ -1405,7 +1410,7 @@ head(f)</code></pre>
   theme(panel.grid = element_blank())</code></pre>
 <p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-61-1.png" width="576" /></p>
 <p>The AIC is frequentist and cannot handle models with priors. The BIC isis a misnomer as it is not Bayesian. The Widely Applicable Information Criterion (WAIC) is used instead.</p>
-<p>The distinguishing feature of WAIC is that it is <em>pointwise</em>. This means that uncertainty in prediction is considered case-by-case, or point-by-point, in the data. This is useful, because some observations are much harder to predict than others and may also have different uncertainty. You can think of WAIC as handling uncertainty where it actually matters: for each independent observation.</p>
+<p>The distinguishing feature of WAIC is that it is <em>point wise</em>. This means that uncertainty in prediction is considered case-by-case, or point-by-point, in the data. This is useful, because some observations are much harder to predict than others and may also have different uncertainty. You can think of WAIC as handling uncertainty where it actually matters: for each independent observation.</p>
 <pre class="r"><code>waic(ex2)</code></pre>
 <pre><code>## 
 ## Computed from 4000 by 246 log-likelihood matrix
@@ -1536,7 +1541,7 @@ head(post_23)</code></pre>
   theme(panel.grid = element_blank()) +
   facet_wrap(~key, labeller = label_parsed, scales = &quot;free_y&quot;)</code></pre>
 <p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-72-1.png" width="672" /></p>
-<p>Yet this approach neglects the <span class="math inline">\(U\)</span>s. That is, it would be the same for everyone with COA = 1. W’ve been extracting the <span class="math inline">\(U\)</span>s with <code>ranef()</code>. We also get them when we use <code>posterior_samples()</code>. Here we’ll extract both the <span class="math inline">\(\gamma\)</span>s as well as the <span class="math inline">\(U\)</span>s for <code>id == 23</code>.</p>
+<p>Yet this approach neglects the <span class="math inline">\(U\)</span>s. That is, it would be the same for everyone with COA = 1. We’ve been extracting the <span class="math inline">\(U\)</span>s with <code>ranef()</code>. We also get them when we use <code>posterior_samples()</code>. Here we’ll extract both the <span class="math inline">\(\gamma\)</span>s as well as the <span class="math inline">\(U\)</span>s for <code>id == 23</code>.</p>
 <pre class="r"><code>post_23.r &lt;-
   posterior_samples(ex2.fit3) %&gt;%
   select(starts_with(&quot;b_&quot;), contains(&quot;23&quot;))
@@ -1592,11 +1597,182 @@ glimpse(post_23.r)</code></pre>
   facet_wrap(~key, labeller = label_parsed, scales = &quot;free_y&quot;)</code></pre>
 <p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-76-1.png" width="672" /></p>
 </div>
+</div>
+<div id="tidybayes" class="section level2">
+<h2>tidybayes</h2>
+<pre class="r"><code>library(tidybayes)
+get_variables(ex1.nc)</code></pre>
+<pre><code>##   [1] &quot;b_Intercept&quot;              &quot;b_age_c&quot;                 
+##   [3] &quot;b_program&quot;                &quot;b_age_c:program&quot;         
+##   [5] &quot;sd_id__Intercept&quot;         &quot;sd_id__age_c&quot;            
+##   [7] &quot;cor_id__Intercept__age_c&quot; &quot;sigma&quot;                   
+##   [9] &quot;r_id[1,Intercept]&quot;        &quot;r_id[2,Intercept]&quot;       
+##  [11] &quot;r_id[3,Intercept]&quot;        &quot;r_id[4,Intercept]&quot;       
+##  [13] &quot;r_id[5,Intercept]&quot;        &quot;r_id[6,Intercept]&quot;       
+##  [15] &quot;r_id[7,Intercept]&quot;        &quot;r_id[8,Intercept]&quot;       
+##  [17] &quot;r_id[9,Intercept]&quot;        &quot;r_id[10,Intercept]&quot;      
+##  [19] &quot;r_id[11,Intercept]&quot;       &quot;r_id[12,Intercept]&quot;      
+##  [21] &quot;r_id[13,Intercept]&quot;       &quot;r_id[14,Intercept]&quot;      
+##  [23] &quot;r_id[15,Intercept]&quot;       &quot;r_id[16,Intercept]&quot;      
+##  [25] &quot;r_id[17,Intercept]&quot;       &quot;r_id[18,Intercept]&quot;      
+##  [27] &quot;r_id[19,Intercept]&quot;       &quot;r_id[20,Intercept]&quot;      
+##  [29] &quot;r_id[21,Intercept]&quot;       &quot;r_id[22,Intercept]&quot;      
+##  [31] &quot;r_id[23,Intercept]&quot;       &quot;r_id[24,Intercept]&quot;      
+##  [33] &quot;r_id[25,Intercept]&quot;       &quot;r_id[26,Intercept]&quot;      
+##  [35] &quot;r_id[27,Intercept]&quot;       &quot;r_id[28,Intercept]&quot;      
+##  [37] &quot;r_id[29,Intercept]&quot;       &quot;r_id[30,Intercept]&quot;      
+##  [39] &quot;r_id[31,Intercept]&quot;       &quot;r_id[32,Intercept]&quot;      
+##  [41] &quot;r_id[33,Intercept]&quot;       &quot;r_id[34,Intercept]&quot;      
+##  [43] &quot;r_id[35,Intercept]&quot;       &quot;r_id[36,Intercept]&quot;      
+##  [45] &quot;r_id[37,Intercept]&quot;       &quot;r_id[38,Intercept]&quot;      
+##  [47] &quot;r_id[39,Intercept]&quot;       &quot;r_id[40,Intercept]&quot;      
+##  [49] &quot;r_id[41,Intercept]&quot;       &quot;r_id[42,Intercept]&quot;      
+##  [51] &quot;r_id[43,Intercept]&quot;       &quot;r_id[44,Intercept]&quot;      
+##  [53] &quot;r_id[45,Intercept]&quot;       &quot;r_id[46,Intercept]&quot;      
+##  [55] &quot;r_id[47,Intercept]&quot;       &quot;r_id[48,Intercept]&quot;      
+##  [57] &quot;r_id[49,Intercept]&quot;       &quot;r_id[50,Intercept]&quot;      
+##  [59] &quot;r_id[51,Intercept]&quot;       &quot;r_id[52,Intercept]&quot;      
+##  [61] &quot;r_id[53,Intercept]&quot;       &quot;r_id[54,Intercept]&quot;      
+##  [63] &quot;r_id[68,Intercept]&quot;       &quot;r_id[70,Intercept]&quot;      
+##  [65] &quot;r_id[71,Intercept]&quot;       &quot;r_id[72,Intercept]&quot;      
+##  [67] &quot;r_id[902,Intercept]&quot;      &quot;r_id[904,Intercept]&quot;     
+##  [69] &quot;r_id[906,Intercept]&quot;      &quot;r_id[908,Intercept]&quot;     
+##  [71] &quot;r_id[955,Intercept]&quot;      &quot;r_id[956,Intercept]&quot;     
+##  [73] &quot;r_id[957,Intercept]&quot;      &quot;r_id[958,Intercept]&quot;     
+##  [75] &quot;r_id[959,Intercept]&quot;      &quot;r_id[960,Intercept]&quot;     
+##  [77] &quot;r_id[961,Intercept]&quot;      &quot;r_id[962,Intercept]&quot;     
+##  [79] &quot;r_id[963,Intercept]&quot;      &quot;r_id[964,Intercept]&quot;     
+##  [81] &quot;r_id[965,Intercept]&quot;      &quot;r_id[966,Intercept]&quot;     
+##  [83] &quot;r_id[967,Intercept]&quot;      &quot;r_id[968,Intercept]&quot;     
+##  [85] &quot;r_id[969,Intercept]&quot;      &quot;r_id[970,Intercept]&quot;     
+##  [87] &quot;r_id[971,Intercept]&quot;      &quot;r_id[972,Intercept]&quot;     
+##  [89] &quot;r_id[973,Intercept]&quot;      &quot;r_id[974,Intercept]&quot;     
+##  [91] &quot;r_id[975,Intercept]&quot;      &quot;r_id[976,Intercept]&quot;     
+##  [93] &quot;r_id[977,Intercept]&quot;      &quot;r_id[978,Intercept]&quot;     
+##  [95] &quot;r_id[979,Intercept]&quot;      &quot;r_id[980,Intercept]&quot;     
+##  [97] &quot;r_id[981,Intercept]&quot;      &quot;r_id[982,Intercept]&quot;     
+##  [99] &quot;r_id[983,Intercept]&quot;      &quot;r_id[984,Intercept]&quot;     
+## [101] &quot;r_id[985,Intercept]&quot;      &quot;r_id[986,Intercept]&quot;     
+## [103] &quot;r_id[987,Intercept]&quot;      &quot;r_id[988,Intercept]&quot;     
+## [105] &quot;r_id[989,Intercept]&quot;      &quot;r_id[990,Intercept]&quot;     
+## [107] &quot;r_id[991,Intercept]&quot;      &quot;r_id[992,Intercept]&quot;     
+## [109] &quot;r_id[993,Intercept]&quot;      &quot;r_id[994,Intercept]&quot;     
+## [111] &quot;r_id[995,Intercept]&quot;      &quot;r_id[1,age_c]&quot;           
+## [113] &quot;r_id[2,age_c]&quot;            &quot;r_id[3,age_c]&quot;           
+## [115] &quot;r_id[4,age_c]&quot;            &quot;r_id[5,age_c]&quot;           
+## [117] &quot;r_id[6,age_c]&quot;            &quot;r_id[7,age_c]&quot;           
+## [119] &quot;r_id[8,age_c]&quot;            &quot;r_id[9,age_c]&quot;           
+## [121] &quot;r_id[10,age_c]&quot;           &quot;r_id[11,age_c]&quot;          
+## [123] &quot;r_id[12,age_c]&quot;           &quot;r_id[13,age_c]&quot;          
+## [125] &quot;r_id[14,age_c]&quot;           &quot;r_id[15,age_c]&quot;          
+## [127] &quot;r_id[16,age_c]&quot;           &quot;r_id[17,age_c]&quot;          
+## [129] &quot;r_id[18,age_c]&quot;           &quot;r_id[19,age_c]&quot;          
+## [131] &quot;r_id[20,age_c]&quot;           &quot;r_id[21,age_c]&quot;          
+## [133] &quot;r_id[22,age_c]&quot;           &quot;r_id[23,age_c]&quot;          
+## [135] &quot;r_id[24,age_c]&quot;           &quot;r_id[25,age_c]&quot;          
+## [137] &quot;r_id[26,age_c]&quot;           &quot;r_id[27,age_c]&quot;          
+## [139] &quot;r_id[28,age_c]&quot;           &quot;r_id[29,age_c]&quot;          
+## [141] &quot;r_id[30,age_c]&quot;           &quot;r_id[31,age_c]&quot;          
+## [143] &quot;r_id[32,age_c]&quot;           &quot;r_id[33,age_c]&quot;          
+## [145] &quot;r_id[34,age_c]&quot;           &quot;r_id[35,age_c]&quot;          
+## [147] &quot;r_id[36,age_c]&quot;           &quot;r_id[37,age_c]&quot;          
+## [149] &quot;r_id[38,age_c]&quot;           &quot;r_id[39,age_c]&quot;          
+## [151] &quot;r_id[40,age_c]&quot;           &quot;r_id[41,age_c]&quot;          
+## [153] &quot;r_id[42,age_c]&quot;           &quot;r_id[43,age_c]&quot;          
+## [155] &quot;r_id[44,age_c]&quot;           &quot;r_id[45,age_c]&quot;          
+## [157] &quot;r_id[46,age_c]&quot;           &quot;r_id[47,age_c]&quot;          
+## [159] &quot;r_id[48,age_c]&quot;           &quot;r_id[49,age_c]&quot;          
+## [161] &quot;r_id[50,age_c]&quot;           &quot;r_id[51,age_c]&quot;          
+## [163] &quot;r_id[52,age_c]&quot;           &quot;r_id[53,age_c]&quot;          
+## [165] &quot;r_id[54,age_c]&quot;           &quot;r_id[68,age_c]&quot;          
+## [167] &quot;r_id[70,age_c]&quot;           &quot;r_id[71,age_c]&quot;          
+## [169] &quot;r_id[72,age_c]&quot;           &quot;r_id[902,age_c]&quot;         
+## [171] &quot;r_id[904,age_c]&quot;          &quot;r_id[906,age_c]&quot;         
+## [173] &quot;r_id[908,age_c]&quot;          &quot;r_id[955,age_c]&quot;         
+## [175] &quot;r_id[956,age_c]&quot;          &quot;r_id[957,age_c]&quot;         
+## [177] &quot;r_id[958,age_c]&quot;          &quot;r_id[959,age_c]&quot;         
+## [179] &quot;r_id[960,age_c]&quot;          &quot;r_id[961,age_c]&quot;         
+## [181] &quot;r_id[962,age_c]&quot;          &quot;r_id[963,age_c]&quot;         
+## [183] &quot;r_id[964,age_c]&quot;          &quot;r_id[965,age_c]&quot;         
+## [185] &quot;r_id[966,age_c]&quot;          &quot;r_id[967,age_c]&quot;         
+## [187] &quot;r_id[968,age_c]&quot;          &quot;r_id[969,age_c]&quot;         
+## [189] &quot;r_id[970,age_c]&quot;          &quot;r_id[971,age_c]&quot;         
+## [191] &quot;r_id[972,age_c]&quot;          &quot;r_id[973,age_c]&quot;         
+## [193] &quot;r_id[974,age_c]&quot;          &quot;r_id[975,age_c]&quot;         
+## [195] &quot;r_id[976,age_c]&quot;          &quot;r_id[977,age_c]&quot;         
+## [197] &quot;r_id[978,age_c]&quot;          &quot;r_id[979,age_c]&quot;         
+## [199] &quot;r_id[980,age_c]&quot;          &quot;r_id[981,age_c]&quot;         
+## [201] &quot;r_id[982,age_c]&quot;          &quot;r_id[983,age_c]&quot;         
+## [203] &quot;r_id[984,age_c]&quot;          &quot;r_id[985,age_c]&quot;         
+## [205] &quot;r_id[986,age_c]&quot;          &quot;r_id[987,age_c]&quot;         
+## [207] &quot;r_id[988,age_c]&quot;          &quot;r_id[989,age_c]&quot;         
+## [209] &quot;r_id[990,age_c]&quot;          &quot;r_id[991,age_c]&quot;         
+## [211] &quot;r_id[992,age_c]&quot;          &quot;r_id[993,age_c]&quot;         
+## [213] &quot;r_id[994,age_c]&quot;          &quot;r_id[995,age_c]&quot;         
+## [215] &quot;lp__&quot;                     &quot;accept_stat__&quot;           
+## [217] &quot;stepsize__&quot;               &quot;treedepth__&quot;             
+## [219] &quot;n_leapfrog__&quot;             &quot;divergent__&quot;             
+## [221] &quot;energy__&quot;</code></pre>
+<pre class="r"><code>ex1.nc %&gt;% 
+spread_draws(`b_age_c`, r_id[id,])</code></pre>
+<pre><code>## # A tibble: 824,000 x 6
+## # Groups:   id [103]
+##    .chain .iteration .draw b_age_c    id   r_id
+##     &lt;int&gt;      &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;
+##  1      1          1     1   -21.4     1   5.31
+##  2      1          1     1   -21.4     2   1.72
+##  3      1          1     1   -21.4     3  -1.54
+##  4      1          1     1   -21.4     4  14.0 
+##  5      1          1     1   -21.4     5   4.89
+##  6      1          1     1   -21.4     6   7.20
+##  7      1          1     1   -21.4     7   1.42
+##  8      1          1     1   -21.4     8 -12.2 
+##  9      1          1     1   -21.4     9  12.0 
+## 10      1          1     1   -21.4    10  -5.30
+## # … with 823,990 more rows</code></pre>
+<pre class="r"><code>ex1.nc %&gt;% 
+spread_draws(`b_age_c`, r_id[id,]) %&gt;% 
+   median_qi(slope_mean = b_age_c + r_id) </code></pre>
+<pre><code>## # A tibble: 103 x 7
+##       id slope_mean .lower .upper .width .point .interval
+##    &lt;int&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;    
+##  1     1      -18.8  -27.7  -7.07   0.95 median qi       
+##  2     2      -20.2  -30.4 -10.0    0.95 median qi       
+##  3     3      -21.6  -32.5 -12.7    0.95 median qi       
+##  4     4      -18.9  -34.1  -2.63   0.95 median qi       
+##  5     5      -21.1  -33.2 -10.5    0.95 median qi       
+##  6     6      -22.4  -35.0 -12.4    0.95 median qi       
+##  7     7      -20.3  -31.4  -8.73   0.95 median qi       
+##  8     8      -27.2  -45.8 -11.1    0.95 median qi       
+##  9     9      -17.4  -27.7  -3.78   0.95 median qi       
+## 10    10      -25.0  -39.7 -13.5    0.95 median qi       
+## # … with 93 more rows</code></pre>
+<pre class="r"><code>ex1.nc %&gt;% 
+spread_draws(`b_age_c`, r_id[id,]) %&gt;% 
+   median_qi(slope_mean = b_age_c + r_id) %&gt;% 
+    ggplot(aes(y = as.factor(id), x = slope_mean)) +
+    geom_pointintervalh() </code></pre>
+<p><img src="/Workshops/2019-09-26-workshop-5_files/figure-html/unnamed-chunk-80-1.png" width="672" /></p>
+</div>
+<div id="bayesplot" class="section level2">
+<h2>Bayesplot</h2>
+<pre class="r"><code>library(bayesplot)</code></pre>
+<pre><code>## This is bayesplot version 1.7.0</code></pre>
+<pre><code>## - Online documentation and vignettes at mc-stan.org/bayesplot</code></pre>
+<pre><code>## - bayesplot theme set to bayesplot::theme_default()</code></pre>
+<pre><code>##    * Does _not_ affect other ggplot2 plots</code></pre>
+<pre><code>##    * See ?bayesplot_theme_set for details on theme setting</code></pre>
+<div id="level-1-predictors" class="section level3">
+<h3>Level 1 predictors</h3>
+</div>
 <div id="variance-explained" class="section level3">
 <h3>Variance explained</h3>
 </div>
 <div id="hypothesis-function" class="section level3">
 <h3>Hypothesis function</h3>
+</div>
+<div id="posterior-predictive-checks" class="section level3">
+<h3>Posterior-predictive checks</h3>
 </div>
 <div id="missing-data" class="section level3">
 <h3>Missing data</h3>
