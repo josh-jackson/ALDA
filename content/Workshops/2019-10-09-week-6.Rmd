@@ -1,5 +1,5 @@
 ---
-title: 'Week #7'
+title: 'Week #7 & Week #8'
 author: ''
 date: '2019-10-09'
 slug: week-6
@@ -307,6 +307,10 @@ There are a number of "robust" estimates that are uniformly better. MLR is my pe
 To confuse things, there are other methods to get robust standard errors. When data are missing one can request standard errors via a number of different methods. To do so one needs to first specify that data are missing via missing = "ML" in the fitting function. Then use the se function to specify what you want. 
 
 Bootstrapped estimates are also available with se = "bootstrap"
+
+
+
+
 
 
 
