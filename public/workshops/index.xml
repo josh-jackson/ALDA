@@ -55,6 +55,10 @@
 ##   - To use the old Stan approach, set target = &amp;#39;stanclassic&amp;#39;.
 ##   - Priors on variance parameters now default to gamma(1,.5) on the SD.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+&lt;div id=&#34;keep-it-wide&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;keep it wide&lt;/h1&gt;
+&lt;p&gt;Most SEM programs need wide data as opposed to the long data format we have been using for MLM.&lt;/p&gt;
+&lt;/div&gt;
 &lt;div id=&#34;lavaan-language&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;lavaan language&lt;/h1&gt;
 &lt;p&gt;All you need to know (almost) is here:

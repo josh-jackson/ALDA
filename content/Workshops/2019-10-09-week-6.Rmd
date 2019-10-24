@@ -46,6 +46,10 @@ library(blavaan)
 ```
 
 
+# keep it wide
+
+Most SEM programs need wide data as opposed to the long data format we have been using for MLM. 
+
 # lavaan language
 
 All you need to know (almost) is here: 

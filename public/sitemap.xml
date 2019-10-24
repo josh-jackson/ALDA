@@ -4,14 +4,19 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2019-10-09T13:34:07-05:00</lastmod>
+    <lastmod>2019-10-24T13:41:23-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/lectures/</loc>
-    <lastmod>2019-10-09T11:11:15-05:00</lastmod>
+    <lastmod>2019-10-24T13:41:23-05:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/lectures/week-9/</loc>
+    <lastmod>2019-10-24T13:41:23-05:00</lastmod>
   </url>
   
   <url>
