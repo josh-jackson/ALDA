@@ -19,6 +19,47 @@
       <guid>/lectures/week-9/</guid>
       <description>
 
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#types-of-longitudinal-models-other-than-growth-models&#34;&gt;Types of longitudinal models other than growth models&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#longitudinal-cfa&#34;&gt;1. Longitudinal CFA&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#measurement-invariance-mi&#34;&gt;Measurement Invariance (MI)&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#types-of-mi&#34;&gt;types of MI&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#testing-mi&#34;&gt;Testing MI&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#comparing-the-models&#34;&gt;Comparing the models&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#panelcross-laglongitudinal-path-modelmediation&#34;&gt;2. Panel/cross lag/longitudinal path model/mediation&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#longitudinal-cross-lagged-panel-model-clpm&#34;&gt;Longitudinal Cross lagged panel model (clpm)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#longitudinal-mediation-model&#34;&gt;Longitudinal mediation model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#including-covariates&#34;&gt;Including covariates&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#growth-models&#34;&gt;3. Growth models&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#coding-time&#34;&gt;Coding time&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#how-do-we-do-that-in-lavaan&#34;&gt;How do we do that in lavaan?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#compare-with-mlm&#34;&gt;Compare with MLM&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#we-can-rescale-our-time-variable-to-be-whatever-we-want&#34;&gt;we can rescale our time variable to be whatever we want&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#interpretation-of-variances&#34;&gt;Interpretation of variances&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#constraining-slope-to-be-fixed-only&#34;&gt;constraining slope to be fixed only&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#introducing-covariatespredictors&#34;&gt;introducing covariates/predictors&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#centered-predictors&#34;&gt;centered predictors&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#introducing-time-varying-covariates&#34;&gt;introducing time varying covariates&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#latent-basis-model&#34;&gt;latent basis model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#quadratic-model&#34;&gt;quadratic model&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#b-second-order-growth-model&#34;&gt;3.b Second order growth model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#c-multivariate-models&#34;&gt;3.c Multivariate models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#d-factor-of-curves-model&#34;&gt;3.d Factor of curves model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#multiple-groups&#34;&gt;4. Multiple groups&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#measurement-invariance-revisited&#34;&gt;Measurement invariance revisited&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#when-to-use&#34;&gt;When to use&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#two-wave-assessments&#34;&gt;5. Two wave assessments&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#planned-missing-data&#34;&gt;Planned missing data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#missing-data&#34;&gt;Missing data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#power&#34;&gt;Power&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
 
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;types-of-longitudinal-models-other-than-growth-models&#34; class=&#34;section level1&#34;&gt;
