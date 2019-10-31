@@ -6,7 +6,7 @@ slug: week-9
 categories: []
 tags: []
 subtitle: ''
-summary: ''
+summary: 'growth models'
 authors: []
 lastmod: '2019-10-24T13:41:23-05:00'
 featured: no
@@ -726,7 +726,7 @@ summary(fit.4)
 ```
 
 
-What is different what is the same? Notice that the main difference is the intercepts ie fixed effects. 
+What is different what is the same? Notice that the main difference is the intercepts ie fixed effects.  
 
 
 
@@ -772,12 +772,24 @@ summary(fit.6)
 
 Does not change the fit of the model nor the implied means, but it can change your parameters by changing the time scaling. 
 
+### quadratic model
+
+```{r, eval = FALSE}
+model.6 <- '  i =~ 1*alcuse_14 + 1*alcuse_15 + 1*alcuse_16 
+            s =~ 0*alcuse_14 + 1*alcuse_15 + 2*alcuse_16
+            q =~ 0*alcuse_14 + 1*alcuse_15 + 4*alcuse_16  
+'
+
+fit.6 <- growth(model.6, data = alcohol.wide)
+summary(fit.6)
+```
+
 
 
 
 ## 3.b Second order growth model
 
-Repeated measures are latent. Why would we want to do this? 
+Repeated measures are latent. Why would we want to do this? At least two reasons. 1. We can take advantage of the benefits of latent variables ie no measurement error. 2. we can impose constraints for MI across time. 
 
 ```{r}
 sec.order <- '
@@ -829,8 +841,14 @@ summary(fit.sec.order, fit.measures=TRUE)
 
 ```
 
+```{r}
+semPaths(fit.sec.order)
+```
+
 
 ## 3.c  Multivariate models
+
+For all of the models this semester we have focused only on a single outcome. 
 
 ```{r}
 mv.sec.order <- '
@@ -914,14 +932,54 @@ summary(mv.secondorder, fit.measures=TRUE)
 ```
 
 
+```{r}
+semPaths(mv.secondorder)
+```
 
-##  Multiple groups
+
+## 3.d Factor of curves model
+This type of model takes multiple slope terms and asks is there a latent variable associated with the change?
+
+
+```{r, eval = FALSE}
+
+i.a =~ 1*Pos1 + 1*Pos2 + 1*Pos3 
+s.a =~ 0*Pos1 + 1*Pos2 + 2*Pos3
+
+i.b =~ 1*Neg1 + 1*Neg2 + 1*Neg3 
+s.b =~ 0*Neg1 + 1*Neg2 + 2*Neg3
+
+i.c =~ 1*hap1 + 1*hap2 + 1*hap3 
+s.c =~ 0*hap1 + 1*hap2 + 2*hap3
+
+i.d =~ 1*Arou1 + 1*Arou2 + 1*Arou3 
+s.d =~ 0*Arou1 + 1*Arou2 + 2*Arou3
+
+#Note that there are no constraints on these
+
+Intercept =~ i.a + i.b + i.c + i.d 
+Slope =~ s.a + s.b + s.c + s.d 
+
+'
+
+
+
+
+```
+
+
+
+##  4. Multiple groups
 
 
 ```{r}
 
 group <- read_csv("~/Box/5165 Applied Longitudinal Data Analysis/Longitudinal/group.csv")
+head(group)
+```
 
+
+```{r}
 group1 <- 'Positive =~ P1 + P2 + P3
 Negative =~ N1 + N2 + N3 
 
@@ -935,8 +993,13 @@ fit.group.1 <- cfa(group1, data=group, std.lv=TRUE, group = "Grade")
 
 summary(fit.group.1, standardized=TRUE, fit.measures=TRUE)
 
+```
+
+
+```{r}
 semPaths(fit.group.1,'est', panelGroups=TRUE)
 ```
+
 
 Need to put in labels to fix the different parameters across models
 
@@ -985,7 +1048,7 @@ summary(fit.group.3, standardized=TRUE, fit.measures=TRUE)
 
 What is nice is that the output will label what parameters are constrained. Go ahead and look at the lavaan tutorial for more (residual variances, latent means, etc)
 
-### measurement invariance revisited
+### Measurement invariance revisited
 
 Can you see how MI tests are just a special type of multiple group analysis? We could set up our data to have variables assessed at two different time points with the time demarcated by a group variable. The exact same findings from MI would be found with multiple group. It all depends on how you structure your data.  
 
@@ -994,8 +1057,9 @@ Can you see how MI tests are just a special type of multiple group analysis? We 
 For Longitudinal models you are faced with a choice: do you want to use group status to predict your slope, for example, or do you want to use multiple groups. The short answer is that it does not matter! The semi-longer answer is that including group as a predictor is simple while multiple groups analyses are more complex but also more flexible. Using one or the other depends on what your theory about where the group differences occur. If they occur in only the regression relationship indicating group mean differences then go with the easy option. If you think that the measurement model also may differ for your groups you have a more nuanced theory that necessitates multiple groups.
 
 
-```{r, eval=FALSE}
-Demo.growth$group <- cut(Demo.growth$x1.c, breaks=c(-Inf, 0, Inf), labels=c("low", "high"))
+```{r}
+Demo.growth$group <- as.numeric(cut_number(Demo.growth$x1,2))
+
 
 model.7 <- '
   # intercept and slope with fixed coefficients
@@ -1013,7 +1077,7 @@ summary(fit.7)
 
 
 
-```{r, eval = FALSE}
+```{r}
 
 model.8 <- '
   # intercept and slope with fixed coefficients
@@ -1027,9 +1091,10 @@ summary(fit.8)
 ```
 
 
-Notice how the slope and the intercept are larger for the high group, suggesting a difference between groups. 
+Notice how the slope and the intercept differ between groups. Is this meaningful? To test we will have to do the multiple groups comparison. But before we do that, take a look at the relationship between the intercept and slope for the two groups and the regression of group onto slope and intercept. 
 
-```{r, eval = FALSE}
+
+```{r}
 model.9 <- '
   # intercept and slope with fixed coefficients
     i =~ 1*t1 + 1*t2 + 1*t3 + 1*t4
@@ -1044,14 +1109,16 @@ summary(fit.9)
 
 Does constraining the latent means lead to a worse fit? 
 
-```{r, eval = FALSE}
+```{r}
 anova(fit.8, fit.9)
 ```
 
+Yes it does! Buut, how to interpret this? It is asking whether the model where we constained both the intercept and the mean differ from one that we don't. What if we want to only look at the effect of slope? 
 
-testing just the slope difference without constraining anything else. 
 
-```{r, eval = FALSE}
+Testing just the slope difference without constraining anything else. 
+
+```{r}
 model.10 <- '
   # intercept and slope with fixed coefficients
     i =~ 1*t1 + 1*t2 + 1*t3 + 1*t4
@@ -1065,10 +1132,38 @@ summary(fit.10)
 
 ```
 
-```{r, eval = FALSE}
+```{r}
 anova(fit.8, fit.10)
 ```
 
+
+What if you wanted to test differences in variance? 
+
+
+
+## 5. Two wave assessments
+
+There are a lot of pre-post designs. In fact, the recent nobel prize winners have a famous paper looking at difference in difference designs, basically looking at two group pre-post tests. Collecting longitudinal data is hard, so it makes sense that a lot of this type of data will be laying around. How do we analyze it? The first thing to notice is that we jumped right into MLM this semester, bypassing simple discussions. As a result, we can only really look at change with 3 or more waves. 
+
+(As an aside, I do see people use two wave data with MLMs. It is often done incorrectly/problematically by using wave 1 as a level 2 covariate as opposed to using time as a level 1 predictor. This approach is related to residualized change, which we will discuss below).
+
+How to measure change, or should we? https://www.gwern.net/docs/dnb/1970-cronbach.pdf This paper lays out some of the problems that occur with standard treatments of two wave assessments. 
+
+The most basic two wave form of change is a difference score. However, many have said these are problematic. 
+The issues are: 
+1. hard to seperate measurement error from true change
+2. unreliable estimate of change
+3. initial level (or last level) may be driving change. How to account for? 
+
+The second alternative is a standard residualized gain/change score where you regress time 2 onto time 1. This overcomes some of the issues raised about because we are being conservative about the error by "regressing to the mean" such that people with larger changes than average will have their change scores "shrunken" to the average, must like we do with MLMs. This also helps with accounting for starting values that may be responsible for the changes, as this is literally controlling for the initial level. 
+
+The issues with this however are: 
+1. it isn't true change, as you are implying people change similarly
+2. it does not account for unreliability of change in a principled way
+3. error, which should be random, is considered change and it is likely associated with T1. 
+
+
+The way to address most of these concerns is to: 1. conceptualize and use change scores and 2. do so by measureing change latently, and thus error free. 3. give we are working with SEM (due to working with latent variables) we can now, statistically, seperate initial levels from change. 
 
 
 

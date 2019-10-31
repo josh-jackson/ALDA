@@ -24,14 +24,7 @@
   
     
   
-  <meta name="description" content="knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) Types of longitudinal models other than growth models With SEM there are many different types of longitudinal models you can run. The basic ones are:
-Longitudinal CFA
- Panel/cross lag/longitudinal path model/mediation
- Growth models
- Latent change/differene score models
- Mixture or class based longitudinal models
-  Within these you can do multiple groups or change how the repeated measures are assessed.
-library(lavaan) ## This is lavaan 0.">
+  <meta name="description" content="growth models">
 
   
   <link rel="alternate" hreflang="en-us" href="/lectures/week-9/">
@@ -117,14 +110,7 @@ library(lavaan) ## This is lavaan 0.">
   <meta property="og:site_name" content="Applied Longitudinal Data Analysis">
   <meta property="og:url" content="/lectures/week-9/">
   <meta property="og:title" content="Week 9  | Applied Longitudinal Data Analysis">
-  <meta property="og:description" content="knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) Types of longitudinal models other than growth models With SEM there are many different types of longitudinal models you can run. The basic ones are:
-Longitudinal CFA
- Panel/cross lag/longitudinal path model/mediation
- Growth models
- Latent change/differene score models
- Mixture or class based longitudinal models
-  Within these you can do multiple groups or change how the repeated measures are assessed.
-library(lavaan) ## This is lavaan 0."><meta property="og:image" content="/img/icon-192.png">
+  <meta property="og:description" content="growth models"><meta property="og:image" content="/img/icon-192.png">
   <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
   
     
@@ -2784,10 +2770,20 @@ fit.6 &lt;- growth(model.6, data = alcohol.wide)</code></pre>
 ##     s                 0.945    0.361    2.618    0.009</code></pre>
 <p>Does not change the fit of the model nor the implied means, but it can change your parameters by changing the time scaling.</p>
 </div>
+<div id="quadratic-model" class="section level3">
+<h3>quadratic model</h3>
+<pre class="r"><code>model.6 &lt;- &#39;  i =~ 1*alcuse_14 + 1*alcuse_15 + 1*alcuse_16 
+            s =~ 0*alcuse_14 + 1*alcuse_15 + 2*alcuse_16
+            q =~ 0*alcuse_14 + 1*alcuse_15 + 4*alcuse_16  
+&#39;
+
+fit.6 &lt;- growth(model.6, data = alcohol.wide)
+summary(fit.6)</code></pre>
+</div>
 </div>
 <div id="b-second-order-growth-model" class="section level2">
 <h2>3.b Second order growth model</h2>
-<p>Repeated measures are latent. Why would we want to do this?</p>
+<p>Repeated measures are latent. Why would we want to do this? At least two reasons. 1. We can take advantage of the benefits of latent variables ie no measurement error. 2. we can impose constraints for MI across time.</p>
 <pre class="r"><code>sec.order &lt;- &#39;
 ## define latent variables
 Pos1 =~ NA*PosAFF11 + L1*PosAFF11 + L2*PosAFF21 + L3*PosAFF31
@@ -2967,9 +2963,12 @@ summary(fit.sec.order, fit.measures=TRUE)</code></pre>
 ##                                                |Slack|
 ##     L1 - (3-L2-L3)                               0.000
 ##     t1 - (0-t2-t3)                               0.000</code></pre>
+<pre class="r"><code>semPaths(fit.sec.order)</code></pre>
+<p><img src="/Lectures/2019-10-24-week-9_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
 </div>
 <div id="c-multivariate-models" class="section level2">
 <h2>3.c Multivariate models</h2>
+<p>For all of the models this semester we have focused only on a single outcome.</p>
 <pre class="r"><code>mv.sec.order &lt;- &#39;
 ## define latent variables
 Pos1 =~ NA*PosAFF11 + L1*PosAFF11 + L2*PosAFF21 + L3*PosAFF31
@@ -3255,9 +3254,33 @@ mv.secondorder &lt;- growth(mv.sec.order, data=long, missing = &quot;ML&quot;)</
 ##     L4 - (3-L5-L6)                               0.000
 ##     t1 - (0-t2-t3)                               0.000
 ##     tt1 - (0-tt2-tt3)                            0.000</code></pre>
+<pre class="r"><code>semPaths(mv.secondorder)</code></pre>
+<p><img src="/Lectures/2019-10-24-week-9_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+</div>
+<div id="d-factor-of-curves-model" class="section level2">
+<h2>3.d Factor of curves model</h2>
+<p>This type of model takes multiple slope terms and asks is there a latent variable associated with the change?</p>
+<pre class="r"><code>i.a =~ 1*Pos1 + 1*Pos2 + 1*Pos3 
+s.a =~ 0*Pos1 + 1*Pos2 + 2*Pos3
+
+i.b =~ 1*Neg1 + 1*Neg2 + 1*Neg3 
+s.b =~ 0*Neg1 + 1*Neg2 + 2*Neg3
+
+i.c =~ 1*hap1 + 1*hap2 + 1*hap3 
+s.c =~ 0*hap1 + 1*hap2 + 2*hap3
+
+i.d =~ 1*Arou1 + 1*Arou2 + 1*Arou3 
+s.d =~ 0*Arou1 + 1*Arou2 + 2*Arou3
+
+#Note that there are no constraints on these
+
+Intercept =~ i.a + i.b + i.c + i.d 
+Slope =~ s.a + s.b + s.c + s.d 
+
+&#39;</code></pre>
 </div>
 <div id="multiple-groups" class="section level2">
-<h2>Multiple groups</h2>
+<h2>4. Multiple groups</h2>
 <pre class="r"><code>group &lt;- read_csv(&quot;~/Box/5165 Applied Longitudinal Data Analysis/Longitudinal/group.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
@@ -3269,6 +3292,16 @@ mv.secondorder &lt;- growth(mv.sec.order, data=long, missing = &quot;ML&quot;)</
 ##   N3 = col_double(),
 ##   Grade = col_character()
 ## )</code></pre>
+<pre class="r"><code>head(group)</code></pre>
+<pre><code>## # A tibble: 6 x 7
+##      P1    P2    P3    N1    N2    N3 Grade
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
+## 1  2.75  3.42  3.27 1.71  1.45  1.76  7th  
+## 2  4.18  3.49  3.36 3.43  2.70  2.48  7th  
+## 3  2.17  2.69  2.90 1.06  0.726 1.15  7th  
+## 4  2.68  2.88  3.28 0.846 1.22  0.293 7th  
+## 5  1.41  1.83  1.64 2.18  2.73  2.47  7th  
+## 6  3.96  4.03  4.21 1.80  1.72  1.71  7th</code></pre>
 <pre class="r"><code>group1 &lt;- &#39;Positive =~ P1 + P2 + P3
 Negative =~ N1 + N2 + N3 
 
@@ -3419,7 +3452,7 @@ summary(fit.group.1, standardized=TRUE, fit.measures=TRUE)</code></pre>
 ##    .N2                0.065    0.008    8.293    0.000    0.065    0.180
 ##    .N3                0.057    0.008    7.233    0.000    0.057    0.152</code></pre>
 <pre class="r"><code>semPaths(fit.group.1,&#39;est&#39;, panelGroups=TRUE)</code></pre>
-<p><img src="/Lectures/2019-10-24-week-9_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<p><img src="/Lectures/2019-10-24-week-9_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
 <p>Need to put in labels to fix the different parameters across models</p>
 <pre class="r"><code>group2 &lt;- &#39;Positive =~ c(L1,L1)*P1 + c(L2,L2)*P2 + c(L3,L3)*P3
 Negative =~ N1 + N2 + N3 
@@ -3733,13 +3766,14 @@ summary(fit.group.3, standardized=TRUE, fit.measures=TRUE)</code></pre>
 ##    .N3                0.058    0.008    7.722    0.000    0.058    0.147</code></pre>
 <p>What is nice is that the output will label what parameters are constrained. Go ahead and look at the lavaan tutorial for more (residual variances, latent means, etc)</p>
 <div id="measurement-invariance-revisited" class="section level3">
-<h3>measurement invariance revisited</h3>
+<h3>Measurement invariance revisited</h3>
 <p>Can you see how MI tests are just a special type of multiple group analysis? We could set up our data to have variables assessed at two different time points with the time demarcated by a group variable. The exact same findings from MI would be found with multiple group. It all depends on how you structure your data.</p>
 </div>
 <div id="when-to-use" class="section level3">
 <h3>When to use</h3>
 <p>For Longitudinal models you are faced with a choice: do you want to use group status to predict your slope, for example, or do you want to use multiple groups. The short answer is that it does not matter! The semi-longer answer is that including group as a predictor is simple while multiple groups analyses are more complex but also more flexible. Using one or the other depends on what your theory about where the group differences occur. If they occur in only the regression relationship indicating group mean differences then go with the easy option. If you think that the measurement model also may differ for your groups you have a more nuanced theory that necessitates multiple groups.</p>
-<pre class="r"><code>Demo.growth$group &lt;- cut(Demo.growth$x1.c, breaks=c(-Inf, 0, Inf), labels=c(&quot;low&quot;, &quot;high&quot;))
+<pre class="r"><code>Demo.growth$group &lt;- as.numeric(cut_number(Demo.growth$x1,2))
+
 
 model.7 &lt;- &#39;
   # intercept and slope with fixed coefficients
@@ -3751,6 +3785,66 @@ model.7 &lt;- &#39;
 &#39;
 fit.7 &lt;- growth(model.7, data = Demo.growth)
 summary(fit.7)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 36 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         11
+## 
+##   Number of observations                           400
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       8.760
+##   Degrees of freedom                                 7
+##   P-value (Chi-square)                           0.270
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i =~                                                
+##     t1                1.000                           
+##     t2                1.000                           
+##     t3                1.000                           
+##     t4                1.000                           
+##   s =~                                                
+##     t1                0.000                           
+##     t2                1.000                           
+##     t3                2.000                           
+##     t4                3.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i ~                                                 
+##     group             1.148    0.142    8.060    0.000
+##   s ~                                                 
+##     group             0.563    0.079    7.150    0.000
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .i ~~                                                
+##    .s                 0.456    0.062    7.413    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.000                           
+##    .t2                0.000                           
+##    .t3                0.000                           
+##    .t4                0.000                           
+##    .i                -1.107    0.225   -4.917    0.000
+##    .s                 0.162    0.124    1.303    0.193
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.593    0.085    6.951    0.000
+##    .t2                0.679    0.061   11.103    0.000
+##    .t3                0.633    0.072    8.814    0.000
+##    .t4                0.510    0.123    4.146    0.000
+##    .i                 1.603    0.150   10.675    0.000
+##    .s                 0.508    0.046   10.945    0.000</code></pre>
 <pre class="r"><code>model.8 &lt;- &#39;
   # intercept and slope with fixed coefficients
     i =~ 1*t1 + 1*t2 + 1*t3 + 1*t4
@@ -3759,7 +3853,109 @@ summary(fit.7)</code></pre>
 &#39;
 fit.8 &lt;- growth(model.8, data = Demo.growth, group = &quot;group&quot;)
 summary(fit.8)</code></pre>
-<p>Notice how the slope and the intercept are larger for the high group, suggesting a difference between groups.</p>
+<pre><code>## lavaan 0.6-4 ended normally after 42 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         18
+## 
+##   Number of observations per group         
+##   1                                                200
+##   2                                                200
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      10.553
+##   Degrees of freedom                                10
+##   P-value (Chi-square)                           0.393
+## 
+## Chi-square for each group:
+## 
+##   1                                              7.914
+##   2                                              2.639
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## 
+## Group 1 [1]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i =~                                                
+##     t1                1.000                           
+##     t2                1.000                           
+##     t3                1.000                           
+##     t4                1.000                           
+##   s =~                                                
+##     t1                0.000                           
+##     t2                1.000                           
+##     t3                2.000                           
+##     t4                3.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i ~~                                                
+##     s                 0.467    0.092    5.078    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.000                           
+##    .t2                0.000                           
+##    .t3                0.000                           
+##    .t4                0.000                           
+##     i                 0.038    0.103    0.371    0.711
+##     s                 0.726    0.058   12.599    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.516    0.117    4.423    0.000
+##    .t2                0.678    0.086    7.849    0.000
+##    .t3                0.635    0.102    6.218    0.000
+##    .t4                0.499    0.177    2.822    0.005
+##     i                 1.753    0.223    7.853    0.000
+##     s                 0.560    0.070    8.032    0.000
+## 
+## 
+## Group 2 [2]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i =~                                                
+##     t1                1.000                           
+##     t2                1.000                           
+##     t3                1.000                           
+##     t4                1.000                           
+##   s =~                                                
+##     t1                0.000                           
+##     t2                1.000                           
+##     t3                2.000                           
+##     t4                3.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i ~~                                                
+##     s                 0.448    0.082    5.459    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.000                           
+##    .t2                0.000                           
+##    .t3                0.000                           
+##    .t4                0.000                           
+##     i                 1.190    0.098   12.148    0.000
+##     s                 1.287    0.054   24.037    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.675    0.125    5.413    0.000
+##    .t2                0.676    0.086    7.853    0.000
+##    .t3                0.628    0.101    6.239    0.000
+##    .t4                0.530    0.171    3.109    0.002
+##     i                 1.453    0.202    7.207    0.000
+##     s                 0.453    0.061    7.381    0.000</code></pre>
+<p>Notice how the slope and the intercept differ between groups. Is this meaningful? To test we will have to do the multiple groups comparison. But before we do that, take a look at the relationship between the intercept and slope for the two groups and the regression of group onto slope and intercept.</p>
 <pre class="r"><code>model.9 &lt;- &#39;
   # intercept and slope with fixed coefficients
     i =~ 1*t1 + 1*t2 + 1*t3 + 1*t4
@@ -3768,9 +3964,121 @@ summary(fit.8)</code></pre>
 &#39;
 fit.9 &lt;- growth(model.9, data = Demo.growth, group = &quot;group&quot;, group.equal = &quot;means&quot;)
 summary(fit.9)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 45 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         18
+##   Number of equality constraints                     2
+##   Row rank of the constraints matrix                 2
+## 
+##   Number of observations per group         
+##   1                                                200
+##   2                                                200
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      94.244
+##   Degrees of freedom                                12
+##   P-value (Chi-square)                           0.000
+## 
+## Chi-square for each group:
+## 
+##   1                                             53.917
+##   2                                             40.327
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## 
+## Group 1 [1]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i =~                                                
+##     t1                1.000                           
+##     t2                1.000                           
+##     t3                1.000                           
+##     t4                1.000                           
+##   s =~                                                
+##     t1                0.000                           
+##     t2                1.000                           
+##     t3                2.000                           
+##     t4                3.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i ~~                                                
+##     s                 0.660    0.108    6.093    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.000                           
+##    .t2                0.000                           
+##    .t3                0.000                           
+##    .t4                0.000                           
+##     i       (.20.)    0.662    0.077    8.632    0.000
+##     s       (.21.)    1.034    0.042   24.857    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.523    0.118    4.446    0.000
+##    .t2                0.672    0.086    7.804    0.000
+##    .t3                0.640    0.103    6.200    0.000
+##    .t4                0.493    0.178    2.764    0.006
+##     i                 2.139    0.261    8.207    0.000
+##     s                 0.655    0.079    8.299    0.000
+## 
+## 
+## Group 2 [2]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i =~                                                
+##     t1                1.000                           
+##     t2                1.000                           
+##     t3                1.000                           
+##     t4                1.000                           
+##   s =~                                                
+##     t1                0.000                           
+##     t2                1.000                           
+##     t3                2.000                           
+##     t4                3.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i ~~                                                
+##     s                 0.581    0.093    6.243    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.000                           
+##    .t2                0.000                           
+##    .t3                0.000                           
+##    .t4                0.000                           
+##     i       (.20.)    0.662    0.077    8.632    0.000
+##     s       (.21.)    1.034    0.042   24.857    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.674    0.125    5.387    0.000
+##    .t2                0.677    0.086    7.838    0.000
+##    .t3                0.626    0.101    6.178    0.000
+##    .t4                0.533    0.172    3.094    0.002
+##     i                 1.733    0.229    7.582    0.000
+##     s                 0.516    0.067    7.661    0.000</code></pre>
 <p>Does constraining the latent means lead to a worse fit?</p>
 <pre class="r"><code>anova(fit.8, fit.9)</code></pre>
-<p>testing just the slope difference without constraining anything else.</p>
+<pre><code>## Chi Square Difference Test
+## 
+##       Df    AIC    BIC  Chisq Chisq diff Df diff Pr(&gt;Chisq)    
+## fit.8 10 5459.9 5531.8 10.553                                  
+## fit.9 12 5539.6 5603.5 94.244     83.691       2  &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Yes it does! Buut, how to interpret this? It is asking whether the model where we constained both the intercept and the mean differ from one that we don’t. What if we want to only look at the effect of slope?</p>
+<p>Testing just the slope difference without constraining anything else.</p>
 <pre class="r"><code>model.10 &lt;- &#39;
   # intercept and slope with fixed coefficients
     i =~ 1*t1 + 1*t2 + 1*t3 + 1*t4
@@ -3781,8 +4089,137 @@ s ~  c(m1, m1)*1
 &#39;
 fit.10 &lt;- growth(model.10, data = Demo.growth, group = &quot;group&quot;)
 summary(fit.10)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 44 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         18
+##   Number of equality constraints                     1
+##   Row rank of the constraints matrix                 1
+## 
+##   Number of observations per group         
+##   1                                                200
+##   2                                                200
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      58.413
+##   Degrees of freedom                                11
+##   P-value (Chi-square)                           0.000
+## 
+## Chi-square for each group:
+## 
+##   1                                             33.970
+##   2                                             24.443
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## 
+## Group 1 [1]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i =~                                                
+##     t1                1.000                           
+##     t2                1.000                           
+##     t3                1.000                           
+##     t4                1.000                           
+##   s =~                                                
+##     t1                0.000                           
+##     t2                1.000                           
+##     t3                2.000                           
+##     t4                3.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i ~~                                                
+##     s                 0.507    0.098    5.153    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     s         (m1)    1.030    0.042   24.749    0.000
+##    .t1                0.000                           
+##    .t2                0.000                           
+##    .t3                0.000                           
+##    .t4                0.000                           
+##     i                 0.179    0.102    1.766    0.077
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.502    0.117    4.291    0.000
+##    .t2                0.684    0.087    7.856    0.000
+##    .t3                0.640    0.104    6.152    0.000
+##    .t4                0.490    0.182    2.686    0.007
+##     i                 1.780    0.225    7.898    0.000
+##     s                 0.654    0.079    8.317    0.000
+## 
+## 
+## Group 2 [2]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i =~                                                
+##     t1                1.000                           
+##     t2                1.000                           
+##     t3                1.000                           
+##     t4                1.000                           
+##   s =~                                                
+##     t1                0.000                           
+##     t2                1.000                           
+##     t3                2.000                           
+##     t4                3.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i ~~                                                
+##     s                 0.479    0.087    5.532    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     s         (m1)    1.030    0.042   24.749    0.000
+##    .t1                0.000                           
+##    .t2                0.000                           
+##    .t3                0.000                           
+##    .t4                0.000                           
+##     i                 1.076    0.097   11.116    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .t1                0.682    0.126    5.413    0.000
+##    .t2                0.673    0.086    7.826    0.000
+##    .t3                0.623    0.102    6.133    0.000
+##    .t4                0.542    0.176    3.087    0.002
+##     i                 1.464    0.203    7.209    0.000
+##     s                 0.517    0.068    7.645    0.000</code></pre>
 <pre class="r"><code>anova(fit.8, fit.10)</code></pre>
+<pre><code>## Chi Square Difference Test
+## 
+##        Df    AIC    BIC  Chisq Chisq diff Df diff Pr(&gt;Chisq)    
+## fit.8  10 5459.9 5531.8 10.553                                  
+## fit.10 11 5505.8 5573.6 58.413      47.86       1  4.578e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>What if you wanted to test differences in variance?</p>
 </div>
+</div>
+<div id="two-wave-assessments" class="section level2">
+<h2>5. Two wave assessments</h2>
+<p>There are a lot of pre-post designs. In fact, the recent nobel prize winners have a famous paper looking at difference in difference designs, basically looking at two group pre-post tests. Collecting longitudinal data is hard, so it makes sense that a lot of this type of data will be laying around. How do we analyze it? The first thing to notice is that we jumped right into MLM this semester, bypassing simple discussions. As a result, we can only really look at change with 3 or more waves.</p>
+<p>(As an aside, I do see people use two wave data with MLMs. It is often done incorrectly/problematically by using wave 1 as a level 2 covariate as opposed to using time as a level 1 predictor. This approach is related to residualized change, which we will discuss below).</p>
+<p>How to measure change, or should we? <a href="https://www.gwern.net/docs/dnb/1970-cronbach.pdf" class="uri">https://www.gwern.net/docs/dnb/1970-cronbach.pdf</a> This paper lays out some of the problems that occur with standard treatments of two wave assessments.</p>
+<p>The most basic two wave form of change is a difference score. However, many have said these are problematic.
+The issues are:
+1. hard to seperate measurement error from true change
+2. unreliable estimate of change
+3. initial level (or last level) may be driving change. How to account for?</p>
+<p>The second alternative is a standard residualized gain/change score where you regress time 2 onto time 1. This overcomes some of the issues raised about because we are being conservative about the error by “regressing to the mean” such that people with larger changes than average will have their change scores “shrunken” to the average, must like we do with MLMs. This also helps with accounting for starting values that may be responsible for the changes, as this is literally controlling for the initial level.</p>
+<p>The issues with this however are:
+1. it isn’t true change, as you are implying people change similarly
+2. it does not account for unreliability of change in a principled way
+3. error, which should be random, is considered change and it is likely associated with T1.</p>
+<p>The way to address most of these concerns is to: 1. conceptualize and use change scores and 2. do so by measureing change latently, and thus error free. 3. give we are working with SEM (due to working with latent variables) we can now, statistically, seperate initial levels from change.</p>
 </div>
 <div id="planned-missing-data" class="section level2">
 <h2>Planned missing data</h2>
