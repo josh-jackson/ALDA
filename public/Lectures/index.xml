@@ -13,7 +13,7 @@
     </image>
     
     <item>
-      <title>Week 9 </title>
+      <title>Week 9 &amp; 10</title>
       <link>/lectures/week-9/</link>
       <pubDate>Thu, 24 Oct 2019 00:00:00 +0000</pubDate>
       <guid>/lectures/week-9/</guid>
@@ -1787,12 +1787,12 @@ summary(scon62, standardized=T, fit.measures=TRUE)&lt;/code&gt;&lt;/pre&gt;
 ## 5     5     2    15     1     1      1   0    0.894 -0.124 0.549
 ## 6     6     2    16     1     1      2   1    0.894 -0.124 0.549&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Attaching packages ────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ──────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.2.1          ✔ dplyr   0.8.3     
 ## ✔ tibble  2.1.3          ✔ stringr 1.4.0     
 ## ✔ tidyr   1.0.0.9000     ✔ forcats 0.4.0     
 ## ✔ purrr   0.3.2&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ──────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;alcohol.wide &amp;lt;- alcohol1_pp %&amp;gt;% 
