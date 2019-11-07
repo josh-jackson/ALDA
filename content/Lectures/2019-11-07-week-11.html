@@ -1,0 +1,693 @@
+---
+title: Week 11
+author: ''
+date: '2019-11-07'
+slug: week-11
+categories: []
+tags: []
+subtitle: ''
+summary: 'two timepoint models'
+authors: []
+lastmod: '2019-11-07T10:52:04-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+<div id="suggested-readings" class="section level1">
+<h1>Suggested readings</h1>
+<p><a href="https://www.annualreviews.org/doi/abs/10.1146/annurev.psych.60.110707.163612" class="uri">https://www.annualreviews.org/doi/abs/10.1146/annurev.psych.60.110707.163612</a></p>
+<p><a href="https://www.sciencedirect.com/science/article/pii/S187892931730021X#sec0125" class="uri">https://www.sciencedirect.com/science/article/pii/S187892931730021X#sec0125</a></p>
+</div>
+<div id="two-wave-assessments" class="section level1">
+<h1>Two wave assessments</h1>
+<p>There are a lot of pre-post designs. In fact, the recent nobel prize winners have a famous paper looking at difference in difference designs, basically looking at two group pre-post tests. Collecting longitudinal data is hard, so it makes sense that a lot of this type of data will be laying around. How do we analyze it? The first thing to notice is that we jumped right into MLM this semester, bypassing simple discussions. As a result, we can only really look at change with 3 or more waves.</p>
+<p>How to measure change, or should we? <a href="https://www.gwern.net/docs/dnb/1970-cronbach.pdf" class="uri">https://www.gwern.net/docs/dnb/1970-cronbach.pdf</a> This paper lays out some of the problems that occur with standard treatments of two wave assessments.</p>
+<p>The most basic two wave form of change is a difference score. However, many have said these are problematic.
+The issues are:
+1. hard to seperate measurement error from true change
+2. unreliable estimate of change
+3. initial level (or last level) may be driving change. How to account for?</p>
+<p>The second alternative is a standard residualized gain/change score where you regress time 2 onto time 1. This overcomes some of the issues raised about because we are being conservative about the error by “regressing to the mean” such that people with larger changes than average will have their change scores “shrunken” to the average, must like we do with MLMs. This also helps with accounting for starting values that may be responsible for the changes, as this is literally controlling for the initial level.</p>
+<p>The issues with this however are:
+1. it isn’t true change, as you are implying people change similarly
+2. it does not account for unreliability of change in a principled way
+3. error, which should be random, is considered as change (ie residual is recharacterized) and it is likely associated with T1.</p>
+<div id="lords-paradox" class="section level2">
+<h2>Lords Paradox</h2>
+<p>This has lead to what is known as Lord’s paradox. Take the two approaches above, simplified to:</p>
+<p><code>lm(t2-t1 ~ group)</code>
+<code>lm(t2 ~ t1 + group)</code></p>
+<pre class="r"><code>head(df)</code></pre>
+<pre><code>##   id group          T1          T2        change
+## 1  1    Tx -0.30176644 -0.07218389  0.2295825445
+## 2  2    Tx  0.06935731  0.09741980  0.0280624915
+## 3  3    Tx  0.27111029  0.12699551 -0.1441147849
+## 4  4    Tx -0.58642443 -0.16449642  0.4219280069
+## 5  5    Tx  0.10728117  0.07408057 -0.0332006005
+## 6  6    Tx  0.12651397  0.12665183  0.0001378524</code></pre>
+<p>change score/gain score model</p>
+<pre class="r"><code>summary(lm(change ~ group, df)) </code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = change ~ group, data = df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.5174 -0.1133  0.0208  0.1310  0.4612 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)  0.038975   0.017300   2.253   0.0254 *
+## groupControl 0.004028   0.024466   0.165   0.8694  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.173 on 198 degrees of freedom
+## Multiple R-squared:  0.0001369,  Adjusted R-squared:  -0.004913 
+## F-statistic: 0.02711 on 1 and 198 DF,  p-value: 0.8694</code></pre>
+<p>residualized change score model</p>
+<pre class="r"><code>summary(lm(T2 ~ group + T1, df))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = T2 ~ group + T1, data = df)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.315819 -0.066341  0.005835  0.060977  0.268154 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   0.01724    0.01008    1.71   0.0888 .  
+## groupControl  0.44744    0.02648   16.90   &lt;2e-16 ***
+## T1            0.44538    0.02797   15.92   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1002 on 197 degrees of freedom
+## Multiple R-squared:  0.9463, Adjusted R-squared:  0.9457 
+## F-statistic:  1734 on 2 and 197 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>What is going on? We are asking different questions by not accounting for T1 in the former model. The change score model is accounting for the total effect (in mediation language) whereas the residualized change score model is only interested in the direct effect.</p>
+<pre class="r"><code>library(lavaan)</code></pre>
+<pre><code>## This is lavaan 0.6-4</code></pre>
+<pre><code>## lavaan is BETA software! Please report any bugs.</code></pre>
+<pre class="r"><code>library(semPlot)</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;huge&#39;:
+##   method    from   
+##   plot.sim  BDgraph
+##   print.sim BDgraph</code></pre>
+<pre class="r"><code>mod &lt;- &#39;
+  T1 ~ a*group
+  T2 ~ b*group + c*T1
+  
+  # total effect
+  TE := (a*-1) + (a*c*1) + (b*1)  
+&#39;
+lord &lt;- sem(mod, data=df)
+summary(lord)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 28 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                          5
+## 
+##   Number of observations                           200
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       0.000
+##   Degrees of freedom                                 0
+##   Minimum Function Value               0.0000000000000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   T1 ~                                                
+##     group      (a)    0.800    0.036   22.317    0.000
+##   T2 ~                                                
+##     group      (b)    0.447    0.026   17.028    0.000
+##     T1         (c)    0.445    0.028   16.043    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .T1                0.064    0.006   10.000    0.000
+##    .T2                0.010    0.001   10.000    0.000
+## 
+## Defined Parameters:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     TE                0.004    0.024    0.165    0.869</code></pre>
+<pre class="r"><code>semPaths(lord)</code></pre>
+<p><img src="/Lectures/2019-11-07-week-11_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>What is not immediately obvious is that the change score can be conceptualized as a series of regressions. Starting with the residualized change score model</p>
+<p><code>T2 = b*T1 + e</code></p>
+<p>If we assume that the relationship (b) between T1 and T2 is 1. We can re-write as:</p>
+<p><code>T2 = 1*T1 + e</code></p>
+<p>Then we can subtract T1 fro each side of the model, leaving:</p>
+<p><code>T2 - T1 = e</code></p>
+<p>In other words, a change score is equivalent to assuming a perfect regression association (correlation) between timepoints.</p>
+<p>Here, the residual will be equal to the average change and the variance of that will be the variance in the change. This can be thought of as akin to the mean and variance of our latent slope variable.</p>
+</div>
+</div>
+<div id="common-two-wave-models-in-path-analysis-form" class="section level1">
+<h1>common two wave models in path analysis form</h1>
+<p>Lets visualize each of these models via path models</p>
+<div id="residualized-change-model" class="section level2">
+<h2>Residualized change model</h2>
+<p><img src="res.change.png" /></p>
+<p>Our latent residual can be conceptualized as what is left over from T2 after accounting for T1 (based on the average assocaition between T1 and T2). We now have a measure of error/change that is not correlated to T1.</p>
+<p>If we wanted to, because this is SEM, we could test this model against a no change model. What would this look like? Well we would fix <span class="math inline">\(\beta_1\)</span>⁩ to zero and compare the models</p>
+<pre class="r"><code>res.change &lt;- &#39;
+  T2 ~ T1
+&#39;
+res.change &lt;- sem(res.change, data=df)
+summary(res.change)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 13 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                          2
+## 
+##   Number of observations                           200
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       0.000
+##   Degrees of freedom                                 0
+##   Minimum Function Value               0.0000000000000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   T2 ~                                                
+##     T1                0.845    0.023   36.317    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .T2                0.024    0.002   10.000    0.000</code></pre>
+</div>
+<div id="latent-change-score" class="section level2">
+<h2>Latent change score</h2>
+<p>Looping back to concerns about difference scores and residualized change scores, we can addrress these using SEM. The problems raised above go away when: 1) measureing change latently, and thus error free. 2.) seperate initial levels from change. Both of these are accomplished above. However, what is not accomplished is getting terms similar to the slope component ie a mean and a variance of a slope.</p>
+<p>Knowing what we know about recreating difference scores via constraints, we can also make a latent change score by modifying this path model.</p>
+<p><img src="latent.change.png" /></p>
+<p>Now we can interpret the residual as change, as it is explicitly what is left over from T2 after acccoutning for T1. This is starting to look like what we have been doing recently. We have:
+1. Mean and variance of the slope(change), akin to our random and fixed effects in MLM
+2. Covariance between intercept and slope.</p>
+<p>To test whether or not our slope is significant we can compare that with a model where slope is constrained to be zero. Same for testing the slope variance.</p>
+<pre class="r"><code>library(lavaan)
+latent.change &lt;- &#39;
+  #define difference score
+  T2 ~ 1*T1
+  
+  # define the latent change variable
+  change =~ 1*T2
+  
+  #estimate means
+  change ~ 1
+  T1 ~ 1
+  
+  #Constrains mean of T2 to 0
+  T2 ~0*1
+
+  #estimate variance of change
+  change ~~ change
+
+  #estimate variance of T1 intercept
+  T1 ~~ T1
+  
+  #constrain variance of T2 to 0
+  T2 ~~ 0*T2
+
+  #intercept slope covariance
+  change ~~ T1
+&#39;
+
+latent.change &lt;- sem(latent.change, data=df)
+summary(latent.change)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 18 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                          5
+## 
+##   Number of observations                           200
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       0.000
+##   Degrees of freedom                                 0
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change =~                                           
+##     T2                1.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   T2 ~                                                
+##     T1                1.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change ~~                                           
+##     T1               -0.035    0.006   -5.553    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     change            0.041    0.012    3.367    0.001
+##     T1                0.361    0.033   10.774    0.000
+##    .T2                0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     change            0.030    0.003   10.000    0.000
+##     T1                0.224    0.022   10.000    0.000
+##    .T2                0.000</code></pre>
+</div>
+<div id="residualized-latent-change-score" class="section level2">
+<h2>Residualized latent change score</h2>
+<p>Note that we havent yet removed the variance from the T1. This may or may not be something you want to do. It is mostly helpful if change has occured prior to T1 and you are looking at the impact of some variable on change. If you are doing an intervention that takes place after T1 then maybe stick to latent change model. If you are measuring a developmental process across time and wnat to make sure that intial levels aren’t influencing change then you may want to do this. If you are doing that but think that initial levels are related to the change process then maybe you would be overcontrolling, wiping away what may be important. ¯_(ツ)_/¯</p>
+<p><img src="res.lat.change.png" /></p>
+<pre class="r"><code>res.latent.change &lt;- &#39;
+  #define difference score
+  T2 ~ 1*T1
+  
+  # define the latent change variable
+  change =~ 1*T2
+  
+  #estimate means
+  change ~ 1
+  T1 ~ 1
+  
+  #Constrains mean of T2 to 0
+  T2 ~0*1
+
+  #estimate variance of change
+  change ~~ change
+
+  #estimate variance of T1 intercept
+  T1 ~~ T1
+  
+  #constrain variance of T2 to 0
+  T2 ~~ 0*T2
+
+  #this is the only difference
+  #intercept slope regression
+  change ~ T1
+&#39;
+
+res.lat.change &lt;- sem(res.latent.change , data=df)
+summary(res.lat.change)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 18 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                          5
+## 
+##   Number of observations                           200
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       0.000
+##   Degrees of freedom                                 0
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change =~                                           
+##     T2                1.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   T2 ~                                                
+##     T1                1.000                           
+##   change ~                                            
+##     T1               -0.155    0.023   -6.678    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .change            0.097    0.014    7.009    0.000
+##     T1                0.361    0.033   10.774    0.000
+##    .T2                0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .change            0.024    0.002   10.000    0.000
+##     T1                0.224    0.022   10.000    0.000
+##    .T2                0.000</code></pre>
+</div>
+<div id="conditional-models" class="section level2">
+<h2>Conditional Models</h2>
+<p>What if we want to predict initial status (or control for covariate) as well as see if change is predicted by some variable?</p>
+<p><img src="cond.png" /></p>
+<pre class="r"><code>library(lavaan)
+cond &lt;- &#39;
+  #define difference score
+  T2 ~ 1*T1
+  
+  # define the latent change variable
+  change =~ 1*T2
+  
+  #estimate means
+  change ~ 1
+  T1 ~ 1
+  
+  #Constrains mean of T2 to 0
+  T2 ~0*1
+
+  #estimate variance of change
+  change ~~ change
+
+  #estimate variance of T1 intercept
+  T1 ~~ T1
+  
+  #constrain variance of T2 to 0
+  T2 ~~ 0*T2
+
+  #intercept slope covariance
+  change ~~ T1
+  
+  # predictor predicting initial status and change
+  T1 ~ group
+  change ~ group
+  
+&#39;
+
+cond &lt;- sem(cond, data=df)
+summary(cond)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 37 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                          7
+## 
+##   Number of observations                           200
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       0.000
+##   Degrees of freedom                                 0
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change =~                                           
+##     T2                1.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   T2 ~                                                
+##     T1                1.000                           
+##   T1 ~                                                
+##     group             0.800    0.036   22.317    0.000
+##   change ~                                            
+##     group             0.004    0.024    0.165    0.869
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .change ~~                                           
+##    .T1               -0.036    0.004   -8.942    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .change            0.035    0.038    0.908    0.364
+##    .T1               -0.839    0.057  -14.806    0.000
+##    .T2                0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .change            0.030    0.003   10.000    0.000
+##    .T1                0.064    0.006   10.000    0.000
+##    .T2                0.000</code></pre>
+<p>Does that change regressed on group look familiar?</p>
+<p>This approach works the case with categorical as well as continuous predictors.</p>
+</div>
+<div id="multiple-group-models" class="section level2">
+<h2>Multiple group models</h2>
+<p>As we have seen before, simple predictors does not allow the full range of tests on how two groups may differ. Just like before, we can specify multiple group models with this data.</p>
+<p><img src="multi.group.png" /></p>
+<pre class="r"><code>library(lavaan)
+group &lt;- &#39;
+  #define difference score
+  T2 ~ 1*T1
+  
+  # define the latent change variable
+  change =~ 1*T2
+  
+  #estimate means
+  change ~ 1
+  T1 ~ 1
+  
+  #Constrains mean of T2 to 0
+  T2 ~0*1
+
+  #estimate variance of change
+  change ~~ change
+
+  #estimate variance of T1 intercept
+  T1 ~~ T1
+  
+  #constrain variance of T2 to 0
+  T2 ~~ 0*T2
+
+  #intercept slope covariance
+  change ~~ T1
+  
+&#39;
+
+group  &lt;- sem(group, group = &quot;group&quot;, data=df)
+summary(group)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 59 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         10
+## 
+##   Number of observations per group         
+##   Tx                                               100
+##   Control                                          100
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       0.000
+##   Degrees of freedom                                 0
+## 
+## Chi-square for each group:
+## 
+##   Tx                                             0.000
+##   Control                                        0.000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## 
+## Group 1 [Tx]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change =~                                           
+##     T2                1.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   T2 ~                                                
+##     T1                1.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change ~~                                           
+##     T1               -0.036    0.006   -6.390    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     change            0.039    0.017    2.279    0.023
+##     T1               -0.039    0.025   -1.569    0.117
+##    .T2                0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     change            0.029    0.004    7.071    0.000
+##     T1                0.062    0.009    7.071    0.000
+##    .T2                0.000                           
+## 
+## 
+## Group 2 [Control]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change =~                                           
+##     T2                1.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   T2 ~                                                
+##     T1                1.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change ~~                                           
+##     T1               -0.036    0.006   -6.258    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     change            0.043    0.017    2.482    0.013
+##     T1                0.760    0.026   29.612    0.000
+##    .T2                0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     change            0.030    0.004    7.071    0.000
+##     T1                0.066    0.009    7.071    0.000
+##    .T2                0.000</code></pre>
+<p>Compare that with a model where we constrain the slopes to be the same</p>
+<pre class="r"><code>group2 &lt;- &#39;
+  #define difference score
+  T2 ~ 1*T1
+  
+  # define the latent change variable
+  change =~ 1*T2
+  
+  #estimate means (here is where we constrain)
+  change ~ c(s,s)*1
+  T1 ~ 1
+  
+  #Constrains mean of T2 to 0
+  T2 ~0*1
+
+  #estimate variance of change
+  change ~~ change
+
+  #estimate variance of T1 intercept
+  T1 ~~ T1
+  
+  #constrain variance of T2 to 0
+  T2 ~~ 0*T2
+
+  #intercept slope covariance
+  change ~~ T1
+  
+&#39;
+
+group2  &lt;- sem(group2, group = &quot;group&quot;, data=df)
+summary(group2)</code></pre>
+<pre><code>## lavaan 0.6-4 ended normally after 59 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         10
+##   Number of equality constraints                     1
+##   Row rank of the constraints matrix                 1
+## 
+##   Number of observations per group         
+##   Tx                                               100
+##   Control                                          100
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       0.027
+##   Degrees of freedom                                 1
+##   P-value (Chi-square)                           0.869
+## 
+## Chi-square for each group:
+## 
+##   Tx                                             0.014
+##   Control                                        0.014
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## 
+## Group 1 [Tx]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change =~                                           
+##     T2                1.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   T2 ~                                                
+##     T1                1.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change ~~                                           
+##     T1               -0.036    0.006   -6.390    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     change     (s)    0.041    0.012    3.365    0.001
+##     T1               -0.042    0.020   -2.051    0.040
+##    .T2                0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     change            0.029    0.004    7.071    0.000
+##     T1                0.062    0.009    7.071    0.000
+##    .T2                0.000                           
+## 
+## 
+## Group 2 [Control]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change =~                                           
+##     T2                1.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   T2 ~                                                
+##     T1                1.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   change ~~                                           
+##     T1               -0.036    0.006   -6.258    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     change     (s)    0.041    0.012    3.365    0.001
+##     T1                0.763    0.021   36.181    0.000
+##    .T2                0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     change            0.030    0.004    7.071    0.000
+##     T1                0.066    0.009    7.071    0.000
+##    .T2                0.000</code></pre>
+<pre class="r"><code>anova(group, group2)</code></pre>
+<pre><code>## Chi Square Difference Test
+## 
+##        Df     AIC     BIC  Chisq Chisq diff Df diff Pr(&gt;Chisq)
+## group   0 -318.30 -285.31 0.0000                              
+## group2  1 -320.27 -290.58 0.0274   0.027381       1     0.8686</code></pre>
+<p>Notice that p value from before?</p>
+</div>
+</div>
+<div id="latent-difference-scores" class="section level1">
+<h1>Latent difference scores</h1>
+<p>What if we had only two time points but had latent variables?</p>
+</div>
