@@ -1,0 +1,42 @@
+---
+title: homeworks 4-6
+author: ''
+date: '2019-11-07'
+slug: homeworks-4-6
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2019-11-07T14:10:16-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+1. Run a growth model in 1) MLM using me4, 2) Bayesian MLM using berms and 3) SEM using lavaan. For each of these models used the created composites, not the individual items. What are the similarities and differences? 
+
+2. Using the latent growth model in MLM, produce a spaghetti plot showing average and individual slopes within ggplot. 
+
+3. Try two different time coding schemes. First, use a different time coding that defines the intercept as the final time point. Second, try a latent basis coding where you allow the data to inform how time should be coded. For each, describe how this differs from the initial latent growth curve model. 
+
+4. Introduce a predictor to the lgc model. How does this impact the model compared to a) no predictor b) a centered predictor? 
+
+5. Create another graph of the model, this time showing the effect of the predictor. 
+
+6. Using the items, create three latent variables for each wave. Check for measurement invariance. 
+
+7. Fit a second order latent growth model, imposing measurement invariance. Compare the fit and statistics from this model to the lgc model that used composites for the repeated measures. 
+
+8. Create another graph of this model, showing the individual slopes and the overall mean level trend. 
+
+9. Introduce the same predictor to the model as you did in #4. Did you find any differences or are the results mostly the same? 
+
+10. Code time differently in this model as you did for #3 above. Did you find any differences or are  the results mostly the same? 
+
+11. Run a multivariate second order latent growth model where you are examining two growth processes simultaneously. What parameters are you most interested in? How do the results of the growth process modeled above (mean, variances, etc) change when you model two processes simultaneously? 

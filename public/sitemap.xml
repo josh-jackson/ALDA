@@ -4,7 +4,18 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2019-11-07T10:52:04-06:00</lastmod>
+    <lastmod>2019-11-07T14:36:30-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/post/homework-4-6-posted/</loc>
+    <lastmod>2019-11-07T14:36:30-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/homeworks/</loc>
+    <lastmod>2019-11-07T14:10:16-06:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -15,8 +26,18 @@
   </url>
   
   <url>
+    <loc>/post/</loc>
+    <lastmod>2019-11-07T14:36:30-06:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/lectures/week-11/</loc>
     <lastmod>2019-11-07T10:52:04-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/homeworks/homeworks-4-6/</loc>
+    <lastmod>2019-11-07T14:10:16-06:00</lastmod>
   </url>
   
   <url>
@@ -46,18 +67,7 @@
   </url>
   
   <url>
-    <loc>/homeworks/</loc>
-    <lastmod>2019-10-04T16:44:16-05:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>/post/hw-posted/</loc>
-    <lastmod>2019-10-04T17:53:45-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/</loc>
     <lastmod>2019-10-04T17:53:45-05:00</lastmod>
   </url>
   
