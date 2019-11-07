@@ -15,7 +15,16 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
+output:
+  blogdown::html_page:
+    toc: true
 ---
+
+```{r setup, echo = FALSE}
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+```
 
 # Suggested readings
 
@@ -26,22 +35,22 @@ https://www.sciencedirect.com/science/article/pii/S187892931730021X#sec0125
 
 # Two wave assessments
 
-There are a lot of pre-post designs. In fact, the recent nobel prize winners have a famous paper looking at difference in difference designs, basically looking at two group pre-post tests. Collecting longitudinal data is hard, so it makes sense that a lot of this type of data will be laying around. How do we analyze it? The first thing to notice is that we jumped right into MLM this semester, bypassing simple discussions. As a result, we can only really look at change with 3 or more waves. 
+There are a lot of pre-post designs. In fact, the recent Nobel prize winners have a famous paper looking at difference in difference designs, basically looking at two group pre-post tests. Collecting longitudinal data is hard, so it makes sense that a lot of this type of data will be laying around. How do we analyze it? The first thing to notice is that we jumped right into MLM this semester, bypassing simple discussions. As a result, we can only really look at change with 3 or more waves. 
 
 How to measure change, or should we? https://www.gwern.net/docs/dnb/1970-cronbach.pdf This paper lays out some of the problems that occur with standard treatments of two wave assessments. 
 
 The most basic two wave form of change is a difference score. However, many have said these are problematic. 
 The issues are: 
-1. hard to seperate measurement error from true change
+1. hard to separate measurement error from true change
 2. unreliable estimate of change
 3. initial level (or last level) may be driving change. How to account for? 
 
-The second alternative is a standard residualized gain/change score where you regress time 2 onto time 1. This overcomes some of the issues raised about because we are being conservative about the error by "regressing to the mean" such that people with larger changes than average will have their change scores "shrunken" to the average, must like we do with MLMs. This also helps with accounting for starting values that may be responsible for the changes, as this is literally controlling for the initial level. 
+The second alternative is a standard residual gain/change score where you regress time 2 onto time 1. This overcomes some of the issues raised about because we are being conservative about the error by "regressing to the mean" such that people with larger changes than average will have their change scores "shrunken" to the average, must like we do with MLMs. This also helps with accounting for starting values that may be responsible for the changes, as this is literally controlling for the initial level. 
 
 The issues with this however are: 
 1. it isn't true change, as you are implying people change similarly
 2. it does not account for unreliability of change in a principled way
-3. error, which should be random, is considered as change (ie residual is recharacterized) and it is likely associated with T1. 
+3. error, which should be random, is considered as change (ie residual is re-characterized) and it is likely associated with T1. 
 
 ## Lords Paradox
 This has lead to what is known as Lord's paradox. Take the two approaches above, simplified to: 
@@ -115,9 +124,10 @@ Here, the residual will be equal to the average change and the variance of that 
 Lets visualize each of these models via path models
 
 ## Residualized change model
+knitr::include_graphics("res.change.png")
 ![](res.change.png)
 
-Our latent residual can be conceptualized as what is left over from T2 after accounting for T1 (based on the average assocaition between T1 and T2). We now have a measure of error/change that is not correlated to T1. 
+Our latent residual can be conceptualized as what is left over from T2 after accounting for T1 (based on the average association between T1 and T2). We now have a measure of error/change that is not correlated to T1. 
 
 If we wanted to, because this is SEM, we could test this model against a no change model. What would this look like? Well we would fix $\beta_1$⁩ to zero and compare the models
 
@@ -131,13 +141,13 @@ summary(res.change)
 ```
 
 ## Latent change score
-Looping back to concerns about difference scores and residualized change scores, we can addrress these using SEM. The problems raised above go away when: 1) measureing change latently, and thus error free. 2.) seperate initial levels from change. Both of these are accomplished above. However, what is not accomplished is getting terms similar to the slope component ie a mean and a variance of a slope. 
+Looping back to concerns about difference scores and residualized change scores, we can address these using SEM. The problems raised above go away when: 1) measuring change latently, and thus error free. 2.) separate initial levels from change. Both of these are accomplished above. However, what is not accomplished is getting terms similar to the slope component ie a mean and a variance of a slope. 
 
 Knowing what we know about recreating difference scores via constraints, we can also make a latent change score by modifying this path model. 
 
 ![](latent.change.png)
 
-Now we can interpret the residual as change, as it is explicitly what is left over from T2 after acccoutning for T1. This is starting to look like what we have been doing recently. We have: 
+Now we can interpret the residual as change, as it is explicitly what is left over from T2 after accoutering for T1. This is starting to look like what we have been doing recently. We have: 
 1. Mean and variance of the slope(change), akin to our random and fixed effects in MLM
 2. Covariance between intercept and slope. 
 
@@ -178,7 +188,7 @@ summary(latent.change)
 ```
 
 ## Residualized latent change score
-Note that we havent yet removed the variance from the T1. This may or may not be something you want to do. It is mostly helpful if change has occured prior to T1 and you are looking at the impact of some variable on change. If you are doing an intervention that takes place after T1 then maybe stick to latent change model. If you are measuring a developmental process across time and wnat to make sure that intial levels aren't influencing change then you may want to do this. If you are doing that but think that initial levels are related to the change process then maybe you would be overcontrolling, wiping away what may be important. ¯\_(ツ)_/¯
+Note that we haven't yet removed the variance from the T1. This may or may not be something you want to do. It is mostly helpful if change has occurred prior to T1 and you are looking at the impact of some variable on change. If you are doing an intervention that takes place after T1 then maybe stick to latent change model. If you are measuring a developmental process across time and want to make sure that initial levels aren't influencing change then you may want to do this. If you are doing that but think that initial levels are related to the change process then maybe you would be over controlling, wiping away what may be important. ¯\_(ツ)_/¯
 
 ![](res.lat.change.png)
 

@@ -19,6 +19,22 @@
       <guid>/lectures/week-11/</guid>
       <description>
 
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#suggested-readings&#34;&gt;Suggested readings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#two-wave-assessments&#34;&gt;Two wave assessments&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#lords-paradox&#34;&gt;Lords Paradox&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#common-two-wave-models-in-path-analysis-form&#34;&gt;common two wave models in path analysis form&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#residualized-change-model&#34;&gt;Residualized change model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#latent-change-score&#34;&gt;Latent change score&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#residualized-latent-change-score&#34;&gt;Residualized latent change score&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#conditional-models&#34;&gt;Conditional Models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#multiple-group-models&#34;&gt;Multiple group models&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#latent-difference-scores&#34;&gt;Latent difference scores&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
 
 &lt;div id=&#34;suggested-readings&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Suggested readings&lt;/h1&gt;
@@ -27,18 +43,18 @@
 &lt;/div&gt;
 &lt;div id=&#34;two-wave-assessments&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Two wave assessments&lt;/h1&gt;
-&lt;p&gt;There are a lot of pre-post designs. In fact, the recent nobel prize winners have a famous paper looking at difference in difference designs, basically looking at two group pre-post tests. Collecting longitudinal data is hard, so it makes sense that a lot of this type of data will be laying around. How do we analyze it? The first thing to notice is that we jumped right into MLM this semester, bypassing simple discussions. As a result, we can only really look at change with 3 or more waves.&lt;/p&gt;
+&lt;p&gt;There are a lot of pre-post designs. In fact, the recent Nobel prize winners have a famous paper looking at difference in difference designs, basically looking at two group pre-post tests. Collecting longitudinal data is hard, so it makes sense that a lot of this type of data will be laying around. How do we analyze it? The first thing to notice is that we jumped right into MLM this semester, bypassing simple discussions. As a result, we can only really look at change with 3 or more waves.&lt;/p&gt;
 &lt;p&gt;How to measure change, or should we? &lt;a href=&#34;https://www.gwern.net/docs/dnb/1970-cronbach.pdf&#34; class=&#34;uri&#34;&gt;https://www.gwern.net/docs/dnb/1970-cronbach.pdf&lt;/a&gt; This paper lays out some of the problems that occur with standard treatments of two wave assessments.&lt;/p&gt;
 &lt;p&gt;The most basic two wave form of change is a difference score. However, many have said these are problematic.
 The issues are:
-1. hard to seperate measurement error from true change
+1. hard to separate measurement error from true change
 2. unreliable estimate of change
 3. initial level (or last level) may be driving change. How to account for?&lt;/p&gt;
-&lt;p&gt;The second alternative is a standard residualized gain/change score where you regress time 2 onto time 1. This overcomes some of the issues raised about because we are being conservative about the error by “regressing to the mean” such that people with larger changes than average will have their change scores “shrunken” to the average, must like we do with MLMs. This also helps with accounting for starting values that may be responsible for the changes, as this is literally controlling for the initial level.&lt;/p&gt;
+&lt;p&gt;The second alternative is a standard residual gain/change score where you regress time 2 onto time 1. This overcomes some of the issues raised about because we are being conservative about the error by “regressing to the mean” such that people with larger changes than average will have their change scores “shrunken” to the average, must like we do with MLMs. This also helps with accounting for starting values that may be responsible for the changes, as this is literally controlling for the initial level.&lt;/p&gt;
 &lt;p&gt;The issues with this however are:
 1. it isn’t true change, as you are implying people change similarly
 2. it does not account for unreliability of change in a principled way
-3. error, which should be random, is considered as change (ie residual is recharacterized) and it is likely associated with T1.&lt;/p&gt;
+3. error, which should be random, is considered as change (ie residual is re-characterized) and it is likely associated with T1.&lt;/p&gt;
 &lt;div id=&#34;lords-paradox&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Lords Paradox&lt;/h2&gt;
 &lt;p&gt;This has lead to what is known as Lord’s paradox. Take the two approaches above, simplified to:&lt;/p&gt;
@@ -162,8 +178,9 @@ summary(lord)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Lets visualize each of these models via path models&lt;/p&gt;
 &lt;div id=&#34;residualized-change-model&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Residualized change model&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&#34;res.change.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Our latent residual can be conceptualized as what is left over from T2 after accounting for T1 (based on the average assocaition between T1 and T2). We now have a measure of error/change that is not correlated to T1.&lt;/p&gt;
+&lt;p&gt;knitr::include_graphics(“res.change.png”)
+&lt;img src=&#34;res.change.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Our latent residual can be conceptualized as what is left over from T2 after accounting for T1 (based on the average association between T1 and T2). We now have a measure of error/change that is not correlated to T1.&lt;/p&gt;
 &lt;p&gt;If we wanted to, because this is SEM, we could test this model against a no change model. What would this look like? Well we would fix &lt;span class=&#34;math inline&#34;&gt;\(\beta_1\)&lt;/span&gt;⁩ to zero and compare the models&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res.change &amp;lt;- &amp;#39;
   T2 ~ T1
@@ -199,10 +216,10 @@ summary(res.change)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;latent-change-score&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Latent change score&lt;/h2&gt;
-&lt;p&gt;Looping back to concerns about difference scores and residualized change scores, we can addrress these using SEM. The problems raised above go away when: 1) measureing change latently, and thus error free. 2.) seperate initial levels from change. Both of these are accomplished above. However, what is not accomplished is getting terms similar to the slope component ie a mean and a variance of a slope.&lt;/p&gt;
+&lt;p&gt;Looping back to concerns about difference scores and residualized change scores, we can address these using SEM. The problems raised above go away when: 1) measuring change latently, and thus error free. 2.) separate initial levels from change. Both of these are accomplished above. However, what is not accomplished is getting terms similar to the slope component ie a mean and a variance of a slope.&lt;/p&gt;
 &lt;p&gt;Knowing what we know about recreating difference scores via constraints, we can also make a latent change score by modifying this path model.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;latent.change.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now we can interpret the residual as change, as it is explicitly what is left over from T2 after acccoutning for T1. This is starting to look like what we have been doing recently. We have:
+&lt;p&gt;Now we can interpret the residual as change, as it is explicitly what is left over from T2 after accoutering for T1. This is starting to look like what we have been doing recently. We have:
 1. Mean and variance of the slope(change), akin to our random and fixed effects in MLM
 2. Covariance between intercept and slope.&lt;/p&gt;
 &lt;p&gt;To test whether or not our slope is significant we can compare that with a model where slope is constrained to be zero. Same for testing the slope variance.&lt;/p&gt;
@@ -282,7 +299,7 @@ summary(latent.change)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;residualized-latent-change-score&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Residualized latent change score&lt;/h2&gt;
-&lt;p&gt;Note that we havent yet removed the variance from the T1. This may or may not be something you want to do. It is mostly helpful if change has occured prior to T1 and you are looking at the impact of some variable on change. If you are doing an intervention that takes place after T1 then maybe stick to latent change model. If you are measuring a developmental process across time and wnat to make sure that intial levels aren’t influencing change then you may want to do this. If you are doing that but think that initial levels are related to the change process then maybe you would be overcontrolling, wiping away what may be important. ¯_(ツ)_/¯&lt;/p&gt;
+&lt;p&gt;Note that we haven’t yet removed the variance from the T1. This may or may not be something you want to do. It is mostly helpful if change has occurred prior to T1 and you are looking at the impact of some variable on change. If you are doing an intervention that takes place after T1 then maybe stick to latent change model. If you are measuring a developmental process across time and want to make sure that initial levels aren’t influencing change then you may want to do this. If you are doing that but think that initial levels are related to the change process then maybe you would be over controlling, wiping away what may be important. ¯_(ツ)_/¯&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;res.lat.change.png&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res.latent.change &amp;lt;- &amp;#39;
   #define difference score
@@ -736,7 +753,6 @@ summary(group2)&lt;/code&gt;&lt;/pre&gt;
 &lt;li&gt;&lt;a href=&#34;#measurement-invariance-revisited&#34;&gt;Measurement invariance revisited&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#when-to-use&#34;&gt;When to use&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#two-wave-assessments&#34;&gt;5. Two wave assessments&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#planned-missing-data&#34;&gt;Planned missing data&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#missing-data&#34;&gt;Missing data&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#power&#34;&gt;Power&lt;/a&gt;&lt;/li&gt;
@@ -2511,12 +2527,12 @@ summary(scon62, standardized=T, fit.measures=TRUE)&lt;/code&gt;&lt;/pre&gt;
 ## 5     5     2    15     1     1      1   0    0.894 -0.124 0.549
 ## 6     6     2    16     1     1      2   1    0.894 -0.124 0.549&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Attaching packages ──────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ────────────────────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.2.1          ✔ dplyr   0.8.3     
 ## ✔ tibble  2.1.3          ✔ stringr 1.4.0     
 ## ✔ tidyr   1.0.0.9000     ✔ forcats 0.4.0     
 ## ✔ purrr   0.3.2&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Conflicts ──────────────────────────────────────────────── tidyverse_conflicts() ──
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;alcohol.wide &amp;lt;- alcohol1_pp %&amp;gt;% 
@@ -4550,23 +4566,6 @@ summary(fit.10)&lt;/code&gt;&lt;/pre&gt;
 ## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;What if you wanted to test differences in variance?&lt;/p&gt;
 &lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;two-wave-assessments&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;5. Two wave assessments&lt;/h2&gt;
-&lt;p&gt;There are a lot of pre-post designs. In fact, the recent nobel prize winners have a famous paper looking at difference in difference designs, basically looking at two group pre-post tests. Collecting longitudinal data is hard, so it makes sense that a lot of this type of data will be laying around. How do we analyze it? The first thing to notice is that we jumped right into MLM this semester, bypassing simple discussions. As a result, we can only really look at change with 3 or more waves.&lt;/p&gt;
-&lt;p&gt;(As an aside, I do see people use two wave data with MLMs. It is often done incorrectly/problematically by using wave 1 as a level 2 covariate as opposed to using time as a level 1 predictor. This approach is related to residualized change, which we will discuss below).&lt;/p&gt;
-&lt;p&gt;How to measure change, or should we? &lt;a href=&#34;https://www.gwern.net/docs/dnb/1970-cronbach.pdf&#34; class=&#34;uri&#34;&gt;https://www.gwern.net/docs/dnb/1970-cronbach.pdf&lt;/a&gt; This paper lays out some of the problems that occur with standard treatments of two wave assessments.&lt;/p&gt;
-&lt;p&gt;The most basic two wave form of change is a difference score. However, many have said these are problematic.
-The issues are:
-1. hard to seperate measurement error from true change
-2. unreliable estimate of change
-3. initial level (or last level) may be driving change. How to account for?&lt;/p&gt;
-&lt;p&gt;The second alternative is a standard residualized gain/change score where you regress time 2 onto time 1. This overcomes some of the issues raised about because we are being conservative about the error by “regressing to the mean” such that people with larger changes than average will have their change scores “shrunken” to the average, must like we do with MLMs. This also helps with accounting for starting values that may be responsible for the changes, as this is literally controlling for the initial level.&lt;/p&gt;
-&lt;p&gt;The issues with this however are:
-1. it isn’t true change, as you are implying people change similarly
-2. it does not account for unreliability of change in a principled way
-3. error, which should be random, is considered change and it is likely associated with T1.&lt;/p&gt;
-&lt;p&gt;The way to address most of these concerns is to: 1. conceptualize and use change scores and 2. do so by measureing change latently, and thus error free. 3. give we are working with SEM (due to working with latent variables) we can now, statistically, seperate initial levels from change.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;planned-missing-data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Planned missing data&lt;/h2&gt;

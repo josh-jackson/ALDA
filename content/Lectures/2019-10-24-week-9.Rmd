@@ -1144,36 +1144,6 @@ What if you wanted to test differences in variance?
 
 
 
-## 5. Two wave assessments
-
-There are a lot of pre-post designs. In fact, the recent nobel prize winners have a famous paper looking at difference in difference designs, basically looking at two group pre-post tests. Collecting longitudinal data is hard, so it makes sense that a lot of this type of data will be laying around. How do we analyze it? The first thing to notice is that we jumped right into MLM this semester, bypassing simple discussions. As a result, we can only really look at change with 3 or more waves. 
-
-(As an aside, I do see people use two wave data with MLMs. It is often done incorrectly/problematically by using wave 1 as a level 2 covariate as opposed to using time as a level 1 predictor. This approach is related to residualized change, which we will discuss below).
-
-How to measure change, or should we? https://www.gwern.net/docs/dnb/1970-cronbach.pdf This paper lays out some of the problems that occur with standard treatments of two wave assessments. 
-
-The most basic two wave form of change is a difference score. However, many have said these are problematic. 
-The issues are: 
-1. hard to seperate measurement error from true change
-2. unreliable estimate of change
-3. initial level (or last level) may be driving change. How to account for? 
-
-The second alternative is a standard residualized gain/change score where you regress time 2 onto time 1. This overcomes some of the issues raised about because we are being conservative about the error by "regressing to the mean" such that people with larger changes than average will have their change scores "shrunken" to the average, must like we do with MLMs. This also helps with accounting for starting values that may be responsible for the changes, as this is literally controlling for the initial level. 
-
-The issues with this however are: 
-1. it isn't true change, as you are implying people change similarly
-2. it does not account for unreliability of change in a principled way
-3. error, which should be random, is considered change and it is likely associated with T1. 
-
-
-The way to address most of these concerns is to: 1. conceptualize and use change scores and 2. do so by measureing change latently, and thus error free. 3. give we are working with SEM (due to working with latent variables) we can now, statistically, seperate initial levels from change. 
-
-
-
-
-
-
-
 
 ## Planned missing data
 ## Missing data
