@@ -124,8 +124,12 @@ Here, the residual will be equal to the average change and the variance of that 
 Lets visualize each of these models via path models
 
 ## Residualized change model
-knitr::include_graphics("res.change.png")
-![](res.change.png)
+
+
+![](~/Box/5165 Applied Longitudinal Data Analysis/ALDA/res.change.png)
+
+
+
 
 Our latent residual can be conceptualized as what is left over from T2 after accounting for T1 (based on the average association between T1 and T2). We now have a measure of error/change that is not correlated to T1. 
 

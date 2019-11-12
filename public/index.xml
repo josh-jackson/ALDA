@@ -190,8 +190,7 @@ summary(lord)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Lets visualize each of these models via path models&lt;/p&gt;
 &lt;div id=&#34;residualized-change-model&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Residualized change model&lt;/h2&gt;
-&lt;p&gt;knitr::include_graphics(“res.change.png”)
-&lt;img src=&#34;res.change.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/Users/jackson/Box/5165%20Applied%20Longitudinal%20Data%20Analysis/ALDA/res.change.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Our latent residual can be conceptualized as what is left over from T2 after accounting for T1 (based on the average association between T1 and T2). We now have a measure of error/change that is not correlated to T1.&lt;/p&gt;
 &lt;p&gt;If we wanted to, because this is SEM, we could test this model against a no change model. What would this look like? Well we would fix &lt;span class=&#34;math inline&#34;&gt;\(\beta_1\)&lt;/span&gt;⁩ to zero and compare the models&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res.change &amp;lt;- &amp;#39;
