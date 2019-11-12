@@ -20,11 +20,16 @@
       <description>
 
 
+&lt;p&gt;Please email your homework files to: &lt;a href=&#34;mailto:HW4_6.wfwewdvlhfgict5w@u.box.com&#34; class=&#34;email&#34;&gt;HW4_6.wfwewdvlhfgict5w@u.box.com&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Use the dataHW4-6 to answer the questions below. Note that there is also a codebook to help interpret the variables (there are more variables in the codebook than in the file, fyi).&lt;/p&gt;
+&lt;p&gt;Files are available in github. See here: &lt;a href=&#34;https://raw.githubusercontent.com/josh-jackson/ALDA/master/dataHW4-6.csv&#34; class=&#34;uri&#34;&gt;https://raw.githubusercontent.com/josh-jackson/ALDA/master/dataHW4-6.csv&lt;/a&gt;
+&lt;a href=&#34;https://raw.githubusercontent.com/josh-jackson/ALDA/master/codebookHW4-6.csv&#34; class=&#34;uri&#34;&gt;https://raw.githubusercontent.com/josh-jackson/ALDA/master/codebookHW4-6.csv&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;For the main growth modeling questions please choose one of the big five as your main variable for analysis. Note that for some of the initial questions you will need to create a composite variable AND take the dataset from wide into long format. Starting with q#6 you will use the item variables.&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Run a growth model in 1) MLM using me4, 2) Bayesian MLM using berms and 3) SEM using lavaan. For each of these models used the created composites, not the individual items. What are the similarities and differences?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Run a growth model in 1) MLM using me4, 2) Bayesian MLM using brms and 3) SEM using lavaan. For each of these models used the created composites, not the individual items. What are the similarities and differences?&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Using the latent growth model in MLM, produce a spaghetti plot showing average and individual slopes within ggplot.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Try two different time coding schemes. First, use a different time coding that defines the intercept as the final time point. Second, try a latent basis coding where you allow the data to inform how time should be coded. For each, describe how this differs from the initial latent growth curve model.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Introduce a predictor to the lgc model. How does this impact the model compared to a) no predictor b) a centered predictor?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Introduce a predictor to the lgc model (such as current health). How does this impact the model compared to a) no predictor b) a centered predictor?&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Create another graph of the model, this time showing the effect of the predictor.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Using the items, create three latent variables for each wave. Check for measurement invariance.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Fit a second order latent growth model, imposing measurement invariance. Compare the fit and statistics from this model to the lgc model that used composites for the repeated measures.&lt;/p&gt;&lt;/li&gt;

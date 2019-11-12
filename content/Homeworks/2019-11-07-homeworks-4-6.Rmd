@@ -17,15 +17,22 @@ image:
 projects: []
 ---
 
+Please email your homework files to: HW4_6.wfwewdvlhfgict5w@u.box.com
 
+Use the dataHW4-6 to answer the questions below. Note that there is also a codebook to help interpret the variables (there are more variables in the codebook than in the file, fyi).
 
-1. Run a growth model in 1) MLM using me4, 2) Bayesian MLM using berms and 3) SEM using lavaan. For each of these models used the created composites, not the individual items. What are the similarities and differences? 
+Files are available in github. See here: https://raw.githubusercontent.com/josh-jackson/ALDA/master/dataHW4-6.csv
+https://raw.githubusercontent.com/josh-jackson/ALDA/master/codebookHW4-6.csv
+
+For the main growth modeling questions please choose one of the big five as your main variable for analysis. Note that for some of the initial questions you will need to create a composite variable AND take the dataset from wide into long format. Starting with q#6 you will use the item variables. 
+
+1. Run a growth model in 1) MLM using me4, 2) Bayesian MLM using brms and 3) SEM using lavaan. For each of these models used the created composites, not the individual items. What are the similarities and differences? 
 
 2. Using the latent growth model in MLM, produce a spaghetti plot showing average and individual slopes within ggplot. 
 
 3. Try two different time coding schemes. First, use a different time coding that defines the intercept as the final time point. Second, try a latent basis coding where you allow the data to inform how time should be coded. For each, describe how this differs from the initial latent growth curve model. 
 
-4. Introduce a predictor to the lgc model. How does this impact the model compared to a) no predictor b) a centered predictor? 
+4. Introduce a predictor to the lgc model (such as current health). How does this impact the model compared to a) no predictor b) a centered predictor? 
 
 5. Create another graph of the model, this time showing the effect of the predictor. 
 
