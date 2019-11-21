@@ -109,7 +109,7 @@
   
   <meta property="og:site_name" content="Applied Longitudinal Data Analysis">
   <meta property="og:url" content="/lectures/week-11/">
-  <meta property="og:title" content="Week 11 | Applied Longitudinal Data Analysis">
+  <meta property="og:title" content="Week 11-13 | Applied Longitudinal Data Analysis">
   <meta property="og:description" content="two timepoint models"><meta property="og:image" content="/img/icon-192.png">
   <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
   
@@ -128,7 +128,7 @@
 
 
 
-  <title>Week 11 | Applied Longitudinal Data Analysis</title>
+  <title>Week 11-13 | Applied Longitudinal Data Analysis</title>
 
 </head>
 
@@ -324,7 +324,7 @@
   
   
 <div class="article-container pt-3">
-  <h1 itemprop="name">Week 11</h1>
+  <h1 itemprop="name">Week 11-13</h1>
 
   
 
@@ -567,6 +567,8 @@ summary(lord)</code></pre>
 <div id="residualized-change-model" class="section level2">
 <h2>Residualized change model</h2>
 <p><img src="res.change.png" /></p>
+<pre class="r"><code>knitr::include_graphics(&quot;/img/res.change.png&quot;)</code></pre>
+<p><img src="/img/res.change.png" /><!-- --></p>
 <p>Our latent residual can be conceptualized as what is left over from T2 after accounting for T1 (based on the average association between T1 and T2). We now have a measure of error/change that is not correlated to T1.</p>
 <p>If we wanted to, because this is SEM, we could test this model against a no change model. What would this look like? Well we would fix <span class="math inline">\(\beta_1\)</span>⁩ to zero and compare the models</p>
 <pre class="r"><code>res.change &lt;- &#39;
@@ -1221,20 +1223,21 @@ summary(bv.lcm)</code></pre>
 ##     NegAFF11          0.415    0.030   13.713    0.000
 ##    .NegAFF12          0.000</code></pre>
 <pre class="r"><code>semPaths(bv.lcm)</code></pre>
-<p><img src="/Lectures/2019-11-07-week-11_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="/Lectures/2019-11-07-week-11_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 </div>
 <div id="latent-differencechange-score-model" class="section level1">
 <h1>Latent difference/change score model</h1>
 <p>What if we had only two time points but had latent variables? This is where the model really starts to shine as we are better able to overcome some of the negatives of difference scores – namely that they are error filled. Here we will be measuring the variables latently to reduce error and constraining the measurement so that the assumption of measurement invariance holds.</p>
+<p><img src="latent.latent.png" /></p>
 <pre><code>##     T1X1     T1X2     T1X3     T2X1     T2X2     T2X3 
 ## 4.857927 5.415410 4.218875 5.451574 6.204090 4.819225</code></pre>
-<pre><code>## ── Attaching packages ──────────────────────────────────────────── tidyverse 1.2.1.9000 ──</code></pre>
+<pre><code>## ── Attaching packages ───────────────────── tidyverse 1.2.1.9000 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
 ## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
 ## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
 ## ✔ readr   1.3.1          ✔ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ──────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ───────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>change &lt;-
@@ -1396,7 +1399,7 @@ summary(change.fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)</code></
 ##     T2X2              0.623
 ##     T2X3              0.492</code></pre>
 <pre class="r"><code>semPaths(change.fit )</code></pre>
-<p><img src="/Lectures/2019-11-07-week-11_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="/Lectures/2019-11-07-week-11_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>Same as before, we can run multiple groups analyses, introduce covariates/predictors, regress change onto time 1 and look at bi-variate processes simultanously.</p>
 </div>
 <div id="multiple-wave-latent-difference-score-model-lds" class="section level1">
@@ -1725,7 +1728,7 @@ mw.model &lt;- sem(mw.model, data=y_t_all , missing=&quot;ML&quot;)</code></pre>
 ##    .TPER10_19R        0.613    0.059   10.412    0.000    0.613    0.385
 ##    .TPER10_22R        0.642    0.062   10.427    0.000    0.642    0.394</code></pre>
 <pre class="r"><code>semPaths(mw.model)</code></pre>
-<p><img src="/Lectures/2019-11-07-week-11_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+<p><img src="/Lectures/2019-11-07-week-11_files/figure-html/unnamed-chunk-21-1.png" width="672" />
 Gross. We have to draw this by hand to get a good representation.</p>
 <div id="predicting-change" class="section level2">
 <h2>predicting change</h2>
