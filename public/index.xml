@@ -43,8 +43,19 @@
 &lt;li&gt;&lt;a href=&#34;#residualized-latent-change-score&#34;&gt;Residualized latent change score&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#conditional-models&#34;&gt;Conditional Models&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#multiple-group-models&#34;&gt;Multiple group models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bi-variate-latent-change-model&#34;&gt;Bi-variate latent change model&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#latent-difference-scores&#34;&gt;Latent difference scores&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#latent-differencechange-score-model&#34;&gt;Latent difference/change score model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#multiple-wave-latent-difference-score-model-lds&#34;&gt;Multiple wave Latent Difference Score model (LDS)&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#predicting-change&#34;&gt;predicting change&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#adding-intercept-and-growth-factors-to-lds-models&#34;&gt;adding intercept and growth factors to LDS models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#steyer-models&#34;&gt;“steyer” models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#adding-time-varying-covariates&#34;&gt;adding time varying covariates&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#latent-duel-change-score-model-like-a-residualized-latent-change-score&#34;&gt;Latent Duel change score model (like a residualized latent change score)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bivariate-multi-wave-latent-change-model&#34;&gt;Bivariate multi wave latent change model&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#alt-and-alt-sr&#34;&gt;ALT and ALT-SR&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
@@ -190,7 +201,7 @@ summary(lord)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Lets visualize each of these models via path models&lt;/p&gt;
 &lt;div id=&#34;residualized-change-model&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Residualized change model&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&#34;/Users/jackson/Box/5165%20Applied%20Longitudinal%20Data%20Analysis/ALDA/res.change.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;res.change.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Our latent residual can be conceptualized as what is left over from T2 after accounting for T1 (based on the average association between T1 and T2). We now have a measure of error/change that is not correlated to T1.&lt;/p&gt;
 &lt;p&gt;If we wanted to, because this is SEM, we could test this model against a no change model. What would this look like? Well we would fix &lt;span class=&#34;math inline&#34;&gt;\(\beta_1\)&lt;/span&gt;⁩ to zero and compare the models&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res.change &amp;lt;- &amp;#39;
@@ -715,10 +726,2910 @@ summary(group2)&lt;/code&gt;&lt;/pre&gt;
 ## group2  1 -320.27 -290.58 0.0274   0.027381       1     0.8686&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Notice that p value from before?&lt;/p&gt;
 &lt;/div&gt;
+&lt;div id=&#34;bi-variate-latent-change-model&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Bi-variate latent change model&lt;/h2&gt;
+&lt;p&gt;Similar to the bivariate latent grown model, this is helpful if we want to ask whether or not two variables change in tandem.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;long &amp;lt;- read.csv(&amp;quot;~/Box/5165 Applied Longitudinal Data Analysis/SEM_workshop/longitudinal.csv&amp;quot;)
+
+bv.lcm &amp;lt;- &amp;#39;
+  #define difference score
+  PosAFF12 ~ 1*PosAFF11
+  
+  # define the latent change variable
+  change.pa =~ 1*PosAFF12
+  
+  #estimate means
+  change.pa ~ 1
+  PosAFF11 ~ 1
+  
+  #Constrains mean of T2 to 0
+  PosAFF12 ~0*1
+
+  #estimate variance of change
+  change.pa ~~ change.pa
+
+  #estimate variance of T1 intercept
+  PosAFF11 ~~ PosAFF11
+  
+  #constrain variance of T2 to 0
+  PosAFF12 ~~ 0*PosAFF12
+
+  #intercept slope covariance
+  change.pa ~~ PosAFF11
+
+  ## second process
+  
+   #define difference score
+  NegAFF12 ~ 1*NegAFF11
+  
+  # define the latent change variable
+  change.na =~ 1*NegAFF12
+  
+  #estimate means
+  change.na ~ 1
+  NegAFF11 ~ 1
+  
+  #Constrains mean of T2 to 0
+  NegAFF12 ~0*1
+
+  #estimate variance of change
+  change.na ~~ change.na
+
+  #estimate variance of T1 intercept
+  NegAFF11 ~~ NegAFF11
+  
+  #constrain variance of T2 to 0
+  NegAFF12 ~~ 0*NegAFF12
+
+  #intercept slope covariance
+  change.na ~~ NegAFF11
+  
+  
+  ## look at the covariance between change and intercept parameters
+  
+  change.na ~~ change.pa
+
+  NegAFF11 ~~ PosAFF11
+  
+&amp;#39;
+
+bv.lcm &amp;lt;- sem(bv.lcm, data=long)
+summary(bv.lcm)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 29 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         12
+## 
+##   Number of observations                           368
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      17.880
+##   Degrees of freedom                                 2
+##   P-value (Chi-square)                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   change.pa =~                                        
+##     PosAFF12          1.000                           
+##   change.na =~                                        
+##     NegAFF12          1.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   PosAFF12 ~                                          
+##     PosAFF11          1.000                           
+##   NegAFF12 ~                                          
+##     NegAFF11          1.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   change.pa ~~                                        
+##     PosAFF11         -0.338    0.033  -10.247    0.000
+##   change.na ~~                                        
+##     NegAFF11         -0.297    0.026  -11.565    0.000
+##   change.pa ~~                                        
+##     change.na        -0.070    0.015   -4.682    0.000
+##   PosAFF11 ~~                                         
+##     NegAFF11         -0.056    0.015   -3.848    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##     change.pa         0.041    0.040    1.033    0.302
+##     PosAFF11          3.212    0.037   86.264    0.000
+##    .PosAFF12          0.000                           
+##     change.na        -0.110    0.032   -3.428    0.001
+##     NegAFF11          1.522    0.034   45.326    0.000
+##    .NegAFF12          0.000                           
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##     change.pa         0.575    0.042   13.721    0.000
+##     PosAFF11          0.510    0.037   13.668    0.000
+##    .PosAFF12          0.000                           
+##     change.na         0.382    0.028   13.791    0.000
+##     NegAFF11          0.415    0.030   13.713    0.000
+##    .NegAFF12          0.000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;semPaths(bv.lcm)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-11-07-week-11_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;latent-difference-scores&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Latent difference scores&lt;/h1&gt;
-&lt;p&gt;What if we had only two time points but had latent variables?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;latent-differencechange-score-model&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Latent difference/change score model&lt;/h1&gt;
+&lt;p&gt;What if we had only two time points but had latent variables? This is where the model really starts to shine as we are better able to overcome some of the negatives of difference scores – namely that they are error filled. Here we will be measuring the variables latently to reduce error and constraining the measurement so that the assumption of measurement invariance holds.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;##     T1X1     T1X2     T1X3     T2X1     T2X2     T2X3 
+## 4.857927 5.415410 4.218875 5.451574 6.204090 4.819225&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ──────────────────────────────────────────── tidyverse 1.2.1.9000 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.2.1          ✔ purrr   0.3.2     
+## ✔ tibble  2.1.3          ✔ dplyr   0.8.3     
+## ✔ tidyr   1.0.0.9000     ✔ stringr 1.4.0     
+## ✔ readr   1.3.1          ✔ forcats 0.4.0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ──────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;change &amp;lt;-
+
+#setup is similar to standard latent difference except that we will not use latent variables as our repeated measures. 
+  
+&amp;#39;C_T1=~1*T1X1 + L2*T1X2  + L3*T1X3    
+C_T2=~1*T2X1 + L2*T2X2 + L3*T2X3   
+
+C_T2 ~ 1*C_T1     # Fixed regression of C_T2 on C_T1
+change_C =~ 1*C_T2     # Fixed regression of dC on C_T2
+C_T2 ~ 0*1        # This line constrains the intercept of C_T2 to 0
+C_T2 ~~ 0*C_T2    # This fixes the variance of the C_T2 to 0 
+
+change_C ~ 1             # This estimates the intercept of the change score 
+C_T1 ~  1           # This estimates the intercept of C_T1 
+change_C ~~  change_C       # This estimates the variance of the change scores 
+C_T1 ~~ C_T1     # This estimates the variance of the C_T1 
+change_C ~~ C_T1 # This estimates the self-feedback parameter, which for now is just the covaration with change and T1
+
+## new compared to no latent repeated measures
+T1X1~~T2X1   # This allows residual covariance on indicator X1 across T1 and T2
+T1X2~~T2X2   # This allows residual covariance on indicator X2 across T1 and T2
+T1X3~~T2X3   # This allows residual covariance on indicator X3 across T1 and T2
+
+T1X1~~T1X1   # This allows residual variance on indicator X1 
+T1X2~~T1X2   # This allows residual variance on indicator X2
+T1X3~~T1X3   # This allows residual variance on indicator X3
+
+T2X1~~T2X1  # This allows residual variance on indicator X1 at T2 
+T2X2~~T2X2  # This allows residual variance on indicator X2 at T2 
+T2X3~~T2X3  # This allows residual variance on indicator X3 at T2
+
+
+#scales the items
+T1X1~0*1    # This constrains the intercept of X1 to 0 at T1
+T1X2~M2*1   # This estimates the intercept of X2 at T1
+T1X3~M3*1   # This estimates the intercept of X3 at T1
+T2X1~0*1    # This constrains the intercept of X1 to 0 at T2
+T2X2~M2*1   # This estimates the intercept of X2 at T2
+T2X3~M3*1   # This estimates the intercept of X3 at T2
+
+&amp;#39;
+
+change.fit &amp;lt;- sem(change, data=simdat, missing=&amp;quot;ML&amp;quot;)
+summary(change.fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 49 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         22
+##   Number of equality constraints                     4
+##   Row rank of the constraints matrix                 4
+## 
+##   Number of observations                           500
+##   Number of missing patterns                         1
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                       3.171
+##   Degrees of freedom                                 9
+##   P-value (Chi-square)                           0.957
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             1005.424
+##   Degrees of freedom                                15
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    1.000
+##   Tucker-Lewis Index (TLI)                       1.010
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -4825.052
+##   Loglikelihood unrestricted model (H1)      -4823.467
+## 
+##   Number of free parameters                         18
+##   Akaike (AIC)                                9686.104
+##   Bayesian (BIC)                              9761.967
+##   Sample-size adjusted Bayesian (BIC)         9704.834
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.000
+##   90 Percent Confidence Interval          0.000  0.000
+##   P-value RMSEA &amp;lt;= 0.05                          0.999
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.012
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Observed
+##   Observed information based on                Hessian
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   C_T1 =~                                                               
+##     T1X1              1.000                               0.943    0.675
+##     T1X2      (L2)    1.129    0.055   20.690    0.000    1.065    0.714
+##     T1X3      (L3)    0.958    0.048   20.003    0.000    0.903    0.690
+##   C_T2 =~                                                               
+##     T2X1              1.000                               1.047    0.721
+##     T2X2      (L2)    1.129    0.055   20.690    0.000    1.182    0.789
+##     T2X3      (L3)    0.958    0.048   20.003    0.000    1.003    0.702
+##   change_C =~                                                           
+##     C_T2              1.000                               0.513    0.513
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   C_T2 ~                                                                
+##     C_T1              1.000                               0.901    0.901
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   C_T1 ~~                                                               
+##     change_C         -0.041    0.055   -0.747    0.455   -0.081   -0.081
+##  .T1X1 ~~                                                               
+##    .T2X1             -0.010    0.059   -0.174    0.862   -0.010   -0.010
+##  .T1X2 ~~                                                               
+##    .T2X2             -0.161    0.063   -2.571    0.010   -0.161   -0.168
+##  .T1X3 ~~                                                               
+##    .T2X3             -0.102    0.055   -1.868    0.062   -0.102   -0.106
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .C_T2              0.000                               0.000    0.000
+##     change_C          0.644    0.048   13.548    0.000    1.199    1.199
+##     C_T1              4.832    0.057   84.764    0.000    5.125    5.125
+##    .T1X1              0.000                               0.000    0.000
+##    .T1X2      (M2)   -0.007    0.286   -0.026    0.980   -0.007   -0.005
+##    .T1X3      (M3)   -0.417    0.250   -1.669    0.095   -0.417   -0.319
+##    .T2X1              0.000                               0.000    0.000
+##    .T2X2      (M2)   -0.007    0.286   -0.026    0.980   -0.007   -0.005
+##    .T2X3      (M3)   -0.417    0.250   -1.669    0.095   -0.417   -0.292
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .C_T2              0.000                               0.000    0.000
+##     change_C          0.288    0.070    4.092    0.000    1.000    1.000
+##     C_T1              0.889    0.095    9.322    0.000    1.000    1.000
+##    .T1X1              1.065    0.084   12.748    0.000    1.065    0.545
+##    .T1X2              1.091    0.093   11.669    0.000    1.091    0.490
+##    .T1X3              0.896    0.072   12.411    0.000    0.896    0.523
+##    .T2X1              1.014    0.082   12.329    0.000    1.014    0.481
+##    .T2X2              0.846    0.084   10.135    0.000    0.846    0.377
+##    .T2X3              1.037    0.082   12.684    0.000    1.037    0.508
+## 
+## R-Square:
+##                    Estimate
+##     C_T2              1.000
+##     T1X1              0.455
+##     T1X2              0.510
+##     T1X3              0.477
+##     T2X1              0.519
+##     T2X2              0.623
+##     T2X3              0.492&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;semPaths(change.fit )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-11-07-week-11_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Same as before, we can run multiple groups analyses, introduce covariates/predictors, regress change onto time 1 and look at bi-variate processes simultanously.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;multiple-wave-latent-difference-score-model-lds&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Multiple wave Latent Difference Score model (LDS)&lt;/h1&gt;
+&lt;p&gt;What is especially nice is that we can extend the model into more than 2 waves. This is a rethinking of how to assess 3+ waves of data. As opposed to thinking of a standard growth process that is unchanging, this instead reconceptualizing the change as a set of difference scores. You can increase, then decrease, then increase, for example. There is flexibility in this approach. First, you can get more precise assessments of when change is occuring. If you are measuring grades 5-12 with some event predictor maybe the change only occured during grades 6-7. How would you test that in a standard growth model? Second, you can model more non-linear associations with parameters that are easier to interpret than quadratics and higher order terms.&lt;/p&gt;
+&lt;p&gt;However there is also downsides. First, there are more parameters to estimate. More parameters mean a more difficult time in estimating the model. So it is possible that you have not as accurate (mean est) and not as precise (larger SEs) compared to a more simplistic model like a growth model. Second, there are increased analytic choices which could lead to confusing, p-hacking and all around disillusion on what is the correct model. For example, do you model all change paramters to have similar covariances across time? Do you constrain variance to be the same and allow the means to differ – or vice versa? Do you impose MI?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y_t_all &amp;lt;- read.csv(&amp;quot;~/Box/5165 Applied Longitudinal Data Analysis/ALDA/combined_models.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mw.model &amp;lt;-
+&amp;#39;e7 =~ 1*TPER7_01 + cat6*TPER7_04 + cat2*TPER7_15 + cat3*TPER7_19R + cat4*TPER7_22R
+e8 =~ 1*TPER8_01 + cat6*TPER8_04 + cat2*TPER8_15 + cat3*TPER8_19R + cat4*TPER8_22R
+e9 =~ 1*TPER9_01 + cat6*TPER9_04 + cat2*TPER9_15 + cat3*TPER9_19R + cat4*TPER9_22R
+e10 =~ 1*TPER10_01 + cat6*TPER10_04 + cat2*TPER10_15 + cat3*TPER10_19R + cat4*TPER10_22R
+
+
+# settting the fixed regressions to 1
+
+e8 ~ 1*e7     
+e9 ~ 1*e8  
+e10 ~ 1*e9  
+
+# creating the change scores 
+
+c_7.8 =~ 1*e8     
+c_8.9 =~ 1*e9 
+c_9.10 =~ 1*e10 
+
+
+# constraint intercepts
+e8 ~ 0*1        
+e9 ~ 0*1   
+e10 ~ 0*1   
+
+# This fixes the variance to 0
+
+e8 ~~ 0*e8     
+e9 ~~ 0*e9  
+e10 ~~ 0*e10  
+
+# Estimate the intercept of the change score
+c_7.8 ~ 1    
+c_8.9 ~ 1 
+c_9.10 ~ 1             
+
+# This estimates the intercept and variance of initial time
+e7 ~  1           
+e7 ~~  e7 
+
+#  Estimates the variance of the change scores
+c_7.8 ~~ c_7.8    
+c_8.9 ~~ c_8.9 
+c_9.10 ~~ c_9.10       
+
+
+# Estimates the covaration with change scores and T1
+e7  ~~ c_7.8 + c_8.9 + c_9.10 
+c_7.8 ~~ c_8.9 + c_9.10
+c_8.9 ~~ c_9.10
+
+## Allow indicators to covary
+TPER7_01 ~~ TPER8_01 + TPER9_01 + TPER10_01
+TPER8_01 ~~ TPER9_01 + TPER10_01
+TPER9_01 ~~ TPER10_01
+
+TPER7_04 ~~ TPER8_04 + TPER9_04 + TPER10_04
+TPER8_04 ~~ TPER9_04 + TPER10_04
+TPER9_04 ~~ TPER10_04
+
+TPER7_15 ~~ TPER8_15 + TPER9_15 + TPER10_15
+TPER8_15 ~~ TPER9_15 + TPER10_15
+TPER9_15 ~~ TPER10_15
+
+TPER7_19R ~~ TPER8_19R + TPER9_19R + TPER10_19R
+TPER8_19R ~~ TPER9_19R + TPER10_19R
+TPER9_19R ~~ TPER10_19R
+
+TPER7_22R ~~ TPER8_22R + TPER9_22R + TPER10_22R
+TPER8_22R ~~ TPER9_22R + TPER10_22R
+TPER9_22R ~~ TPER10_22R
+
+
+
+#scales the items and add measurement invariance
+
+TPER7_01 ~ 0*1
+TPER7_04 ~ (nu1)*1
+TPER7_15 ~ (nu2)*1
+TPER7_19R ~ (nu3)*1
+TPER7_22R ~ (nu4)*1
+
+TPER8_01~ 0*1
+TPER8_04 ~ (nu1)*1
+TPER8_15~ (nu2)*1
+TPER8_19R ~ (nu3)*1
+TPER8_22R~ (nu4)*1
+
+TPER9_01~ 0*1
+TPER9_04 ~ (nu1)*1
+TPER9_15~ (nu2)*1
+TPER9_19R ~ (nu3)*1
+TPER9_22R~ (nu4)*1
+
+TPER10_01 ~ 0*1
+TPER10_04 ~ (nu1)*1
+TPER10_15 ~ (nu2)*1
+TPER10_19R ~ (nu3)*1
+TPER10_22R ~ (nu4)*1
+
+&amp;#39;
+
+mw.model &amp;lt;- sem(mw.model, data=y_t_all , missing=&amp;quot;ML&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, : lavaan WARNING: some cases are empty and will be ignored:
+##   14 24 32 33 34 36 37 39 48 49 51 57 76 78 80 83 84 86 90 91 98 109 119 129 130 131 140 144 145 157 165 167 170 171 177 180 182 183 190 206 222 227 229 234 247 250 260 287 292 295 301 302 307 327 339 342 345 349 354 356 359 360 369 370 377 383 384 386 393 406 411 414 419 421 422 425 426 429 440 442 446 448 449 450 456 460 462 470 473 476 485 491 494 496 503 504 507 508 516 532 535 539 546 547 548 552 554 555 556 559 561 563 566 571 584 586 587 591 596 599 601 607 620 630 634 635 642 645 650 651 658 666 673 678 687 716 718 732 735 737 738 740 745 751 761 766 776 785 786 788 790 795 796 802 804 823 827 831 842 847 851 853 860 887 892 901 920 923 926 927 936 938 940 947 949 952 953 955 956 957 969 972 977 979 981 985 993 999 1000 1003 1016 1029 1032 1035 1038 1040 1044 1046 1048 1050 1055 1059 1066&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, :
+## lavaan WARNING: due to missing values, some pairwise combinations have less
+## than 10% coverage&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(mw.model, fit.measures=TRUE, standardized=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 73 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         96
+##   Number of equality constraints                    24
+##   Row rank of the constraints matrix                24
+## 
+##                                                   Used       Total
+##   Number of observations                           864        1067
+##   Number of missing patterns                        29
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     833.294
+##   Degrees of freedom                               158
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             6120.154
+##   Degrees of freedom                               190
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.886
+##   Tucker-Lewis Index (TLI)                       0.863
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -11678.547
+##   Loglikelihood unrestricted model (H1)     -11261.900
+## 
+##   Number of free parameters                         72
+##   Akaike (AIC)                               23501.094
+##   Bayesian (BIC)                             23843.927
+##   Sample-size adjusted Bayesian (BIC)        23615.274
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.070
+##   90 Percent Confidence Interval          0.066  0.075
+##   P-value RMSEA &amp;lt;= 0.05                          0.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.064
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Observed
+##   Observed information based on                Hessian
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   e7 =~                                                                 
+##     TPER7_0           1.000                               1.007    0.872
+##     TPER7_0 (cat6)    0.789    0.024   32.827    0.000    0.794    0.726
+##     TPER7_1 (cat2)    0.987    0.022   44.223    0.000    0.994    0.854
+##     TPER7_1 (cat3)    1.020    0.029   35.076    0.000    1.027    0.768
+##     TPER7_2 (cat4)    1.022    0.030   34.287    0.000    1.030    0.755
+##   e8 =~                                                                 
+##     TPER8_0           1.000                               1.009    0.871
+##     TPER8_0 (cat6)    0.789    0.024   32.827    0.000    0.796    0.703
+##     TPER8_1 (cat2)    0.987    0.022   44.223    0.000    0.996    0.855
+##     TPER8_1 (cat3)    1.020    0.029   35.076    0.000    1.029    0.758
+##     TPER8_2 (cat4)    1.022    0.030   34.287    0.000    1.032    0.746
+##   e9 =~                                                                 
+##     TPER9_0           1.000                               1.032    0.856
+##     TPER9_0 (cat6)    0.789    0.024   32.827    0.000    0.814    0.694
+##     TPER9_1 (cat2)    0.987    0.022   44.223    0.000    1.018    0.855
+##     TPER9_1 (cat3)    1.020    0.029   35.076    0.000    1.052    0.781
+##     TPER9_2 (cat4)    1.022    0.030   34.287    0.000    1.055    0.779
+##   e10 =~                                                                
+##     TPER10_           1.000                               0.971    0.855
+##     TPER10_ (cat6)    0.789    0.024   32.827    0.000    0.766    0.699
+##     TPER10_ (cat2)    0.987    0.022   44.223    0.000    0.958    0.815
+##     TPER10_ (cat3)    1.020    0.029   35.076    0.000    0.990    0.784
+##     TPER10_ (cat4)    1.022    0.030   34.287    0.000    0.993    0.778
+##   c_7.8 =~                                                              
+##     e8                1.000                               1.024    1.024
+##   c_8.9 =~                                                              
+##     e9                1.000                               0.949    0.949
+##   c_9.10 =~                                                             
+##     e10               1.000                               1.017    1.017
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   e8 ~                                                                  
+##     e7                1.000                               0.998    0.998
+##   e9 ~                                                                  
+##     e8                1.000                               0.978    0.978
+##   e10 ~                                                                 
+##     e9                1.000                               1.063    1.063
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   e7 ~~                                                                 
+##     c_7.8            -0.532    0.073   -7.291    0.000   -0.511   -0.511
+##     c_8.9             0.115    0.073    1.568    0.117    0.117    0.117
+##     c_9.10           -0.085    0.117   -0.722    0.470   -0.085   -0.085
+##   c_7.8 ~~                                                              
+##     c_8.9            -0.571    0.086   -6.606    0.000   -0.565   -0.565
+##     c_9.10            0.018    0.134    0.131    0.896    0.017    0.017
+##   c_8.9 ~~                                                              
+##     c_9.10           -0.482    0.089   -5.437    0.000   -0.498   -0.498
+##  .TPER7_01 ~~                                                           
+##    .TPER8_01          0.049    0.030    1.634    0.102    0.049    0.151
+##    .TPER9_01          0.087    0.035    2.457    0.014    0.087    0.246
+##    .TPER10_01        -0.205    0.052   -3.936    0.000   -0.205   -0.612
+##  .TPER8_01 ~~                                                           
+##    .TPER9_01          0.079    0.028    2.814    0.005    0.079    0.222
+##    .TPER10_01         0.061    0.035    1.749    0.080    0.061    0.183
+##  .TPER9_01 ~~                                                           
+##    .TPER10_01         0.021    0.034    0.616    0.538    0.021    0.056
+##  .TPER7_04 ~~                                                           
+##    .TPER8_04          0.163    0.039    4.133    0.000    0.163    0.269
+##    .TPER9_04          0.141    0.051    2.769    0.006    0.141    0.222
+##    .TPER10_04         0.078    0.094    0.829    0.407    0.078    0.132
+##  .TPER8_04 ~~                                                           
+##    .TPER9_04          0.225    0.043    5.289    0.000    0.225    0.330
+##    .TPER10_04         0.086    0.053    1.604    0.109    0.086    0.136
+##  .TPER9_04 ~~                                                           
+##    .TPER10_04         0.201    0.047    4.234    0.000    0.201    0.304
+##  .TPER7_15 ~~                                                           
+##    .TPER8_15          0.022    0.030    0.725    0.468    0.022    0.059
+##    .TPER9_15          0.008    0.034    0.241    0.810    0.008    0.022
+##    .TPER10_15        -0.137    0.070   -1.958    0.050   -0.137   -0.332
+##  .TPER8_15 ~~                                                           
+##    .TPER9_15          0.027    0.028    0.948    0.343    0.027    0.071
+##    .TPER10_15         0.013    0.042    0.322    0.747    0.013    0.033
+##  .TPER9_15 ~~                                                           
+##    .TPER10_15         0.008    0.033    0.240    0.810    0.008    0.019
+##  .TPER7_19R ~~                                                          
+##    .TPER8_19R         0.104    0.055    1.890    0.059    0.104    0.137
+##    .TPER9_19R        -0.074    0.060   -1.233    0.218   -0.074   -0.103
+##    .TPER10_19R        0.189    0.092    2.059    0.040    0.189    0.282
+##  .TPER8_19R ~~                                                          
+##    .TPER9_19R         0.110    0.053    2.078    0.038    0.110    0.148
+##    .TPER10_19R        0.053    0.069    0.775    0.438    0.053    0.077
+##  .TPER9_19R ~~                                                          
+##    .TPER10_19R       -0.036    0.052   -0.690    0.490   -0.036   -0.054
+##  .TPER7_22R ~~                                                          
+##    .TPER8_22R         0.143    0.060    2.406    0.016    0.143    0.174
+##    .TPER9_22R         0.019    0.061    0.304    0.761    0.019    0.024
+##    .TPER10_22R        0.160    0.108    1.487    0.137    0.160    0.223
+##  .TPER8_22R ~~                                                          
+##    .TPER9_22R         0.049    0.052    0.941    0.347    0.049    0.063
+##    .TPER10_22R       -0.014    0.062   -0.227    0.820   -0.014   -0.019
+##  .TPER9_22R ~~                                                          
+##    .TPER10_22R        0.025    0.054    0.467    0.640    0.025    0.037
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .e8                0.000                               0.000    0.000
+##    .e9                0.000                               0.000    0.000
+##    .e10               0.000                               0.000    0.000
+##     c_7.8            -0.015    0.056   -0.259    0.795   -0.014   -0.014
+##     c_8.9            -0.012    0.052   -0.225    0.822   -0.012   -0.012
+##     c_9.10            0.119    0.058    2.054    0.040    0.121    0.121
+##     e7                3.681    0.051   72.878    0.000    3.655    3.655
+##    .TPER7_01          0.000                               0.000    0.000
+##    .TPER7_04 (nu1)    0.579    0.092    6.266    0.000    0.579    0.529
+##    .TPER7_15 (nu2)   -0.059    0.086   -0.689    0.491   -0.059   -0.051
+##    .TPER7_19 (nu3)   -0.461    0.111   -4.161    0.000   -0.461   -0.345
+##    .TPER7_22 (nu4)   -0.581    0.114   -5.109    0.000   -0.581   -0.426
+##    .TPER8_01          0.000                               0.000    0.000
+##    .TPER8_04 (nu1)    0.579    0.092    6.266    0.000    0.579    0.511
+##    .TPER8_15 (nu2)   -0.059    0.086   -0.689    0.491   -0.059   -0.051
+##    .TPER8_19 (nu3)   -0.461    0.111   -4.161    0.000   -0.461   -0.340
+##    .TPER8_22 (nu4)   -0.581    0.114   -5.109    0.000   -0.581   -0.420
+##    .TPER9_01          0.000                               0.000    0.000
+##    .TPER9_04 (nu1)    0.579    0.092    6.266    0.000    0.579    0.494
+##    .TPER9_15 (nu2)   -0.059    0.086   -0.689    0.491   -0.059   -0.049
+##    .TPER9_19 (nu3)   -0.461    0.111   -4.161    0.000   -0.461   -0.343
+##    .TPER9_22 (nu4)   -0.581    0.114   -5.109    0.000   -0.581   -0.428
+##    .TPER10_0          0.000                               0.000    0.000
+##    .TPER10_0 (nu1)    0.579    0.092    6.266    0.000    0.579    0.528
+##    .TPER10_1 (nu2)   -0.059    0.086   -0.689    0.491   -0.059   -0.050
+##    .TPER10_1 (nu3)   -0.461    0.111   -4.161    0.000   -0.461   -0.366
+##    .TPER10_2 (nu4)   -0.581    0.114   -5.109    0.000   -0.581   -0.455
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .e8                0.000                               0.000    0.000
+##    .e9                0.000                               0.000    0.000
+##    .e10               0.000                               0.000    0.000
+##     e7                1.014    0.083   12.153    0.000    1.000    1.000
+##     c_7.8             1.067    0.108    9.831    0.000    1.000    1.000
+##     c_8.9             0.960    0.099    9.655    0.000    1.000    1.000
+##     c_9.10            0.975    0.104    9.412    0.000    1.000    1.000
+##    .TPER7_01          0.321    0.035    9.069    0.000    0.321    0.240
+##    .TPER7_04          0.566    0.046   12.253    0.000    0.566    0.473
+##    .TPER7_15          0.368    0.035   10.408    0.000    0.368    0.271
+##    .TPER7_19R         0.733    0.063   11.624    0.000    0.733    0.410
+##    .TPER7_22R         0.800    0.067   11.858    0.000    0.800    0.430
+##    .TPER8_01          0.325    0.031   10.530    0.000    0.325    0.242
+##    .TPER8_04          0.650    0.046   14.201    0.000    0.650    0.506
+##    .TPER8_15          0.366    0.031   11.624    0.000    0.366    0.270
+##    .TPER8_19R         0.786    0.059   13.328    0.000    0.786    0.426
+##    .TPER8_22R         0.850    0.063   13.482    0.000    0.850    0.444
+##    .TPER9_01          0.388    0.034   11.345    0.000    0.388    0.267
+##    .TPER9_04          0.713    0.049   14.525    0.000    0.713    0.518
+##    .TPER9_15          0.380    0.033   11.634    0.000    0.380    0.268
+##    .TPER9_19R         0.706    0.055   12.837    0.000    0.706    0.389
+##    .TPER9_22R         0.724    0.056   12.918    0.000    0.724    0.394
+##    .TPER10_01         0.348    0.039    8.953    0.000    0.348    0.270
+##    .TPER10_04         0.615    0.053   11.579    0.000    0.615    0.512
+##    .TPER10_15         0.465    0.045   10.239    0.000    0.465    0.336
+##    .TPER10_19R        0.613    0.059   10.412    0.000    0.613    0.385
+##    .TPER10_22R        0.642    0.062   10.427    0.000    0.642    0.394&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;semPaths(mw.model)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/Lectures/2019-11-07-week-11_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; /&gt;
+Gross. We have to draw this by hand to get a good representation.&lt;/p&gt;
+&lt;div id=&#34;predicting-change&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;predicting change&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;c.mw.model &amp;lt;-
+&amp;#39;e7 =~ 1*TPER7_01 + cat6*TPER7_04 + cat2*TPER7_15 + cat3*TPER7_19R + cat4*TPER7_22R
+e8 =~ 1*TPER8_01 + cat6*TPER8_04 + cat2*TPER8_15 + cat3*TPER8_19R + cat4*TPER8_22R
+e9 =~ 1*TPER9_01 + cat6*TPER9_04 + cat2*TPER9_15 + cat3*TPER9_19R + cat4*TPER9_22R
+e10 =~ 1*TPER10_01 + cat6*TPER10_04 + cat2*TPER10_15 + cat3*TPER10_19R + cat4*TPER10_22R
+
+
+# settting the fixed regressions to 1
+
+e8 ~ 1*e7     
+e9 ~ 1*e8  
+e10 ~ 1*e9  
+
+# creating the change scores 
+
+c_7.8 =~ 1*e8     
+c_8.9 =~ 1*e9 
+c_9.10 =~ 1*e10 
+
+
+# constraint intercepts
+e8 ~ 0*1        
+e9 ~ 0*1   
+e10 ~ 0*1   
+
+# This fixes the variance to 0
+
+e8 ~~ 0*e8     
+e9 ~~ 0*e9  
+e10 ~~ 0*e10  
+
+# Estimate the intercept of the change score
+c_7.8 ~ 1    
+c_8.9 ~ 1 
+c_9.10 ~ 1             
+
+# This estimates the intercept and variance of initial time
+e7 ~  1           
+e7 ~~  e7 
+
+#  Estimates the variance of the change scores
+c_7.8 ~~ c_7.8    
+c_8.9 ~~ c_8.9 
+c_9.10 ~~ c_9.10       
+
+
+# Estimates the covaration with change scores and T1
+e7  ~~ c_7.8 + c_8.9 + c_9.10 
+c_7.8 ~~ c_8.9 + c_9.10
+c_8.9 ~~ c_9.10
+
+## Allow indicators to covary
+TPER7_01 ~~ TPER8_01 + TPER9_01 + TPER10_01
+TPER8_01 ~~ TPER9_01 + TPER10_01
+TPER9_01 ~~ TPER10_01
+
+TPER7_04 ~~ TPER8_04 + TPER9_04 + TPER10_04
+TPER8_04 ~~ TPER9_04 + TPER10_04
+TPER9_04 ~~ TPER10_04
+
+TPER7_15 ~~ TPER8_15 + TPER9_15 + TPER10_15
+TPER8_15 ~~ TPER9_15 + TPER10_15
+TPER9_15 ~~ TPER10_15
+
+TPER7_19R ~~ TPER8_19R + TPER9_19R + TPER10_19R
+TPER8_19R ~~ TPER9_19R + TPER10_19R
+TPER9_19R ~~ TPER10_19R
+
+TPER7_22R ~~ TPER8_22R + TPER9_22R + TPER10_22R
+TPER8_22R ~~ TPER9_22R + TPER10_22R
+TPER9_22R ~~ TPER10_22R
+
+
+
+#scales the items and add measurement invariance
+
+TPER7_01 ~ 0*1
+TPER7_04 ~ (nu1)*1
+TPER7_15 ~ (nu2)*1
+TPER7_19R ~ (nu3)*1
+TPER7_22R ~ (nu4)*1
+
+TPER8_01~ 0*1
+TPER8_04 ~ (nu1)*1
+TPER8_15~ (nu2)*1
+TPER8_19R ~ (nu3)*1
+TPER8_22R~ (nu4)*1
+
+TPER9_01~ 0*1
+TPER9_04 ~ (nu1)*1
+TPER9_15~ (nu2)*1
+TPER9_19R ~ (nu3)*1
+TPER9_22R~ (nu4)*1
+
+TPER10_01 ~ 0*1
+TPER10_04 ~ (nu1)*1
+TPER10_15 ~ (nu2)*1
+TPER10_19R ~ (nu3)*1
+TPER10_22R ~ (nu4)*1
+
+# predicting change
+
+c_7.8 ~ SEX1    
+c_8.9 ~ SEX1 
+c_9.10 ~ SEX1 
+
+
+&amp;#39;
+
+c.mw.model &amp;lt;- sem(c.mw.model, data=y_t_all , missing=&amp;quot;ML&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, : lavaan WARNING: 68 cases were deleted due to missing values in 
+##        exogenous variable(s), while fixed.x = TRUE.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, :
+## lavaan WARNING: due to missing values, some pairwise combinations have less
+## than 10% coverage&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(c.mw.model, fit.measures=TRUE, standardized=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 79 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         99
+##   Number of equality constraints                    24
+##   Row rank of the constraints matrix                24
+## 
+##                                                   Used       Total
+##   Number of observations                           999        1067
+##   Number of missing patterns                        30
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     871.333
+##   Degrees of freedom                               175
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             5976.297
+##   Degrees of freedom                               210
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.879
+##   Tucker-Lewis Index (TLI)                       0.855
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -11131.232
+##   Loglikelihood unrestricted model (H1)     -10695.565
+## 
+##   Number of free parameters                         75
+##   Akaike (AIC)                               22412.463
+##   Bayesian (BIC)                             22780.470
+##   Sample-size adjusted Bayesian (BIC)        22542.266
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.063
+##   90 Percent Confidence Interval          0.059  0.067
+##   P-value RMSEA &amp;lt;= 0.05                          0.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.065
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Observed
+##   Observed information based on                Hessian
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   e7 =~                                                                 
+##     TPER7_0           1.000                               1.009    0.872
+##     TPER7_0 (cat6)    0.783    0.024   32.145    0.000    0.790    0.724
+##     TPER7_1 (cat2)    0.987    0.023   43.539    0.000    0.996    0.854
+##     TPER7_1 (cat3)    1.011    0.030   34.231    0.000    1.020    0.766
+##     TPER7_2 (cat4)    1.015    0.030   33.472    0.000    1.024    0.754
+##   e8 =~                                                                 
+##     TPER8_0           1.000                               1.010    0.875
+##     TPER8_0 (cat6)    0.783    0.024   32.145    0.000    0.791    0.701
+##     TPER8_1 (cat2)    0.987    0.023   43.539    0.000    0.997    0.855
+##     TPER8_1 (cat3)    1.011    0.030   34.231    0.000    1.022    0.753
+##     TPER8_2 (cat4)    1.015    0.030   33.472    0.000    1.026    0.741
+##   e9 =~                                                                 
+##     TPER9_0           1.000                               1.037    0.857
+##     TPER9_0 (cat6)    0.783    0.024   32.145    0.000    0.813    0.704
+##     TPER9_1 (cat2)    0.987    0.023   43.539    0.000    1.024    0.859
+##     TPER9_1 (cat3)    1.011    0.030   34.231    0.000    1.049    0.779
+##     TPER9_2 (cat4)    1.015    0.030   33.472    0.000    1.053    0.779
+##   e10 =~                                                                
+##     TPER10_           1.000                               0.971    0.859
+##     TPER10_ (cat6)    0.783    0.024   32.145    0.000    0.760    0.685
+##     TPER10_ (cat2)    0.987    0.023   43.539    0.000    0.958    0.820
+##     TPER10_ (cat3)    1.011    0.030   34.231    0.000    0.981    0.777
+##     TPER10_ (cat4)    1.015    0.030   33.472    0.000    0.985    0.775
+##   c_7.8 =~                                                              
+##     e8                1.000                               1.032    1.032
+##   c_8.9 =~                                                              
+##     e9                1.000                               0.940    0.940
+##   c_9.10 =~                                                             
+##     e10               1.000                               1.017    1.017
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   e8 ~                                                                  
+##     e7                1.000                               0.998    0.998
+##   e9 ~                                                                  
+##     e8                1.000                               0.974    0.974
+##   e10 ~                                                                 
+##     e9                1.000                               1.069    1.069
+##   c_7.8 ~                                                               
+##     SEX1              0.206    0.086    2.387    0.017    0.197    0.099
+##   c_8.9 ~                                                               
+##     SEX1              0.067    0.106    0.632    0.527    0.069    0.034
+##   c_9.10 ~                                                              
+##     SEX1              0.075    0.120    0.626    0.532    0.076    0.038
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   e7 ~~                                                                 
+##    .c_7.8            -0.542    0.074   -7.359    0.000   -0.518   -0.518
+##    .c_8.9             0.110    0.074    1.494    0.135    0.112    0.112
+##    .c_9.10           -0.081    0.117   -0.689    0.491   -0.081   -0.081
+##  .c_7.8 ~~                                                              
+##    .c_8.9            -0.562    0.086   -6.504    0.000   -0.555   -0.555
+##    .c_9.10            0.004    0.132    0.033    0.974    0.004    0.004
+##  .c_8.9 ~~                                                              
+##    .c_9.10           -0.483    0.088   -5.474    0.000   -0.502   -0.502
+##  .TPER7_01 ~~                                                           
+##    .TPER8_01          0.047    0.029    1.582    0.114    0.047    0.147
+##    .TPER9_01          0.084    0.036    2.370    0.018    0.084    0.239
+##    .TPER10_01        -0.197    0.052   -3.762    0.000   -0.197   -0.604
+##  .TPER8_01 ~~                                                           
+##    .TPER9_01          0.069    0.028    2.443    0.015    0.069    0.198
+##    .TPER10_01         0.059    0.034    1.747    0.081    0.059    0.183
+##  .TPER9_01 ~~                                                           
+##    .TPER10_01         0.028    0.035    0.815    0.415    0.028    0.078
+##  .TPER7_04 ~~                                                           
+##    .TPER8_04          0.162    0.039    4.110    0.000    0.162    0.267
+##    .TPER9_04          0.135    0.049    2.782    0.005    0.135    0.219
+##    .TPER10_04         0.090    0.098    0.920    0.357    0.090    0.148
+##  .TPER8_04 ~~                                                           
+##    .TPER9_04          0.213    0.041    5.158    0.000    0.213    0.323
+##    .TPER10_04         0.092    0.056    1.630    0.103    0.092    0.141
+##  .TPER9_04 ~~                                                           
+##    .TPER10_04         0.224    0.050    4.459    0.000    0.224    0.338
+##  .TPER7_15 ~~                                                           
+##    .TPER8_15          0.022    0.030    0.733    0.464    0.022    0.060
+##    .TPER9_15          0.005    0.034    0.137    0.891    0.005    0.012
+##    .TPER10_15        -0.130    0.069   -1.886    0.059   -0.130   -0.321
+##  .TPER8_15 ~~                                                           
+##    .TPER9_15          0.026    0.028    0.918    0.359    0.026    0.069
+##    .TPER10_15         0.015    0.040    0.366    0.714    0.015    0.037
+##  .TPER9_15 ~~                                                           
+##    .TPER10_15         0.030    0.034    0.863    0.388    0.030    0.072
+##  .TPER7_19R ~~                                                          
+##    .TPER8_19R         0.108    0.055    1.948    0.051    0.108    0.141
+##    .TPER9_19R        -0.073    0.060   -1.205    0.228   -0.073   -0.101
+##    .TPER10_19R        0.193    0.093    2.071    0.038    0.193    0.284
+##  .TPER8_19R ~~                                                          
+##    .TPER9_19R         0.111    0.054    2.046    0.041    0.111    0.146
+##    .TPER10_19R        0.053    0.070    0.763    0.445    0.053    0.075
+##  .TPER9_19R ~~                                                          
+##    .TPER10_19R       -0.054    0.056   -0.970    0.332   -0.054   -0.081
+##  .TPER7_22R ~~                                                          
+##    .TPER8_22R         0.145    0.060    2.423    0.015    0.145    0.175
+##    .TPER9_22R         0.021    0.060    0.348    0.728    0.021    0.028
+##    .TPER10_22R        0.165    0.107    1.538    0.124    0.165    0.230
+##  .TPER8_22R ~~                                                          
+##    .TPER9_22R         0.049    0.052    0.944    0.345    0.049    0.062
+##    .TPER10_22R       -0.011    0.062   -0.182    0.856   -0.011   -0.015
+##  .TPER9_22R ~~                                                          
+##    .TPER10_22R        0.050    0.057    0.874    0.382    0.050    0.073
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .e8                0.000                               0.000    0.000
+##    .e9                0.000                               0.000    0.000
+##    .e10               0.000                               0.000    0.000
+##    .c_7.8            -0.325    0.142   -2.284    0.022   -0.312   -0.312
+##    .c_8.9            -0.104    0.166   -0.628    0.530   -0.107   -0.107
+##    .c_9.10            0.008    0.190    0.041    0.968    0.008    0.008
+##     e7                3.689    0.051   72.452    0.000    3.657    3.657
+##    .TPER7_01          0.000                               0.000    0.000
+##    .TPER7_04 (nu1)    0.613    0.094    6.526    0.000    0.613    0.562
+##    .TPER7_15 (nu2)   -0.061    0.087   -0.703    0.482   -0.061   -0.053
+##    .TPER7_19 (nu3)   -0.433    0.113   -3.837    0.000   -0.433   -0.325
+##    .TPER7_22 (nu4)   -0.547    0.116   -4.719    0.000   -0.547   -0.402
+##    .TPER8_01          0.000                               0.000    0.000
+##    .TPER8_04 (nu1)    0.613    0.094    6.526    0.000    0.613    0.543
+##    .TPER8_15 (nu2)   -0.061    0.087   -0.703    0.482   -0.061   -0.053
+##    .TPER8_19 (nu3)   -0.433    0.113   -3.837    0.000   -0.433   -0.319
+##    .TPER8_22 (nu4)   -0.547    0.116   -4.719    0.000   -0.547   -0.395
+##    .TPER9_01          0.000                               0.000    0.000
+##    .TPER9_04 (nu1)    0.613    0.094    6.526    0.000    0.613    0.531
+##    .TPER9_15 (nu2)   -0.061    0.087   -0.703    0.482   -0.061   -0.051
+##    .TPER9_19 (nu3)   -0.433    0.113   -3.837    0.000   -0.433   -0.322
+##    .TPER9_22 (nu4)   -0.547    0.116   -4.719    0.000   -0.547   -0.404
+##    .TPER10_0          0.000                               0.000    0.000
+##    .TPER10_0 (nu1)    0.613    0.094    6.526    0.000    0.613    0.552
+##    .TPER10_1 (nu2)   -0.061    0.087   -0.703    0.482   -0.061   -0.052
+##    .TPER10_1 (nu3)   -0.433    0.113   -3.837    0.000   -0.433   -0.343
+##    .TPER10_2 (nu4)   -0.547    0.116   -4.719    0.000   -0.547   -0.430
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .e8                0.000                               0.000    0.000
+##    .e9                0.000                               0.000    0.000
+##    .e10               0.000                               0.000    0.000
+##     e7                1.018    0.084   12.144    0.000    1.000    1.000
+##    .c_7.8             1.078    0.110    9.814    0.000    0.990    0.990
+##    .c_8.9             0.951    0.099    9.632    0.000    0.999    0.999
+##    .c_9.10            0.973    0.108    9.011    0.000    0.999    0.999
+##    .TPER7_01          0.320    0.035    9.025    0.000    0.320    0.239
+##    .TPER7_04          0.568    0.046   12.254    0.000    0.568    0.476
+##    .TPER7_15          0.368    0.035   10.392    0.000    0.368    0.271
+##    .TPER7_19R         0.732    0.063   11.631    0.000    0.732    0.413
+##    .TPER7_22R         0.798    0.067   11.857    0.000    0.798    0.432
+##    .TPER8_01          0.313    0.030   10.313    0.000    0.313    0.235
+##    .TPER8_04          0.648    0.046   14.180    0.000    0.648    0.508
+##    .TPER8_15          0.366    0.032   11.610    0.000    0.366    0.269
+##    .TPER8_19R         0.798    0.060   13.376    0.000    0.798    0.433
+##    .TPER8_22R         0.863    0.064   13.515    0.000    0.863    0.451
+##    .TPER9_01          0.388    0.035   10.934    0.000    0.388    0.265
+##    .TPER9_04          0.672    0.048   13.878    0.000    0.672    0.505
+##    .TPER9_15          0.374    0.034   11.144    0.000    0.374    0.263
+##    .TPER9_19R         0.714    0.057   12.438    0.000    0.714    0.394
+##    .TPER9_22R         0.720    0.058   12.462    0.000    0.720    0.394
+##    .TPER10_01         0.334    0.040    8.302    0.000    0.334    0.262
+##    .TPER10_04         0.655    0.060   10.998    0.000    0.655    0.531
+##    .TPER10_15         0.447    0.047    9.528    0.000    0.447    0.327
+##    .TPER10_19R        0.630    0.064    9.904    0.000    0.630    0.396
+##    .TPER10_22R        0.644    0.065    9.844    0.000    0.644    0.399&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;adding-intercept-and-growth-factors-to-lds-models&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;adding intercept and growth factors to LDS models&lt;/h2&gt;
+&lt;p&gt;One top of this type of model you can fit a growth curve. Why? Can capture both general trends and more fine-grained temporal dynamics. This can be especially useful when trying to separate a known, more stable change occurring during development (e.g.natural aging process) from more specific fluctuations due to external factors (e.g., life events).&lt;/p&gt;
+&lt;p&gt;However, there are some differences from our standard latent growth model. First, if the difference scores are equal across time the mean of the change factor will be 0. This is because the latent change variable are using difference scores as indicators, not standard indicators. As such, this can be interpreted as a constant rate of change (or not).&lt;/p&gt;
+&lt;p&gt;If you want to get at a standard interpretation of a growth curve, seperate from change at a specific time point, you can define the change score with loadings of 1 for all difference score variables as opposed to increasing linearly eg 1,2,3,4,5…&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lg.mw.model &amp;lt;-
+&amp;#39;e7 =~ 1*TPER7_01 + cat6*TPER7_04 + cat2*TPER7_15 + cat3*TPER7_19R + cat4*TPER7_22R
+e8 =~ 1*TPER8_01 + cat6*TPER8_04 + cat2*TPER8_15 + cat3*TPER8_19R + cat4*TPER8_22R
+e9 =~ 1*TPER9_01 + cat6*TPER9_04 + cat2*TPER9_15 + cat3*TPER9_19R + cat4*TPER9_22R
+e10 =~ 1*TPER10_01 + cat6*TPER10_04 + cat2*TPER10_15 + cat3*TPER10_19R + cat4*TPER10_22R
+
+
+# settting the fixed regressions to 1
+
+e8 ~ 1*e7     
+e9 ~ 1*e8  
+e10 ~ 1*e9  
+
+# creating the change scores 
+
+c_7.8 =~ 1*e8     
+c_8.9 =~ 1*e9 
+c_9.10 =~ 1*e10 
+
+
+# constraint intercepts
+e8 ~ 0*1        
+e9 ~ 0*1   
+e10 ~ 0*1   
+
+# This fixes the variance to 0
+
+e8 ~~ 0*e8     
+e9 ~~ 0*e9  
+e10 ~~ 0*e10  
+
+# # a change from the previous models is we now fix the mean of change scores to zero. Estimate the intercept of the change score
+c_7.8 ~ 0*1    
+c_8.9 ~ 0*1 
+c_9.10 ~ 0*1             
+
+# This estimates the intercept and variance of initial time
+e7 ~  1           
+e7 ~~  e7 
+
+#  Estimates the variance of the change scores
+c_7.8 ~~ c_7.8    
+c_8.9 ~~ c_8.9 
+c_9.10 ~~ c_9.10       
+
+
+# # A change from the previous model is we no longer estimate the covariance between change scores a) with eachother and b) with the intercept. We will only covary intercept with a growth component, defined below. We must set some of these covariances to zero to make sure they are not estimated.  
+e7  ~~ 0*c_7.8 + 0*c_8.9 + 0*c_9.10
+c_7.8 ~~ 0*c_8.9 + 0*c_9.10
+c_8.9 ~~ 0*c_9.10
+
+
+## Allow indicators to covary
+TPER7_01 ~~ TPER8_01 + TPER9_01 + TPER10_01
+TPER8_01 ~~ TPER9_01 + TPER10_01
+TPER9_01 ~~ TPER10_01
+
+TPER7_04 ~~ TPER8_04 + TPER9_04 + TPER10_04
+TPER8_04 ~~ TPER9_04 + TPER10_04
+TPER9_04 ~~ TPER10_04
+
+TPER7_15 ~~ TPER8_15 + TPER9_15 + TPER10_15
+TPER8_15 ~~ TPER9_15 + TPER10_15
+TPER9_15 ~~ TPER10_15
+
+TPER7_19R ~~ TPER8_19R + TPER9_19R + TPER10_19R
+TPER8_19R ~~ TPER9_19R + TPER10_19R
+TPER9_19R ~~ TPER10_19R
+
+TPER7_22R ~~ TPER8_22R + TPER9_22R + TPER10_22R
+TPER8_22R ~~ TPER9_22R + TPER10_22R
+TPER9_22R ~~ TPER10_22R
+
+
+
+#scales the items and add measurement invariance
+
+TPER7_01 ~ 0*1
+TPER7_04 ~ (nu1)*1
+TPER7_15 ~ (nu2)*1
+TPER7_19R ~ (nu3)*1
+TPER7_22R ~ (nu4)*1
+
+TPER8_01~ 0*1
+TPER8_04 ~ (nu1)*1
+TPER8_15~ (nu2)*1
+TPER8_19R ~ (nu3)*1
+TPER8_22R~ (nu4)*1
+
+TPER9_01~ 0*1
+TPER9_04 ~ (nu1)*1
+TPER9_15~ (nu2)*1
+TPER9_19R ~ (nu3)*1
+TPER9_22R~ (nu4)*1
+
+TPER10_01 ~ 0*1
+TPER10_04 ~ (nu1)*1
+TPER10_15 ~ (nu2)*1
+TPER10_19R ~ (nu3)*1
+TPER10_22R ~ (nu4)*1
+
+# create a latent intercept growth component
+E.change  =~ 1*e8 + 2*e9 + 3*e10
+E.change ~ 1
+
+# Covary the intecept and new overall change component and make sure change does not covary with difference scores
+E.change ~~ e7
+E.change ~~ 0*c_7.8 + 0*c_8.9 + 0*c_9.10
+
+&amp;#39;
+
+lg.mw.model &amp;lt;- sem(lg.mw.model, data=y_t_all , missing=&amp;quot;ML&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, : lavaan WARNING: some cases are empty and will be ignored:
+##   14 24 32 33 34 36 37 39 48 49 51 57 76 78 80 83 84 86 90 91 98 109 119 129 130 131 140 144 145 157 165 167 170 171 177 180 182 183 190 206 222 227 229 234 247 250 260 287 292 295 301 302 307 327 339 342 345 349 354 356 359 360 369 370 377 383 384 386 393 406 411 414 419 421 422 425 426 429 440 442 446 448 449 450 456 460 462 470 473 476 485 491 494 496 503 504 507 508 516 532 535 539 546 547 548 552 554 555 556 559 561 563 566 571 584 586 587 591 596 599 601 607 620 630 634 635 642 645 650 651 658 666 673 678 687 716 718 732 735 737 738 740 745 751 761 766 776 785 786 788 790 795 796 802 804 823 827 831 842 847 851 853 860 887 892 901 920 923 926 927 936 938 940 947 949 952 953 955 956 957 969 972 977 979 981 985 993 999 1000 1003 1016 1029 1032 1035 1038 1040 1044 1046 1048 1050 1055 1059 1066&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, :
+## lavaan WARNING: due to missing values, some pairwise combinations have less
+## than 10% coverage&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_object_post_check(object): lavaan WARNING: some estimated lv
+## variances are negative&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(lg.mw.model, fit.measures=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 63 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         90
+##   Number of equality constraints                    24
+##   Row rank of the constraints matrix                24
+## 
+##                                                   Used       Total
+##   Number of observations                           864        1067
+##   Number of missing patterns                        29
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     949.774
+##   Degrees of freedom                               164
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             6120.154
+##   Degrees of freedom                               190
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.867
+##   Tucker-Lewis Index (TLI)                       0.846
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -11736.787
+##   Loglikelihood unrestricted model (H1)     -11261.900
+## 
+##   Number of free parameters                         66
+##   Akaike (AIC)                               23605.574
+##   Bayesian (BIC)                             23919.837
+##   Sample-size adjusted Bayesian (BIC)        23710.238
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.074
+##   90 Percent Confidence Interval          0.070  0.079
+##   P-value RMSEA &amp;lt;= 0.05                          0.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.156
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Observed
+##   Observed information based on                Hessian
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   e7 =~                                               
+##     TPER7_0           1.000                           
+##     TPER7_0 (cat6)    0.790    0.024   32.432    0.000
+##     TPER7_1 (cat2)    0.986    0.022   43.857    0.000
+##     TPER7_1 (cat3)    1.024    0.029   35.060    0.000
+##     TPER7_2 (cat4)    1.024    0.030   34.275    0.000
+##   e8 =~                                               
+##     TPER8_0           1.000                           
+##     TPER8_0 (cat6)    0.790    0.024   32.432    0.000
+##     TPER8_1 (cat2)    0.986    0.022   43.857    0.000
+##     TPER8_1 (cat3)    1.024    0.029   35.060    0.000
+##     TPER8_2 (cat4)    1.024    0.030   34.275    0.000
+##   e9 =~                                               
+##     TPER9_0           1.000                           
+##     TPER9_0 (cat6)    0.790    0.024   32.432    0.000
+##     TPER9_1 (cat2)    0.986    0.022   43.857    0.000
+##     TPER9_1 (cat3)    1.024    0.029   35.060    0.000
+##     TPER9_2 (cat4)    1.024    0.030   34.275    0.000
+##   e10 =~                                              
+##     TPER10_           1.000                           
+##     TPER10_ (cat6)    0.790    0.024   32.432    0.000
+##     TPER10_ (cat2)    0.986    0.022   43.857    0.000
+##     TPER10_ (cat3)    1.024    0.029   35.060    0.000
+##     TPER10_ (cat4)    1.024    0.030   34.275    0.000
+##   c_7.8 =~                                            
+##     e8                1.000                           
+##   c_8.9 =~                                            
+##     e9                1.000                           
+##   c_9.10 =~                                           
+##     e10               1.000                           
+##   E.change =~                                         
+##     e8                1.000                           
+##     e9                2.000                           
+##     e10               3.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   e8 ~                                                
+##     e7                1.000                           
+##   e9 ~                                                
+##     e8                1.000                           
+##   e10 ~                                               
+##     e9                1.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   e7 ~~                                               
+##     c_7.8             0.000                           
+##     c_8.9             0.000                           
+##     c_9.10            0.000                           
+##   c_7.8 ~~                                            
+##     c_8.9             0.000                           
+##     c_9.10            0.000                           
+##   c_8.9 ~~                                            
+##     c_9.10            0.000                           
+##  .TPER7_01 ~~                                         
+##    .TPER8_01          0.018    0.030    0.586    0.558
+##    .TPER9_01          0.090    0.036    2.505    0.012
+##    .TPER10_01        -0.204    0.053   -3.819    0.000
+##  .TPER8_01 ~~                                         
+##    .TPER9_01          0.072    0.028    2.569    0.010
+##    .TPER10_01         0.067    0.036    1.868    0.062
+##  .TPER9_01 ~~                                         
+##    .TPER10_01         0.028    0.034    0.838    0.402
+##  .TPER7_04 ~~                                         
+##    .TPER8_04          0.149    0.040    3.766    0.000
+##    .TPER9_04          0.150    0.051    2.936    0.003
+##    .TPER10_04         0.109    0.096    1.134    0.257
+##  .TPER8_04 ~~                                         
+##    .TPER9_04          0.222    0.043    5.209    0.000
+##    .TPER10_04         0.085    0.054    1.585    0.113
+##  .TPER9_04 ~~                                         
+##    .TPER10_04         0.203    0.048    4.251    0.000
+##  .TPER7_15 ~~                                         
+##    .TPER8_15          0.007    0.030    0.234    0.815
+##    .TPER9_15          0.009    0.034    0.270    0.787
+##    .TPER10_15        -0.137    0.072   -1.904    0.057
+##  .TPER8_15 ~~                                         
+##    .TPER9_15          0.025    0.028    0.898    0.369
+##    .TPER10_15         0.016    0.042    0.388    0.698
+##  .TPER9_15 ~~                                         
+##    .TPER10_15         0.010    0.033    0.294    0.769
+##  .TPER7_19R ~~                                        
+##    .TPER8_19R         0.111    0.054    2.034    0.042
+##    .TPER9_19R        -0.062    0.060   -1.032    0.302
+##    .TPER10_19R        0.179    0.093    1.925    0.054
+##  .TPER8_19R ~~                                        
+##    .TPER9_19R         0.104    0.053    1.972    0.049
+##    .TPER10_19R        0.050    0.069    0.728    0.467
+##  .TPER9_19R ~~                                        
+##    .TPER10_19R       -0.037    0.052   -0.714    0.475
+##  .TPER7_22R ~~                                        
+##    .TPER8_22R         0.144    0.059    2.443    0.015
+##    .TPER9_22R         0.026    0.061    0.427    0.670
+##    .TPER10_22R        0.141    0.109    1.293    0.196
+##  .TPER8_22R ~~                                        
+##    .TPER9_22R         0.041    0.052    0.784    0.433
+##    .TPER10_22R       -0.010    0.062   -0.167    0.867
+##  .TPER9_22R ~~                                        
+##    .TPER10_22R        0.020    0.054    0.375    0.707
+##   e7 ~~                                               
+##     E.change         -0.092    0.016   -5.901    0.000
+##   c_7.8 ~~                                            
+##     E.change          0.000                           
+##   c_8.9 ~~                                            
+##     E.change          0.000                           
+##   c_9.10 ~~                                           
+##     E.change          0.000                           
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .e8                0.000                           
+##    .e9                0.000                           
+##    .e10               0.000                           
+##     c_7.8             0.000                           
+##     c_8.9             0.000                           
+##     c_9.10            0.000                           
+##     e7                3.668    0.043   84.664    0.000
+##    .TPER7_01          0.000                           
+##    .TPER7_04 (nu1)    0.572    0.094    6.114    0.000
+##    .TPER7_15 (nu2)   -0.058    0.086   -0.676    0.499
+##    .TPER7_19 (nu3)   -0.477    0.111   -4.287    0.000
+##    .TPER7_22 (nu4)   -0.587    0.114   -5.159    0.000
+##    .TPER8_01          0.000                           
+##    .TPER8_04 (nu1)    0.572    0.094    6.114    0.000
+##    .TPER8_15 (nu2)   -0.058    0.086   -0.676    0.499
+##    .TPER8_19 (nu3)   -0.477    0.111   -4.287    0.000
+##    .TPER8_22 (nu4)   -0.587    0.114   -5.159    0.000
+##    .TPER9_01          0.000                           
+##    .TPER9_04 (nu1)    0.572    0.094    6.114    0.000
+##    .TPER9_15 (nu2)   -0.058    0.086   -0.676    0.499
+##    .TPER9_19 (nu3)   -0.477    0.111   -4.287    0.000
+##    .TPER9_22 (nu4)   -0.587    0.114   -5.159    0.000
+##    .TPER10_0          0.000                           
+##    .TPER10_0 (nu1)    0.572    0.094    6.114    0.000
+##    .TPER10_1 (nu2)   -0.058    0.086   -0.676    0.499
+##    .TPER10_1 (nu3)   -0.477    0.111   -4.287    0.000
+##    .TPER10_2 (nu4)   -0.587    0.114   -5.159    0.000
+##     E.change          0.015    0.010    1.448    0.148
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .e8                0.000                           
+##    .e9                0.000                           
+##    .e10               0.000                           
+##     e7                0.869    0.066   13.069    0.000
+##     c_7.8             0.712    0.059   12.107    0.000
+##     c_8.9             1.094    0.096   11.395    0.000
+##     c_9.10            1.997    0.206    9.674    0.000
+##    .TPER7_01          0.338    0.036    9.411    0.000
+##    .TPER7_04          0.575    0.047   12.274    0.000
+##    .TPER7_15          0.378    0.036   10.549    0.000
+##    .TPER7_19R         0.742    0.063   11.779    0.000
+##    .TPER7_22R         0.807    0.067   12.024    0.000
+##    .TPER8_01          0.338    0.031   10.782    0.000
+##    .TPER8_04          0.654    0.046   14.228    0.000
+##    .TPER8_15          0.366    0.031   11.648    0.000
+##    .TPER8_19R         0.778    0.058   13.327    0.000
+##    .TPER8_22R         0.853    0.063   13.538    0.000
+##    .TPER9_01          0.384    0.034   11.214    0.000
+##    .TPER9_04          0.713    0.049   14.497    0.000
+##    .TPER9_15          0.383    0.033   11.611    0.000
+##    .TPER9_19R         0.701    0.055   12.752    0.000
+##    .TPER9_22R         0.720    0.056   12.846    0.000
+##    .TPER10_01         0.347    0.039    8.916    0.000
+##    .TPER10_04         0.616    0.053   11.551    0.000
+##    .TPER10_15         0.464    0.045   10.233    0.000
+##    .TPER10_19R        0.610    0.059   10.367    0.000
+##    .TPER10_22R        0.639    0.061   10.398    0.000
+##     E.change         -0.074    0.010   -7.106    0.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now lets try this same model but with equal loadings on our general change factor.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;e.lg.mw.model &amp;lt;-
+&amp;#39;e7 =~ 1*TPER7_01 + cat6*TPER7_04 + cat2*TPER7_15 + cat3*TPER7_19R + cat4*TPER7_22R
+e8 =~ 1*TPER8_01 + cat6*TPER8_04 + cat2*TPER8_15 + cat3*TPER8_19R + cat4*TPER8_22R
+e9 =~ 1*TPER9_01 + cat6*TPER9_04 + cat2*TPER9_15 + cat3*TPER9_19R + cat4*TPER9_22R
+e10 =~ 1*TPER10_01 + cat6*TPER10_04 + cat2*TPER10_15 + cat3*TPER10_19R + cat4*TPER10_22R
+
+
+# settting the fixed regressions to 1
+
+e8 ~ 1*e7     
+e9 ~ 1*e8  
+e10 ~ 1*e9  
+
+# creating the change scores 
+
+c_7.8 =~ 1*e8     
+c_8.9 =~ 1*e9 
+c_9.10 =~ 1*e10 
+
+
+# constraint intercepts
+e8 ~ 0*1        
+e9 ~ 0*1   
+e10 ~ 0*1   
+
+# This fixes the variance to 0
+
+e8 ~~ 0*e8     
+e9 ~~ 0*e9  
+e10 ~~ 0*e10  
+
+# Estimate the intercept of the change scores
+c_7.8 ~ 0*1    
+c_8.9 ~ 0*1 
+c_9.10 ~ 0*1             
+
+# This estimates the intercept and variance of initial time
+e7 ~  1           
+e7 ~~  e7 
+
+#  Estimates the variance of the change scores
+c_7.8 ~~ c_7.8    
+c_8.9 ~~ c_8.9 
+c_9.10 ~~ c_9.10       
+
+
+# # A change from the previous model is we no longer estimate the covariance between change scores a) with eachother and b) with the intercept. We will only covary intercept with a growth component, defined below. We must set some of these covariances to zero to make sure they are not estimated.  
+e7  ~~ 0*c_7.8 + 0*c_8.9 + 0*c_9.10
+c_7.8 ~~ 0*c_8.9 + 0*c_9.10
+c_8.9 ~~ 0*c_9.10
+
+
+## Allow indicators to covary
+TPER7_01 ~~ TPER8_01 + TPER9_01 + TPER10_01
+TPER8_01 ~~ TPER9_01 + TPER10_01
+TPER9_01 ~~ TPER10_01
+
+TPER7_04 ~~ TPER8_04 + TPER9_04 + TPER10_04
+TPER8_04 ~~ TPER9_04 + TPER10_04
+TPER9_04 ~~ TPER10_04
+
+TPER7_15 ~~ TPER8_15 + TPER9_15 + TPER10_15
+TPER8_15 ~~ TPER9_15 + TPER10_15
+TPER9_15 ~~ TPER10_15
+
+TPER7_19R ~~ TPER8_19R + TPER9_19R + TPER10_19R
+TPER8_19R ~~ TPER9_19R + TPER10_19R
+TPER9_19R ~~ TPER10_19R
+
+TPER7_22R ~~ TPER8_22R + TPER9_22R + TPER10_22R
+TPER8_22R ~~ TPER9_22R + TPER10_22R
+TPER9_22R ~~ TPER10_22R
+
+
+
+#scales the items and add measurement invariance
+
+TPER7_01 ~ 0*1
+TPER7_04 ~ (nu1)*1
+TPER7_15 ~ (nu2)*1
+TPER7_19R ~ (nu3)*1
+TPER7_22R ~ (nu4)*1
+
+TPER8_01~ 0*1
+TPER8_04 ~ (nu1)*1
+TPER8_15~ (nu2)*1
+TPER8_19R ~ (nu3)*1
+TPER8_22R~ (nu4)*1
+
+TPER9_01~ 0*1
+TPER9_04 ~ (nu1)*1
+TPER9_15~ (nu2)*1
+TPER9_19R ~ (nu3)*1
+TPER9_22R~ (nu4)*1
+
+TPER10_01 ~ 0*1
+TPER10_04 ~ (nu1)*1
+TPER10_15 ~ (nu2)*1
+TPER10_19R ~ (nu3)*1
+TPER10_22R ~ (nu4)*1
+
+# create a latent intercept growth component
+E.change  =~ 1*e8 + 1*e9 + 1*e10
+E.change ~ 1
+
+# Covary the intecept and new overall change component and make sure change does not covary with difference scores
+E.change ~~ e7
+E.change ~~ 0*c_7.8 + 0*c_8.9 + 0*c_9.10
+
+&amp;#39;
+
+e.lg.mw.model &amp;lt;- sem(e.lg.mw.model, data=y_t_all , missing=&amp;quot;ML&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, : lavaan WARNING: some cases are empty and will be ignored:
+##   14 24 32 33 34 36 37 39 48 49 51 57 76 78 80 83 84 86 90 91 98 109 119 129 130 131 140 144 145 157 165 167 170 171 177 180 182 183 190 206 222 227 229 234 247 250 260 287 292 295 301 302 307 327 339 342 345 349 354 356 359 360 369 370 377 383 384 386 393 406 411 414 419 421 422 425 426 429 440 442 446 448 449 450 456 460 462 470 473 476 485 491 494 496 503 504 507 508 516 532 535 539 546 547 548 552 554 555 556 559 561 563 566 571 584 586 587 591 596 599 601 607 620 630 634 635 642 645 650 651 658 666 673 678 687 716 718 732 735 737 738 740 745 751 761 766 776 785 786 788 790 795 796 802 804 823 827 831 842 847 851 853 860 887 892 901 920 923 926 927 936 938 940 947 949 952 953 955 956 957 969 972 977 979 981 985 993 999 1000 1003 1016 1029 1032 1035 1038 1040 1044 1046 1048 1050 1055 1059 1066&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, :
+## lavaan WARNING: due to missing values, some pairwise combinations have less
+## than 10% coverage&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_object_post_check(object): lavaan WARNING: some estimated lv
+## variances are negative&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(e.lg.mw.model, fit.measures=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 59 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         90
+##   Number of equality constraints                    24
+##   Row rank of the constraints matrix                24
+## 
+##                                                   Used       Total
+##   Number of observations                           864        1067
+##   Number of missing patterns                        29
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     897.471
+##   Degrees of freedom                               164
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             6120.154
+##   Degrees of freedom                               190
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.876
+##   Tucker-Lewis Index (TLI)                       0.857
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -11710.635
+##   Loglikelihood unrestricted model (H1)     -11261.900
+## 
+##   Number of free parameters                         66
+##   Akaike (AIC)                               23553.270
+##   Bayesian (BIC)                             23867.534
+##   Sample-size adjusted Bayesian (BIC)        23657.935
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.072
+##   90 Percent Confidence Interval          0.067  0.077
+##   P-value RMSEA &amp;lt;= 0.05                          0.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.124
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Observed
+##   Observed information based on                Hessian
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   e7 =~                                               
+##     TPER7_0           1.000                           
+##     TPER7_0 (cat6)    0.791    0.024   32.656    0.000
+##     TPER7_1 (cat2)    0.987    0.022   44.101    0.000
+##     TPER7_1 (cat3)    1.023    0.029   35.086    0.000
+##     TPER7_2 (cat4)    1.024    0.030   34.249    0.000
+##   e8 =~                                               
+##     TPER8_0           1.000                           
+##     TPER8_0 (cat6)    0.791    0.024   32.656    0.000
+##     TPER8_1 (cat2)    0.987    0.022   44.101    0.000
+##     TPER8_1 (cat3)    1.023    0.029   35.086    0.000
+##     TPER8_2 (cat4)    1.024    0.030   34.249    0.000
+##   e9 =~                                               
+##     TPER9_0           1.000                           
+##     TPER9_0 (cat6)    0.791    0.024   32.656    0.000
+##     TPER9_1 (cat2)    0.987    0.022   44.101    0.000
+##     TPER9_1 (cat3)    1.023    0.029   35.086    0.000
+##     TPER9_2 (cat4)    1.024    0.030   34.249    0.000
+##   e10 =~                                              
+##     TPER10_           1.000                           
+##     TPER10_ (cat6)    0.791    0.024   32.656    0.000
+##     TPER10_ (cat2)    0.987    0.022   44.101    0.000
+##     TPER10_ (cat3)    1.023    0.029   35.086    0.000
+##     TPER10_ (cat4)    1.024    0.030   34.249    0.000
+##   c_7.8 =~                                            
+##     e8                1.000                           
+##   c_8.9 =~                                            
+##     e9                1.000                           
+##   c_9.10 =~                                           
+##     e10               1.000                           
+##   E.change =~                                         
+##     e8                1.000                           
+##     e9                1.000                           
+##     e10               1.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   e8 ~                                                
+##     e7                1.000                           
+##   e9 ~                                                
+##     e8                1.000                           
+##   e10 ~                                               
+##     e9                1.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   e7 ~~                                               
+##     c_7.8             0.000                           
+##     c_8.9             0.000                           
+##     c_9.10            0.000                           
+##   c_7.8 ~~                                            
+##     c_8.9             0.000                           
+##     c_9.10            0.000                           
+##   c_8.9 ~~                                            
+##     c_9.10            0.000                           
+##  .TPER7_01 ~~                                         
+##    .TPER8_01          0.029    0.030    0.970    0.332
+##    .TPER9_01          0.090    0.036    2.509    0.012
+##    .TPER10_01        -0.201    0.053   -3.763    0.000
+##  .TPER8_01 ~~                                         
+##    .TPER9_01          0.073    0.028    2.590    0.010
+##    .TPER10_01         0.064    0.036    1.809    0.071
+##  .TPER9_01 ~~                                         
+##    .TPER10_01         0.024    0.034    0.719    0.472
+##  .TPER7_04 ~~                                         
+##    .TPER8_04          0.153    0.039    3.895    0.000
+##    .TPER9_04          0.147    0.051    2.897    0.004
+##    .TPER10_04         0.103    0.096    1.073    0.283
+##  .TPER8_04 ~~                                         
+##    .TPER9_04          0.222    0.043    5.227    0.000
+##    .TPER10_04         0.084    0.054    1.575    0.115
+##  .TPER9_04 ~~                                         
+##    .TPER10_04         0.204    0.048    4.276    0.000
+##  .TPER7_15 ~~                                         
+##    .TPER8_15          0.012    0.030    0.418    0.676
+##    .TPER9_15          0.008    0.034    0.249    0.804
+##    .TPER10_15        -0.135    0.071   -1.891    0.059
+##  .TPER8_15 ~~                                         
+##    .TPER9_15          0.026    0.028    0.939    0.348
+##    .TPER10_15         0.019    0.042    0.460    0.645
+##  .TPER9_15 ~~                                         
+##    .TPER10_15         0.011    0.033    0.322    0.747
+##  .TPER7_19R ~~                                        
+##    .TPER8_19R         0.113    0.055    2.052    0.040
+##    .TPER9_19R        -0.066    0.060   -1.087    0.277
+##    .TPER10_19R        0.177    0.093    1.890    0.059
+##  .TPER8_19R ~~                                        
+##    .TPER9_19R         0.107    0.053    2.030    0.042
+##    .TPER10_19R        0.058    0.069    0.835    0.404
+##  .TPER9_19R ~~                                        
+##    .TPER10_19R       -0.038    0.052   -0.734    0.463
+##  .TPER7_22R ~~                                        
+##    .TPER8_22R         0.148    0.059    2.502    0.012
+##    .TPER9_22R         0.025    0.061    0.401    0.688
+##    .TPER10_22R        0.138    0.109    1.268    0.205
+##  .TPER8_22R ~~                                        
+##    .TPER9_22R         0.044    0.052    0.842    0.400
+##    .TPER10_22R       -0.006    0.062   -0.093    0.926
+##  .TPER9_22R ~~                                        
+##    .TPER10_22R        0.018    0.054    0.343    0.732
+##   e7 ~~                                               
+##     E.change         -0.202    0.031   -6.451    0.000
+##   c_7.8 ~~                                            
+##     E.change          0.000                           
+##   c_8.9 ~~                                            
+##     E.change          0.000                           
+##   c_9.10 ~~                                           
+##     E.change          0.000                           
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .e8                0.000                           
+##    .e9                0.000                           
+##    .e10               0.000                           
+##     c_7.8             0.000                           
+##     c_8.9             0.000                           
+##     c_9.10            0.000                           
+##     e7                3.671    0.047   78.914    0.000
+##    .TPER7_01          0.000                           
+##    .TPER7_04 (nu1)    0.571    0.093    6.133    0.000
+##    .TPER7_15 (nu2)   -0.062    0.086   -0.720    0.472
+##    .TPER7_19 (nu3)   -0.475    0.111   -4.276    0.000
+##    .TPER7_22 (nu4)   -0.588    0.114   -5.159    0.000
+##    .TPER8_01          0.000                           
+##    .TPER8_04 (nu1)    0.571    0.093    6.133    0.000
+##    .TPER8_15 (nu2)   -0.062    0.086   -0.720    0.472
+##    .TPER8_19 (nu3)   -0.475    0.111   -4.276    0.000
+##    .TPER8_22 (nu4)   -0.588    0.114   -5.159    0.000
+##    .TPER9_01          0.000                           
+##    .TPER9_04 (nu1)    0.571    0.093    6.133    0.000
+##    .TPER9_15 (nu2)   -0.062    0.086   -0.720    0.472
+##    .TPER9_19 (nu3)   -0.475    0.111   -4.276    0.000
+##    .TPER9_22 (nu4)   -0.588    0.114   -5.159    0.000
+##    .TPER10_0          0.000                           
+##    .TPER10_0 (nu1)    0.571    0.093    6.133    0.000
+##    .TPER10_1 (nu2)   -0.062    0.086   -0.720    0.472
+##    .TPER10_1 (nu3)   -0.475    0.111   -4.276    0.000
+##    .TPER10_2 (nu4)   -0.588    0.114   -5.159    0.000
+##     E.change          0.019    0.021    0.917    0.359
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .e8                0.000                           
+##    .e9                0.000                           
+##    .e10               0.000                           
+##     e7                0.939    0.074   12.627    0.000
+##     c_7.8             1.003    0.081   12.389    0.000
+##     c_8.9             1.100    0.091   12.048    0.000
+##     c_9.10            1.412    0.132   10.707    0.000
+##    .TPER7_01          0.328    0.035    9.235    0.000
+##    .TPER7_04          0.568    0.046   12.251    0.000
+##    .TPER7_15          0.372    0.035   10.475    0.000
+##    .TPER7_19R         0.741    0.063   11.726    0.000
+##    .TPER7_22R         0.806    0.067   11.967    0.000
+##    .TPER8_01          0.332    0.031   10.658    0.000
+##    .TPER8_04          0.652    0.046   14.206    0.000
+##    .TPER8_15          0.363    0.031   11.584    0.000
+##    .TPER8_19R         0.779    0.059   13.299    0.000
+##    .TPER8_22R         0.852    0.063   13.497    0.000
+##    .TPER9_01          0.386    0.034   11.298    0.000
+##    .TPER9_04          0.713    0.049   14.512    0.000
+##    .TPER9_15          0.383    0.033   11.646    0.000
+##    .TPER9_19R         0.703    0.055   12.800    0.000
+##    .TPER9_22R         0.722    0.056   12.889    0.000
+##    .TPER10_01         0.348    0.039    8.929    0.000
+##    .TPER10_04         0.616    0.053   11.551    0.000
+##    .TPER10_15         0.463    0.045   10.225    0.000
+##    .TPER10_19R        0.609    0.059   10.360    0.000
+##    .TPER10_22R        0.640    0.062   10.397    0.000
+##     E.change         -0.262    0.035   -7.462    0.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What does the negative variance here mean?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;steyer-models&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;“steyer” models&lt;/h2&gt;
+&lt;p&gt;Similar to the above models but are addative in their interpretation. That is, the difference score between waves can be thought of adding or subtracting cumulatively from the previous wave. This is a closer hybrid between the growth model and the latent difference score model as the final difference score estimate is interpretted as across the entire time period.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;model &amp;lt;-
+&amp;#39;extra7 =~ 1*TPER7_01 + cat6*TPER7_04 + cat2*TPER7_15 + cat3*TPER7_19R + cat4*TPER7_22R
+extra8 =~ 1*TPER8_01 + cat6*TPER8_04 + cat2*TPER8_15 + cat3*TPER8_19R + cat4*TPER8_22R
+extra9 =~ 1*TPER9_01 + cat6*TPER9_04 + cat2*TPER9_15 + cat3*TPER9_19R + cat4*TPER9_22R
+extra10 =~ 1*TPER10_01 + cat6*TPER10_04 + cat2*TPER10_15 + cat3*TPER10_19R + cat4*TPER10_22R
+
+TPER7_01 ~ 0*1
+TPER7_04 ~ (nu1)*1
+TPER7_15 ~ (nu2)*1
+TPER7_19R ~ (nu3)*1
+TPER7_22R ~ (nu4)*1
+
+TPER8_01~ 0*1
+TPER8_04 ~ (nu1)*1
+TPER8_15~ (nu2)*1
+TPER8_19R ~ (nu3)*1
+TPER8_22R~ (nu4)*1
+
+TPER9_01~ 0*1
+TPER9_04 ~ (nu1)*1
+TPER9_15~ (nu2)*1
+TPER9_19R ~ (nu3)*1
+TPER9_22R~ (nu4)*1
+
+TPER10_01 ~ 0*1
+TPER10_04 ~ (nu1)*1
+TPER10_15 ~ (nu2)*1
+TPER10_19R ~ (nu3)*1
+TPER10_22R ~ (nu4)*1
+
+TPER7_01 ~~ TPER8_01 + TPER9_01 + TPER10_01
+TPER8_01 ~~ TPER9_01 + TPER10_01
+TPER9_01 ~~ TPER10_01
+
+TPER7_04 ~~ TPER8_04 + TPER9_04 + TPER10_04
+TPER8_04 ~~ TPER9_04 + TPER10_04
+TPER9_04 ~~ TPER10_04
+
+TPER7_15 ~~ TPER8_15 + TPER9_15 + TPER10_15
+TPER8_15 ~~ TPER9_15 + TPER10_15
+TPER9_15 ~~ TPER10_15
+
+TPER7_19R ~~ TPER8_19R + TPER9_19R + TPER10_19R
+TPER8_19R ~~ TPER9_19R + TPER10_19R
+TPER9_19R ~~ TPER10_19R
+
+TPER7_22R ~~ TPER8_22R + TPER9_22R + TPER10_22R
+TPER8_22R ~~ TPER9_22R + TPER10_22R
+TPER9_22R ~~ TPER10_22R
+
+extra7 ~ 0*1
+extra8 ~ 0*1
+extra9 ~ 0*1
+extra10 ~ 0*1
+
+extra7 ~~ 0*extra7
+extra8 ~~ 0*extra8
+extra9 ~~ 0*extra9
+extra10 ~~ 0*extra10
+
+t7 =~ 1*extra7 + 1*extra8 + 1*extra9 + 1*extra10
+t7 ~ 1
+t7 ~~ t7
+
+d8 =~ 1*extra8
+d8 ~~ d8
+d8 ~ 1
+
+d9 =~ 1*extra9
+d9 ~~ d9
+d9 ~ 1
+
+d10 =~ 1*extra10
+d10 ~~ d10
+d10 ~ 1
+
+t7 ~~ d8 + d9 + d10
+d8 ~~ d9 + d10
+d9 ~~ d10&amp;#39;
+
+fitE_t &amp;lt;- sem(model, missing=&amp;quot;ML&amp;quot;, data = y_t_all)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, : lavaan WARNING: some cases are empty and will be ignored:
+##   14 24 32 33 34 36 37 39 48 49 51 57 76 78 80 83 84 86 90 91 98 109 119 129 130 131 140 144 145 157 165 167 170 171 177 180 182 183 190 206 222 227 229 234 247 250 260 287 292 295 301 302 307 327 339 342 345 349 354 356 359 360 369 370 377 383 384 386 393 406 411 414 419 421 422 425 426 429 440 442 446 448 449 450 456 460 462 470 473 476 485 491 494 496 503 504 507 508 516 532 535 539 546 547 548 552 554 555 556 559 561 563 566 571 584 586 587 591 596 599 601 607 620 630 634 635 642 645 650 651 658 666 673 678 687 716 718 732 735 737 738 740 745 751 761 766 776 785 786 788 790 795 796 802 804 823 827 831 842 847 851 853 860 887 892 901 920 923 926 927 936 938 940 947 949 952 953 955 956 957 969 972 977 979 981 985 993 999 1000 1003 1016 1029 1032 1035 1038 1040 1044 1046 1048 1050 1055 1059 1066&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, :
+## lavaan WARNING: due to missing values, some pairwise combinations have less
+## than 10% coverage&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(fitE_t)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 74 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         96
+##   Number of equality constraints                    24
+##   Row rank of the constraints matrix                24
+## 
+##                                                   Used       Total
+##   Number of observations                           864        1067
+##   Number of missing patterns                        29
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     833.294
+##   Degrees of freedom                               158
+##   P-value (Chi-square)                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Observed
+##   Observed information based on                Hessian
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   extra7 =~                                           
+##     TPER7_0           1.000                           
+##     TPER7_0 (cat6)    0.789    0.024   32.827    0.000
+##     TPER7_1 (cat2)    0.987    0.022   44.223    0.000
+##     TPER7_1 (cat3)    1.020    0.029   35.076    0.000
+##     TPER7_2 (cat4)    1.022    0.030   34.287    0.000
+##   extra8 =~                                           
+##     TPER8_0           1.000                           
+##     TPER8_0 (cat6)    0.789    0.024   32.827    0.000
+##     TPER8_1 (cat2)    0.987    0.022   44.223    0.000
+##     TPER8_1 (cat3)    1.020    0.029   35.076    0.000
+##     TPER8_2 (cat4)    1.022    0.030   34.287    0.000
+##   extra9 =~                                           
+##     TPER9_0           1.000                           
+##     TPER9_0 (cat6)    0.789    0.024   32.827    0.000
+##     TPER9_1 (cat2)    0.987    0.022   44.223    0.000
+##     TPER9_1 (cat3)    1.020    0.029   35.076    0.000
+##     TPER9_2 (cat4)    1.022    0.030   34.287    0.000
+##   extra10 =~                                          
+##     TPER10_           1.000                           
+##     TPER10_ (cat6)    0.789    0.024   32.827    0.000
+##     TPER10_ (cat2)    0.987    0.022   44.223    0.000
+##     TPER10_ (cat3)    1.020    0.029   35.076    0.000
+##     TPER10_ (cat4)    1.022    0.030   34.287    0.000
+##   t7 =~                                               
+##     extra7            1.000                           
+##     extra8            1.000                           
+##     extra9            1.000                           
+##     extra10           1.000                           
+##   d8 =~                                               
+##     extra8            1.000                           
+##   d9 =~                                               
+##     extra9            1.000                           
+##   d10 =~                                              
+##     extra10           1.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##  .TPER7_01 ~~                                         
+##    .TPER8_01          0.049    0.030    1.634    0.102
+##    .TPER9_01          0.087    0.035    2.457    0.014
+##    .TPER10_01        -0.205    0.052   -3.937    0.000
+##  .TPER8_01 ~~                                         
+##    .TPER9_01          0.079    0.028    2.814    0.005
+##    .TPER10_01         0.061    0.035    1.749    0.080
+##  .TPER9_01 ~~                                         
+##    .TPER10_01         0.021    0.034    0.616    0.538
+##  .TPER7_04 ~~                                         
+##    .TPER8_04          0.163    0.039    4.133    0.000
+##    .TPER9_04          0.141    0.051    2.769    0.006
+##    .TPER10_04         0.078    0.094    0.829    0.407
+##  .TPER8_04 ~~                                         
+##    .TPER9_04          0.225    0.043    5.289    0.000
+##    .TPER10_04         0.086    0.053    1.604    0.109
+##  .TPER9_04 ~~                                         
+##    .TPER10_04         0.201    0.047    4.234    0.000
+##  .TPER7_15 ~~                                         
+##    .TPER8_15          0.022    0.030    0.725    0.468
+##    .TPER9_15          0.008    0.034    0.241    0.810
+##    .TPER10_15        -0.137    0.070   -1.958    0.050
+##  .TPER8_15 ~~                                         
+##    .TPER9_15          0.027    0.028    0.948    0.343
+##    .TPER10_15         0.013    0.042    0.322    0.747
+##  .TPER9_15 ~~                                         
+##    .TPER10_15         0.008    0.033    0.240    0.810
+##  .TPER7_19R ~~                                        
+##    .TPER8_19R         0.104    0.055    1.890    0.059
+##    .TPER9_19R        -0.074    0.060   -1.233    0.218
+##    .TPER10_19R        0.189    0.092    2.059    0.039
+##  .TPER8_19R ~~                                        
+##    .TPER9_19R         0.110    0.053    2.078    0.038
+##    .TPER10_19R        0.053    0.069    0.775    0.438
+##  .TPER9_19R ~~                                        
+##    .TPER10_19R       -0.036    0.052   -0.690    0.490
+##  .TPER7_22R ~~                                        
+##    .TPER8_22R         0.143    0.060    2.406    0.016
+##    .TPER9_22R         0.019    0.061    0.304    0.761
+##    .TPER10_22R        0.160    0.108    1.487    0.137
+##  .TPER8_22R ~~                                        
+##    .TPER9_22R         0.049    0.052    0.941    0.347
+##    .TPER10_22R       -0.014    0.062   -0.227    0.820
+##  .TPER9_22R ~~                                        
+##    .TPER10_22R        0.025    0.054    0.467    0.640
+##   t7 ~~                                               
+##     d8               -0.532    0.073   -7.291    0.000
+##     d9               -0.417    0.073   -5.693    0.000
+##     d10              -0.501    0.118   -4.250    0.000
+##   d8 ~~                                               
+##     d9                0.495    0.090    5.533    0.000
+##     d10               0.513    0.130    3.931    0.000
+##   d9 ~~                                               
+##     d10               0.420    0.121    3.472    0.001
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .TPER7_01          0.000                           
+##    .TPER7_04 (nu1)    0.579    0.092    6.266    0.000
+##    .TPER7_15 (nu2)   -0.059    0.086   -0.689    0.491
+##    .TPER7_19 (nu3)   -0.461    0.111   -4.161    0.000
+##    .TPER7_22 (nu4)   -0.581    0.114   -5.109    0.000
+##    .TPER8_01          0.000                           
+##    .TPER8_04 (nu1)    0.579    0.092    6.266    0.000
+##    .TPER8_15 (nu2)   -0.059    0.086   -0.689    0.491
+##    .TPER8_19 (nu3)   -0.461    0.111   -4.161    0.000
+##    .TPER8_22 (nu4)   -0.581    0.114   -5.109    0.000
+##    .TPER9_01          0.000                           
+##    .TPER9_04 (nu1)    0.579    0.092    6.266    0.000
+##    .TPER9_15 (nu2)   -0.059    0.086   -0.689    0.491
+##    .TPER9_19 (nu3)   -0.461    0.111   -4.161    0.000
+##    .TPER9_22 (nu4)   -0.581    0.114   -5.109    0.000
+##    .TPER10_0          0.000                           
+##    .TPER10_0 (nu1)    0.579    0.092    6.266    0.000
+##    .TPER10_1 (nu2)   -0.059    0.086   -0.689    0.491
+##    .TPER10_1 (nu3)   -0.461    0.111   -4.161    0.000
+##    .TPER10_2 (nu4)   -0.581    0.114   -5.109    0.000
+##    .extra7            0.000                           
+##    .extra8            0.000                           
+##    .extra9            0.000                           
+##    .extra10           0.000                           
+##     t7                3.681    0.051   72.878    0.000
+##     d8               -0.015    0.056   -0.259    0.795
+##     d9               -0.026    0.056   -0.466    0.641
+##     d10               0.093    0.066    1.406    0.160
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .extra7            0.000                           
+##    .extra8            0.000                           
+##    .extra9            0.000                           
+##    .extra10           0.000                           
+##     t7                1.014    0.083   12.153    0.000
+##     d8                1.067    0.108    9.831    0.000
+##     d9                0.884    0.111    7.971    0.000
+##     d10               0.931    0.203    4.589    0.000
+##    .TPER7_01          0.321    0.035    9.069    0.000
+##    .TPER7_04          0.566    0.046   12.253    0.000
+##    .TPER7_15          0.368    0.035   10.408    0.000
+##    .TPER7_19R         0.733    0.063   11.624    0.000
+##    .TPER7_22R         0.800    0.067   11.858    0.000
+##    .TPER8_01          0.325    0.031   10.530    0.000
+##    .TPER8_04          0.650    0.046   14.201    0.000
+##    .TPER8_15          0.366    0.031   11.624    0.000
+##    .TPER8_19R         0.786    0.059   13.328    0.000
+##    .TPER8_22R         0.850    0.063   13.482    0.000
+##    .TPER9_01          0.388    0.034   11.345    0.000
+##    .TPER9_04          0.713    0.049   14.525    0.000
+##    .TPER9_15          0.380    0.033   11.634    0.000
+##    .TPER9_19R         0.706    0.055   12.837    0.000
+##    .TPER9_22R         0.724    0.056   12.918    0.000
+##    .TPER10_01         0.348    0.039    8.953    0.000
+##    .TPER10_04         0.615    0.053   11.579    0.000
+##    .TPER10_15         0.465    0.045   10.239    0.000
+##    .TPER10_19R        0.613    0.059   10.412    0.000
+##    .TPER10_22R        0.642    0.062   10.427    0.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Compare the means here with the means of the original latent difference score model.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;adding-time-varying-covariates&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;adding time varying covariates&lt;/h2&gt;
+&lt;p&gt;The tricky tricky part is interpretation. It is also possible to constraint the effect of the TVC to be the same across time.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tvc.mw.model &amp;lt;-
+&amp;#39;e7 =~ 1*TPER7_01 + cat6*TPER7_04 + cat2*TPER7_15 + cat3*TPER7_19R + cat4*TPER7_22R
+e8 =~ 1*TPER8_01 + cat6*TPER8_04 + cat2*TPER8_15 + cat3*TPER8_19R + cat4*TPER8_22R
+e9 =~ 1*TPER9_01 + cat6*TPER9_04 + cat2*TPER9_15 + cat3*TPER9_19R + cat4*TPER9_22R
+e10 =~ 1*TPER10_01 + cat6*TPER10_04 + cat2*TPER10_15 + cat3*TPER10_19R + cat4*TPER10_22R
+
+
+# settting the fixed regressions to 1
+
+e8 ~ 1*e7     
+e9 ~ 1*e8  
+e10 ~ 1*e9  
+
+# creating the change scores 
+
+c_7.8 =~ 1*e8     
+c_8.9 =~ 1*e9 
+c_9.10 =~ 1*e10 
+
+
+# constraint intercepts
+e8 ~ 0*1        
+e9 ~ 0*1   
+e10 ~ 0*1   
+
+# This fixes the variance to 0
+
+e8 ~~ 0*e8     
+e9 ~~ 0*e9  
+e10 ~~ 0*e10  
+
+# Estimate the intercept of the change score
+c_7.8 ~ 1    
+c_8.9 ~ 1 
+c_9.10 ~ 1             
+
+# This estimates the intercept and variance of initial time
+e7 ~  1           
+e7 ~~  e7 
+
+#  Estimates the variance of the change scores
+c_7.8 ~~ c_7.8    
+c_8.9 ~~ c_8.9 
+c_9.10 ~~ c_9.10       
+
+
+# Estimates the covaration with change scores and T1
+e7  ~~ c_7.8 + c_8.9 + c_9.10 
+c_7.8 ~~ c_8.9 + c_9.10
+c_8.9 ~~ c_9.10
+
+## Allow indicators to covary
+TPER7_01 ~~ TPER8_01 + TPER9_01 + TPER10_01
+TPER8_01 ~~ TPER9_01 + TPER10_01
+TPER9_01 ~~ TPER10_01
+
+TPER7_04 ~~ TPER8_04 + TPER9_04 + TPER10_04
+TPER8_04 ~~ TPER9_04 + TPER10_04
+TPER9_04 ~~ TPER10_04
+
+TPER7_15 ~~ TPER8_15 + TPER9_15 + TPER10_15
+TPER8_15 ~~ TPER9_15 + TPER10_15
+TPER9_15 ~~ TPER10_15
+
+TPER7_19R ~~ TPER8_19R + TPER9_19R + TPER10_19R
+TPER8_19R ~~ TPER9_19R + TPER10_19R
+TPER9_19R ~~ TPER10_19R
+
+TPER7_22R ~~ TPER8_22R + TPER9_22R + TPER10_22R
+TPER8_22R ~~ TPER9_22R + TPER10_22R
+TPER9_22R ~~ TPER10_22R
+
+
+
+#scales the items and add measurement invariance
+
+TPER7_01 ~ 0*1
+TPER7_04 ~ (nu1)*1
+TPER7_15 ~ (nu2)*1
+TPER7_19R ~ (nu3)*1
+TPER7_22R ~ (nu4)*1
+
+TPER8_01~ 0*1
+TPER8_04 ~ (nu1)*1
+TPER8_15~ (nu2)*1
+TPER8_19R ~ (nu3)*1
+TPER8_22R~ (nu4)*1
+
+TPER9_01~ 0*1
+TPER9_04 ~ (nu1)*1
+TPER9_15~ (nu2)*1
+TPER9_19R ~ (nu3)*1
+TPER9_22R~ (nu4)*1
+
+TPER10_01 ~ 0*1
+TPER10_04 ~ (nu1)*1
+TPER10_15 ~ (nu2)*1
+TPER10_19R ~ (nu3)*1
+TPER10_22R ~ (nu4)*1
+
+# predicting change
+# Note: Technically the covariate model above is set up the same way.  
+
+c_7.8 ~  ALC8_01   
+c_8.9 ~  ALC9_01
+c_9.10 ~ ALC10_01
+
+
+&amp;#39;
+
+tvc.mw.model &amp;lt;- sem(tvc.mw.model, data=y_t_all , missing=&amp;quot;ML&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, : lavaan WARNING: 250 cases were deleted due to missing values in 
+##        exogenous variable(s), while fixed.x = TRUE.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, :
+## lavaan WARNING: due to missing values, some pairwise combinations have less
+## than 10% coverage&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(tvc.mw.model, fit.measures=TRUE, standardized=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 80 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         99
+##   Number of equality constraints                    24
+##   Row rank of the constraints matrix                24
+## 
+##                                                   Used       Total
+##   Number of observations                           817        1067
+##   Number of missing patterns                        30
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     884.163
+##   Degrees of freedom                               215
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             5667.448
+##   Degrees of freedom                               250
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.876
+##   Tucker-Lewis Index (TLI)                       0.856
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -10485.293
+##   Loglikelihood unrestricted model (H1)     -10043.212
+## 
+##   Number of free parameters                         75
+##   Akaike (AIC)                               21120.586
+##   Bayesian (BIC)                             21473.509
+##   Sample-size adjusted Bayesian (BIC)        21235.338
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.062
+##   90 Percent Confidence Interval          0.058  0.066
+##   P-value RMSEA &amp;lt;= 0.05                          0.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.065
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Observed
+##   Observed information based on                Hessian
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   e7 =~                                                                 
+##     TPER7_0           1.000                               1.012    0.872
+##     TPER7_0 (cat6)    0.794    0.025   31.293    0.000    0.804    0.730
+##     TPER7_1 (cat2)    1.003    0.024   41.765    0.000    1.015    0.860
+##     TPER7_1 (cat3)    1.025    0.031   32.905    0.000    1.038    0.769
+##     TPER7_2 (cat4)    1.029    0.032   32.169    0.000    1.042    0.758
+##   e8 =~                                                                 
+##     TPER8_0           1.000                               0.977    0.868
+##     TPER8_0 (cat6)    0.794    0.025   31.293    0.000    0.776    0.697
+##     TPER8_1 (cat2)    1.003    0.024   41.765    0.000    0.980    0.851
+##     TPER8_1 (cat3)    1.025    0.031   32.905    0.000    1.002    0.744
+##     TPER8_2 (cat4)    1.029    0.032   32.169    0.000    1.006    0.733
+##   e9 =~                                                                 
+##     TPER9_0           1.000                               1.027    0.855
+##     TPER9_0 (cat6)    0.794    0.025   31.293    0.000    0.816    0.721
+##     TPER9_1 (cat2)    1.003    0.024   41.765    0.000    1.030    0.857
+##     TPER9_1 (cat3)    1.025    0.031   32.905    0.000    1.053    0.778
+##     TPER9_2 (cat4)    1.029    0.032   32.169    0.000    1.057    0.779
+##   e10 =~                                                                
+##     TPER10_           1.000                               0.952    0.850
+##     TPER10_ (cat6)    0.794    0.025   31.293    0.000    0.756    0.680
+##     TPER10_ (cat2)    1.003    0.024   41.765    0.000    0.954    0.822
+##     TPER10_ (cat3)    1.025    0.031   32.905    0.000    0.976    0.779
+##     TPER10_ (cat4)    1.029    0.032   32.169    0.000    0.980    0.775
+##   c_7.8 =~                                                              
+##     e8                1.000                               1.044    1.044
+##   c_8.9 =~                                                              
+##     e9                1.000                               0.954    0.954
+##   c_9.10 =~                                                             
+##     e10               1.000                               1.033    1.033
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   e8 ~                                                                  
+##     e7                1.000                               1.036    1.036
+##   e9 ~                                                                  
+##     e8                1.000                               0.951    0.951
+##   e10 ~                                                                 
+##     e9                1.000                               1.079    1.079
+##   c_7.8 ~                                                               
+##     ALC8_01          -0.114    0.082   -1.395    0.163   -0.112   -0.051
+##   c_8.9 ~                                                               
+##     ALC9_01          -0.113    0.101   -1.122    0.262   -0.116   -0.049
+##   c_9.10 ~                                                              
+##     ALC10_01         -0.130    0.131   -0.995    0.320   -0.133   -0.053
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   e7 ~~                                                                 
+##    .c_7.8            -0.555    0.076   -7.293    0.000   -0.538   -0.538
+##    .c_8.9             0.122    0.075    1.614    0.107    0.123    0.123
+##    .c_9.10           -0.093    0.118   -0.791    0.429   -0.094   -0.094
+##  .c_7.8 ~~                                                              
+##    .c_8.9            -0.553    0.087   -6.330    0.000   -0.555   -0.555
+##    .c_9.10            0.022    0.131    0.168    0.866    0.022    0.022
+##  .c_8.9 ~~                                                              
+##    .c_9.10           -0.490    0.088   -5.539    0.000   -0.510   -0.510
+##  .TPER7_01 ~~                                                           
+##    .TPER8_01          0.048    0.030    1.589    0.112    0.048    0.153
+##    .TPER9_01          0.078    0.036    2.149    0.032    0.078    0.220
+##    .TPER10_01        -0.208    0.053   -3.911    0.000   -0.208   -0.622
+##  .TPER8_01 ~~                                                           
+##    .TPER9_01          0.066    0.028    2.355    0.019    0.066    0.190
+##    .TPER10_01         0.067    0.034    1.941    0.052    0.067    0.202
+##  .TPER9_01 ~~                                                           
+##    .TPER10_01         0.025    0.035    0.699    0.485    0.025    0.067
+##  .TPER7_04 ~~                                                           
+##    .TPER8_04          0.168    0.041    4.098    0.000    0.168    0.280
+##    .TPER9_04          0.123    0.048    2.588    0.010    0.123    0.209
+##    .TPER10_04         0.123    0.100    1.229    0.219    0.123    0.201
+##  .TPER8_04 ~~                                                           
+##    .TPER9_04          0.201    0.040    5.037    0.000    0.201    0.320
+##    .TPER10_04         0.096    0.056    1.707    0.088    0.096    0.148
+##  .TPER9_04 ~~                                                           
+##    .TPER10_04         0.219    0.048    4.600    0.000    0.219    0.343
+##  .TPER7_15 ~~                                                           
+##    .TPER8_15          0.028    0.031    0.889    0.374    0.028    0.076
+##    .TPER9_15          0.000    0.035    0.010    0.992    0.000    0.001
+##    .TPER10_15        -0.093    0.079   -1.171    0.242   -0.093   -0.233
+##  .TPER8_15 ~~                                                           
+##    .TPER9_15          0.017    0.029    0.578    0.563    0.017    0.045
+##    .TPER10_15         0.019    0.041    0.452    0.651    0.019    0.046
+##  .TPER9_15 ~~                                                           
+##    .TPER10_15         0.042    0.035    1.195    0.232    0.042    0.103
+##  .TPER7_19R ~~                                                          
+##    .TPER8_19R         0.119    0.058    2.045    0.041    0.119    0.153
+##    .TPER9_19R        -0.076    0.063   -1.203    0.229   -0.076   -0.104
+##    .TPER10_19R        0.171    0.095    1.791    0.073    0.171    0.252
+##  .TPER8_19R ~~                                                          
+##    .TPER9_19R         0.123    0.055    2.223    0.026    0.123    0.161
+##    .TPER10_19R        0.050    0.071    0.715    0.475    0.050    0.071
+##  .TPER9_19R ~~                                                          
+##    .TPER10_19R       -0.066    0.057   -1.155    0.248   -0.066   -0.098
+##  .TPER7_22R ~~                                                          
+##    .TPER8_22R         0.149    0.062    2.381    0.017    0.149    0.177
+##    .TPER9_22R         0.024    0.061    0.399    0.690    0.024    0.032
+##    .TPER10_22R        0.140    0.110    1.275    0.202    0.140    0.195
+##  .TPER8_22R ~~                                                          
+##    .TPER9_22R         0.063    0.053    1.184    0.237    0.063    0.080
+##    .TPER10_22R       -0.016    0.063   -0.253    0.800   -0.016   -0.021
+##  .TPER9_22R ~~                                                          
+##    .TPER10_22R        0.034    0.058    0.590    0.555    0.034    0.050
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .e8                0.000                               0.000    0.000
+##    .e9                0.000                               0.000    0.000
+##    .e10               0.000                               0.000    0.000
+##    .c_7.8             0.160    0.118    1.350    0.177    0.157    0.157
+##    .c_8.9             0.117    0.138    0.849    0.396    0.120    0.120
+##    .c_9.10            0.266    0.172    1.543    0.123    0.271    0.271
+##     e7                3.703    0.053   69.590    0.000    3.658    3.658
+##    .TPER7_01          0.000                               0.000    0.000
+##    .TPER7_04 (nu1)    0.593    0.098    6.036    0.000    0.593    0.539
+##    .TPER7_15 (nu2)   -0.126    0.093   -1.362    0.173   -0.126   -0.107
+##    .TPER7_19 (nu3)   -0.485    0.120   -4.060    0.000   -0.485   -0.360
+##    .TPER7_22 (nu4)   -0.603    0.123   -4.917    0.000   -0.603   -0.439
+##    .TPER8_01          0.000                               0.000    0.000
+##    .TPER8_04 (nu1)    0.593    0.098    6.036    0.000    0.593    0.532
+##    .TPER8_15 (nu2)   -0.126    0.093   -1.362    0.173   -0.126   -0.110
+##    .TPER8_19 (nu3)   -0.485    0.120   -4.060    0.000   -0.485   -0.361
+##    .TPER8_22 (nu4)   -0.603    0.123   -4.917    0.000   -0.603   -0.439
+##    .TPER9_01          0.000                               0.000    0.000
+##    .TPER9_04 (nu1)    0.593    0.098    6.036    0.000    0.593    0.524
+##    .TPER9_15 (nu2)   -0.126    0.093   -1.362    0.173   -0.126   -0.105
+##    .TPER9_19 (nu3)   -0.485    0.120   -4.060    0.000   -0.485   -0.359
+##    .TPER9_22 (nu4)   -0.603    0.123   -4.917    0.000   -0.603   -0.445
+##    .TPER10_0          0.000                               0.000    0.000
+##    .TPER10_0 (nu1)    0.593    0.098    6.036    0.000    0.593    0.533
+##    .TPER10_1 (nu2)   -0.126    0.093   -1.362    0.173   -0.126   -0.109
+##    .TPER10_1 (nu3)   -0.485    0.120   -4.060    0.000   -0.485   -0.387
+##    .TPER10_2 (nu4)   -0.603    0.123   -4.917    0.000   -0.603   -0.477
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .e8                0.000                               0.000    0.000
+##    .e9                0.000                               0.000    0.000
+##    .e10               0.000                               0.000    0.000
+##     e7                1.025    0.089   11.575    0.000    1.000    1.000
+##    .c_7.8             1.038    0.110    9.443    0.000    0.997    0.997
+##    .c_8.9             0.958    0.101    9.506    0.000    0.998    0.998
+##    .c_9.10            0.964    0.108    8.946    0.000    0.997    0.997
+##    .TPER7_01          0.322    0.038    8.547    0.000    0.322    0.239
+##    .TPER7_04          0.565    0.049   11.563    0.000    0.565    0.466
+##    .TPER7_15          0.364    0.037    9.799    0.000    0.364    0.261
+##    .TPER7_19R         0.743    0.067   11.029    0.000    0.743    0.408
+##    .TPER7_22R         0.806    0.072   11.252    0.000    0.806    0.426
+##    .TPER8_01          0.313    0.031   10.128    0.000    0.313    0.247
+##    .TPER8_04          0.639    0.047   13.714    0.000    0.639    0.515
+##    .TPER8_15          0.367    0.033   11.197    0.000    0.367    0.276
+##    .TPER8_19R         0.807    0.062   12.973    0.000    0.807    0.446
+##    .TPER8_22R         0.873    0.067   13.103    0.000    0.873    0.463
+##    .TPER9_01          0.389    0.036   10.749    0.000    0.389    0.269
+##    .TPER9_04          0.615    0.046   13.322    0.000    0.615    0.480
+##    .TPER9_15          0.382    0.035   10.897    0.000    0.382    0.265
+##    .TPER9_19R         0.721    0.059   12.121    0.000    0.721    0.394
+##    .TPER9_22R         0.723    0.060   12.140    0.000    0.723    0.393
+##    .TPER10_01         0.348    0.041    8.406    0.000    0.348    0.278
+##    .TPER10_04         0.664    0.061   10.949    0.000    0.664    0.538
+##    .TPER10_15         0.438    0.047    9.358    0.000    0.438    0.325
+##    .TPER10_19R        0.618    0.063    9.746    0.000    0.618    0.394
+##    .TPER10_22R        0.639    0.066    9.736    0.000    0.639    0.400&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y_t_all$alc&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;latent-duel-change-score-model-like-a-residualized-latent-change-score&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Latent Duel change score model (like a residualized latent change score)&lt;/h1&gt;
+&lt;p&gt;The regression from t-1 to change at t can also be introduced into these models. It will have a new name: self-feedback. It is akin to our standard intercept-change correlation where it may be those who start higher change more (or less). This parameter will become important when we start to examine bivariate models. It is called duel because there are two components: the rate of change (slope) and the self-feedback.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;duel.model &amp;lt;-
+&amp;#39;e7 =~ 1*TPER7_01 + cat6*TPER7_04 + cat2*TPER7_15 + cat3*TPER7_19R + cat4*TPER7_22R
+e8 =~ 1*TPER8_01 + cat6*TPER8_04 + cat2*TPER8_15 + cat3*TPER8_19R + cat4*TPER8_22R
+e9 =~ 1*TPER9_01 + cat6*TPER9_04 + cat2*TPER9_15 + cat3*TPER9_19R + cat4*TPER9_22R
+e10 =~ 1*TPER10_01 + cat6*TPER10_04 + cat2*TPER10_15 + cat3*TPER10_19R + cat4*TPER10_22R
+
+
+# settting the fixed regressions to 1
+
+e8 ~ 1*e7     
+e9 ~ 1*e8  
+e10 ~ 1*e9  
+
+# creating the change scores 
+
+c_7.8 =~ 1*e8     
+c_8.9 =~ 1*e9 
+c_9.10 =~ 1*e10 
+
+
+# constraint intercepts
+e8 ~ 0*1        
+e9 ~ 0*1   
+e10 ~ 0*1   
+
+# This fixes the variance to 0
+
+e8 ~~ 0*e8     
+e9 ~~ 0*e9  
+e10 ~~ 0*e10  
+
+# Estimate the intercept of the change score
+c_7.8 ~ 1    
+c_8.9 ~ 1 
+c_9.10 ~ 1             
+
+# This estimates the intercept and variance of initial time
+e7 ~  1           
+e7 ~~  e7 
+
+#  Estimates the variance of the change scores
+c_7.8 ~~ c_7.8    
+c_8.9 ~~ c_8.9 
+c_9.10 ~~ c_9.10       
+
+## This is the novel component of the DUEL Latent Difference Scores
+# Instead of estimating the covariance, we are going to regress change onto the previous timepoint. 
+c_7.8 ~ e7 
+c_8.9 ~ e8
+c_9.10 ~ e9
+
+## Allow indicators to covary
+TPER7_01 ~~ TPER8_01 + TPER9_01 + TPER10_01
+TPER8_01 ~~ TPER9_01 + TPER10_01
+TPER9_01 ~~ TPER10_01
+
+TPER7_04 ~~ TPER8_04 + TPER9_04 + TPER10_04
+TPER8_04 ~~ TPER9_04 + TPER10_04
+TPER9_04 ~~ TPER10_04
+
+TPER7_15 ~~ TPER8_15 + TPER9_15 + TPER10_15
+TPER8_15 ~~ TPER9_15 + TPER10_15
+TPER9_15 ~~ TPER10_15
+
+TPER7_19R ~~ TPER8_19R + TPER9_19R + TPER10_19R
+TPER8_19R ~~ TPER9_19R + TPER10_19R
+TPER9_19R ~~ TPER10_19R
+
+TPER7_22R ~~ TPER8_22R + TPER9_22R + TPER10_22R
+TPER8_22R ~~ TPER9_22R + TPER10_22R
+TPER9_22R ~~ TPER10_22R
+
+
+
+#scales the items and add measurement invariance
+
+TPER7_01 ~ 0*1
+TPER7_04 ~ (nu1)*1
+TPER7_15 ~ (nu2)*1
+TPER7_19R ~ (nu3)*1
+TPER7_22R ~ (nu4)*1
+
+TPER8_01~ 0*1
+TPER8_04 ~ (nu1)*1
+TPER8_15~ (nu2)*1
+TPER8_19R ~ (nu3)*1
+TPER8_22R~ (nu4)*1
+
+TPER9_01~ 0*1
+TPER9_04 ~ (nu1)*1
+TPER9_15~ (nu2)*1
+TPER9_19R ~ (nu3)*1
+TPER9_22R~ (nu4)*1
+
+TPER10_01 ~ 0*1
+TPER10_04 ~ (nu1)*1
+TPER10_15 ~ (nu2)*1
+TPER10_19R ~ (nu3)*1
+TPER10_22R ~ (nu4)*1
+
+&amp;#39;
+
+duel.model &amp;lt;- sem(duel.model, data=y_t_all , missing=&amp;quot;ML&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, : lavaan WARNING: some cases are empty and will be ignored:
+##   14 24 32 33 34 36 37 39 48 49 51 57 76 78 80 83 84 86 90 91 98 109 119 129 130 131 140 144 145 157 165 167 170 171 177 180 182 183 190 206 222 227 229 234 247 250 260 287 292 295 301 302 307 327 339 342 345 349 354 356 359 360 369 370 377 383 384 386 393 406 411 414 419 421 422 425 426 429 440 442 446 448 449 450 456 460 462 470 473 476 485 491 494 496 503 504 507 508 516 532 535 539 546 547 548 552 554 555 556 559 561 563 566 571 584 586 587 591 596 599 601 607 620 630 634 635 642 645 650 651 658 666 673 678 687 716 718 732 735 737 738 740 745 751 761 766 776 785 786 788 790 795 796 802 804 823 827 831 842 847 851 853 860 887 892 901 920 923 926 927 936 938 940 947 949 952 953 955 956 957 969 972 977 979 981 985 993 999 1000 1003 1016 1029 1032 1035 1038 1040 1044 1046 1048 1050 1055 1059 1066&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in lav_data_full(data = data, group = group, cluster = cluster, :
+## lavaan WARNING: due to missing values, some pairwise combinations have less
+## than 10% coverage&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(duel.model, fit.measures=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 87 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         96
+##   Number of equality constraints                    24
+##   Row rank of the constraints matrix                24
+## 
+##                                                   Used       Total
+##   Number of observations                           864        1067
+##   Number of missing patterns                        29
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                     833.294
+##   Degrees of freedom                               158
+##   P-value (Chi-square)                           0.000
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             6120.154
+##   Degrees of freedom                               190
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    0.886
+##   Tucker-Lewis Index (TLI)                       0.863
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -11678.547
+##   Loglikelihood unrestricted model (H1)     -11261.900
+## 
+##   Number of free parameters                         72
+##   Akaike (AIC)                               23501.094
+##   Bayesian (BIC)                             23843.927
+##   Sample-size adjusted Bayesian (BIC)        23615.274
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.070
+##   90 Percent Confidence Interval          0.066  0.075
+##   P-value RMSEA &amp;lt;= 0.05                          0.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.064
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Observed
+##   Observed information based on                Hessian
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   e7 =~                                               
+##     TPER7_0           1.000                           
+##     TPER7_0 (cat6)    0.789    0.024   32.827    0.000
+##     TPER7_1 (cat2)    0.987    0.022   44.223    0.000
+##     TPER7_1 (cat3)    1.020    0.029   35.076    0.000
+##     TPER7_2 (cat4)    1.022    0.030   34.288    0.000
+##   e8 =~                                               
+##     TPER8_0           1.000                           
+##     TPER8_0 (cat6)    0.789    0.024   32.827    0.000
+##     TPER8_1 (cat2)    0.987    0.022   44.223    0.000
+##     TPER8_1 (cat3)    1.020    0.029   35.076    0.000
+##     TPER8_2 (cat4)    1.022    0.030   34.288    0.000
+##   e9 =~                                               
+##     TPER9_0           1.000                           
+##     TPER9_0 (cat6)    0.789    0.024   32.827    0.000
+##     TPER9_1 (cat2)    0.987    0.022   44.223    0.000
+##     TPER9_1 (cat3)    1.020    0.029   35.076    0.000
+##     TPER9_2 (cat4)    1.022    0.030   34.288    0.000
+##   e10 =~                                              
+##     TPER10_           1.000                           
+##     TPER10_ (cat6)    0.789    0.024   32.827    0.000
+##     TPER10_ (cat2)    0.987    0.022   44.223    0.000
+##     TPER10_ (cat3)    1.020    0.029   35.076    0.000
+##     TPER10_ (cat4)    1.022    0.030   34.288    0.000
+##   c_7.8 =~                                            
+##     e8                1.000                           
+##   c_8.9 =~                                            
+##     e9                1.000                           
+##   c_9.10 =~                                           
+##     e10               1.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##   e8 ~                                                
+##     e7                1.000                           
+##   e9 ~                                                
+##     e8                1.000                           
+##   e10 ~                                               
+##     e9                1.000                           
+##   c_7.8 ~                                             
+##     e7               -0.524    0.054   -9.628    0.000
+##   c_8.9 ~                                             
+##     e8                0.238    0.168    1.414    0.157
+##   c_9.10 ~                                            
+##     e9               -0.142    0.189   -0.752    0.452
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##  .TPER7_01 ~~                                         
+##    .TPER8_01          0.049    0.030    1.634    0.102
+##    .TPER9_01          0.087    0.035    2.457    0.014
+##    .TPER10_01        -0.205    0.052   -3.936    0.000
+##  .TPER8_01 ~~                                         
+##    .TPER9_01          0.079    0.028    2.814    0.005
+##    .TPER10_01         0.061    0.035    1.749    0.080
+##  .TPER9_01 ~~                                         
+##    .TPER10_01         0.021    0.034    0.616    0.538
+##  .TPER7_04 ~~                                         
+##    .TPER8_04          0.163    0.039    4.133    0.000
+##    .TPER9_04          0.141    0.051    2.770    0.006
+##    .TPER10_04         0.078    0.094    0.829    0.407
+##  .TPER8_04 ~~                                         
+##    .TPER9_04          0.225    0.043    5.289    0.000
+##    .TPER10_04         0.086    0.053    1.605    0.109
+##  .TPER9_04 ~~                                         
+##    .TPER10_04         0.201    0.047    4.234    0.000
+##  .TPER7_15 ~~                                         
+##    .TPER8_15          0.022    0.030    0.725    0.468
+##    .TPER9_15          0.008    0.034    0.241    0.810
+##    .TPER10_15        -0.137    0.070   -1.958    0.050
+##  .TPER8_15 ~~                                         
+##    .TPER9_15          0.027    0.028    0.948    0.343
+##    .TPER10_15         0.013    0.042    0.322    0.747
+##  .TPER9_15 ~~                                         
+##    .TPER10_15         0.008    0.033    0.240    0.810
+##  .TPER7_19R ~~                                        
+##    .TPER8_19R         0.104    0.055    1.890    0.059
+##    .TPER9_19R        -0.074    0.060   -1.232    0.218
+##    .TPER10_19R        0.189    0.092    2.059    0.039
+##  .TPER8_19R ~~                                        
+##    .TPER9_19R         0.110    0.053    2.078    0.038
+##    .TPER10_19R        0.053    0.069    0.775    0.438
+##  .TPER9_19R ~~                                        
+##    .TPER10_19R       -0.036    0.052   -0.690    0.490
+##  .TPER7_22R ~~                                        
+##    .TPER8_22R         0.143    0.060    2.406    0.016
+##    .TPER9_22R         0.019    0.061    0.304    0.761
+##    .TPER10_22R        0.160    0.108    1.487    0.137
+##  .TPER8_22R ~~                                        
+##    .TPER9_22R         0.049    0.052    0.941    0.347
+##    .TPER10_22R       -0.014    0.062   -0.227    0.820
+##  .TPER9_22R ~~                                        
+##    .TPER10_22R        0.025    0.054    0.467    0.640
+##  .c_7.8 ~~                                            
+##    .c_8.9            -0.699    0.169   -4.141    0.000
+##    .c_9.10            0.012    0.123    0.100    0.920
+##  .c_8.9 ~~                                            
+##    .c_9.10           -0.413    0.117   -3.520    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .e8                0.000                           
+##    .e9                0.000                           
+##    .e10               0.000                           
+##    .c_7.8             1.914    0.206    9.291    0.000
+##    .c_8.9            -0.885    0.622   -1.423    0.155
+##    .c_9.10            0.638    0.698    0.913    0.361
+##     e7                3.681    0.051   72.878    0.000
+##    .TPER7_01          0.000                           
+##    .TPER7_04 (nu1)    0.579    0.092    6.266    0.000
+##    .TPER7_15 (nu2)   -0.059    0.086   -0.689    0.491
+##    .TPER7_19 (nu3)   -0.461    0.111   -4.161    0.000
+##    .TPER7_22 (nu4)   -0.581    0.114   -5.109    0.000
+##    .TPER8_01          0.000                           
+##    .TPER8_04 (nu1)    0.579    0.092    6.266    0.000
+##    .TPER8_15 (nu2)   -0.059    0.086   -0.689    0.491
+##    .TPER8_19 (nu3)   -0.461    0.111   -4.161    0.000
+##    .TPER8_22 (nu4)   -0.581    0.114   -5.109    0.000
+##    .TPER9_01          0.000                           
+##    .TPER9_04 (nu1)    0.579    0.092    6.266    0.000
+##    .TPER9_15 (nu2)   -0.059    0.086   -0.689    0.491
+##    .TPER9_19 (nu3)   -0.461    0.111   -4.161    0.000
+##    .TPER9_22 (nu4)   -0.581    0.114   -5.109    0.000
+##    .TPER10_0          0.000                           
+##    .TPER10_0 (nu1)    0.579    0.092    6.266    0.000
+##    .TPER10_1 (nu2)   -0.059    0.086   -0.689    0.491
+##    .TPER10_1 (nu3)   -0.461    0.111   -4.161    0.000
+##    .TPER10_2 (nu4)   -0.581    0.114   -5.109    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)
+##    .e8                0.000                           
+##    .e9                0.000                           
+##    .e10               0.000                           
+##     e7                1.014    0.083   12.153    0.000
+##    .c_7.8             0.788    0.071   11.163    0.000
+##    .c_8.9             1.235    0.265    4.664    0.000
+##    .c_9.10            0.841    0.175    4.818    0.000
+##    .TPER7_01          0.321    0.035    9.069    0.000
+##    .TPER7_04          0.566    0.046   12.253    0.000
+##    .TPER7_15          0.368    0.035   10.408    0.000
+##    .TPER7_19R         0.733    0.063   11.624    0.000
+##    .TPER7_22R         0.800    0.067   11.858    0.000
+##    .TPER8_01          0.325    0.031   10.530    0.000
+##    .TPER8_04          0.650    0.046   14.201    0.000
+##    .TPER8_15          0.366    0.031   11.624    0.000
+##    .TPER8_19R         0.786    0.059   13.328    0.000
+##    .TPER8_22R         0.850    0.063   13.482    0.000
+##    .TPER9_01          0.388    0.034   11.345    0.000
+##    .TPER9_04          0.713    0.049   14.525    0.000
+##    .TPER9_15          0.380    0.033   11.634    0.000
+##    .TPER9_19R         0.706    0.055   12.837    0.000
+##    .TPER9_22R         0.724    0.056   12.918    0.000
+##    .TPER10_01         0.348    0.039    8.953    0.000
+##    .TPER10_04         0.615    0.053   11.579    0.000
+##    .TPER10_15         0.465    0.045   10.239    0.000
+##    .TPER10_19R        0.613    0.059   10.412    0.000
+##    .TPER10_22R        0.642    0.062   10.427    0.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice the large changes within this model in terms of mean level change. This suggests that a lot of the change was due to intercept differences or that there is regression towards the mean.&lt;/p&gt;
+&lt;p&gt;One could attempt to constrain each of the self-feedback parameters to be the same to see if this fit the model better or worse.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bivariate-multi-wave-latent-change-model&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Bivariate multi wave latent change model&lt;/h1&gt;
+&lt;p&gt;The real benefit of this type of framework is building on this type of change model to incorporate multiple change models simultanously. This allows one to look at multiple change processes in a single model, opening the door to analyzing more dynamic processes.&lt;/p&gt;
+&lt;p&gt;One of the main parameters of interest is what is called a coupling parameter. Coupling parameter is like a self-feedback, but instead of feeding into change in the same variable, it is feeding into change in a different variable (not unlike the idea of cross-lags).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;BDCS&amp;lt;-&amp;#39;
+
+COGlv_T1=~1*COG_T1        # Defining the COG latent variables
+COGlv_T2=~1*COG_T2        # Defining the COG latent variables
+COGlv_T3=~1*COG_T3        # Defining the COG latent variables
+COGlv_T4=~1*COG_T4        # Defining the COG latent variables
+
+NEUlv_T1=~1*NEU_T1        # Defining the NEU latent variables
+NEUlv_T2=~1*NEU_T2        # Defining the NEU latent variables
+NEUlv_T3=~1*NEU_T3        # Defining the NEU latent variables
+NEUlv_T4=~1*NEU_T4        # Defining the NEU latent variables
+
+
+COGlv_T2 ~ 1*COGlv_T1     # This parameter regresses COG_T2 perfectly on COG_T1
+COGlv_T3 ~ 1*COGlv_T2     # This parameter regresses COG_T3 perfectly on COG_T2
+COGlv_T4 ~ 1*COGlv_T3     # This parameter regresses COG_T4 perfectly on COG_T3
+
+NEUlv_T2 ~ 1*NEUlv_T1     # This parameter regresses NEU_T2 perfectly on NEU_T1
+NEUlv_T3 ~ 1*NEUlv_T2     # This parameter regresses NEU_T3 perfectly on NEU_T2
+NEUlv_T4 ~ 1*NEUlv_T3     # This parameter regresses NEU_T4 perfectly on NEU_T3
+
+dCOG1 =~ 1*COGlv_T2       # This defines the change score as measured perfectly by scores on COG_T2
+dCOG2 =~ 1*COGlv_T3       # This defines the change score as measured perfectly by scores on COG_T3
+dCOG3 =~ 1*COGlv_T4       # This defines the change score as measured perfectly by scores on COG_T4
+
+dNEU1 =~ 1*NEUlv_T2       # This defines the change score as measured perfectly by scores on NEU_T2
+dNEU2 =~ 1*NEUlv_T3       # This defines the change score as measured perfectly by scores on NEU_T3
+dNEU3 =~ 1*NEUlv_T4       # This defines the change score as measured perfectly by scores on NEU_T4
+
+COG_T1~~COG_T1          # This estimates the COG residual variances 
+COG_T2~~COG_T2          # This estimates the COG residual variances 
+COG_T3~~COG_T3          # This estimates the COG residual variances 
+COG_T4~~COG_T4          # This estimates the COG residual variances 
+
+NEU_T1~~NEU_T1          # This estimates the NEU residual variances 
+NEU_T2~~NEU_T2          # This estimates the NEU residual variances 
+NEU_T3~~NEU_T3          # This estimates the NEU residual variances 
+NEU_T4~~NEU_T4          # This estimates the NEU residual variances 
+
+#Dynamics
+
+dNEU1~B1*NEUlv_T1       # This estimates the NEU self-feedback parameter 
+dNEU2~B1*NEUlv_T2       # This estimates the NEU self-feedback parameter 
+dNEU3~B1*NEUlv_T3       # This estimates the NEU self-feedback parameter 
+
+dCOG1~B2*COGlv_T1       # This estimates the COG self-feedback parameter 
+dCOG2~B2*COGlv_T2       # This estimates the COG self-feedback parameter 
+dCOG3~B2*COGlv_T3       # This estimates the COG self-feedback parameter 
+
+dNEU1~C1*COGlv_T1         # This estimates the COG to NEU coupling parameter 
+dNEU2~C1*COGlv_T2         # This estimates the COG to NEU coupling parameter 
+dNEU3~C1*COGlv_T3         # This estimates the COG to NEU coupling parameter 
+
+dCOG1~C2*NEUlv_T1        # This estimates the NEU to COG coupling parameter 
+dCOG2~C2*NEUlv_T2        # This estimates the NEU to COG coupling parameter 
+dCOG3~C2*NEUlv_T3        # This estimates the NEU to COG coupling parameter 
+
+
+iCOG=~1*COGlv_T1                   # This defines the COG intercept measurement model
+sCOG=~1*dCOG1+1*dCOG2+1*dCOG3      # This defines the COG slope measurement model
+iCOG~1                             # This estimates the COG intercept intercept (mean)
+iCOG~~iCOG                         # This estimates the COG intercept variance
+sCOG~1                             # This estimates the COG slope intercept
+sCOG~~sCOG                         # This estimates the COG slope variance
+
+iNEU=~1*NEUlv_T1                   # This defines the NEU slope measurement model
+sNEU=~1*dNEU1+1*dNEU2+1*dNEU3      # This defines the NEU slope measurement model
+iNEU~1                             # This estimates the NEU intercept intercept (mean)
+iNEU~~iNEU                         # This estimates the NEU intercept variance
+sNEU~1                             # This estimates the NEU slope intercept
+sNEU~~sNEU                         # This estimates the NEU slope variance
+
+iNEU~~sNEU                      # This estimates the iNEU sNEU covariance
+iNEU~~sCOG                      # This estimates the iNEU sCOG covariance
+iNEU~~iCOG                      # This estimates the iNEU iCOG covariance
+iCOG~~sCOG                      # This estimates the iCOG sCOG covariance        
+iCOG~~sNEU                      # This estimates the iCOG sNEU covariance
+sCOG~~sNEU                      # This estimates the sCOG sNEU covariance  
+
+&amp;#39;
+
+fitBDCS &amp;lt;- lavaan(BDCS, data=simdatBD, missing=&amp;quot;ML&amp;quot;)
+summary(fitBDCS, fit.measures=TRUE, standardized=TRUE) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## lavaan 0.6-4 ended normally after 149 iterations
+## 
+##   Optimization method                           NLMINB
+##   Number of free parameters                         34
+##   Number of equality constraints                     8
+##   Row rank of the constraints matrix                 8
+## 
+##   Number of observations                           500
+##   Number of missing patterns                         1
+## 
+##   Estimator                                         ML
+##   Model Fit Test Statistic                      13.389
+##   Degrees of freedom                                18
+##   P-value (Chi-square)                           0.768
+## 
+## Model test baseline model:
+## 
+##   Minimum Function Test Statistic             3140.634
+##   Degrees of freedom                                28
+##   P-value                                        0.000
+## 
+## User model versus baseline model:
+## 
+##   Comparative Fit Index (CFI)                    1.000
+##   Tucker-Lewis Index (TLI)                       1.002
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -10661.038
+##   Loglikelihood unrestricted model (H1)     -10654.344
+## 
+##   Number of free parameters                         26
+##   Akaike (AIC)                               21374.077
+##   Bayesian (BIC)                             21483.657
+##   Sample-size adjusted Bayesian (BIC)        21401.131
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.000
+##   90 Percent Confidence Interval          0.000  0.028
+##   P-value RMSEA &amp;lt;= 0.05                          0.999
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.021
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Observed
+##   Observed information based on                Hessian
+##   Standard Errors                             Standard
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   COGlv_T1 =~                                                           
+##     COG_T1            1.000                               1.606    0.575
+##   COGlv_T2 =~                                                           
+##     COG_T2            1.000                               3.447    0.842
+##   COGlv_T3 =~                                                           
+##     COG_T3            1.000                               6.131    0.929
+##   COGlv_T4 =~                                                           
+##     COG_T4            1.000                               9.893    0.965
+##   NEUlv_T1 =~                                                           
+##     NEU_T1            1.000                               1.742    0.605
+##   NEUlv_T2 =~                                                           
+##     NEU_T2            1.000                               3.175    0.792
+##   NEUlv_T3 =~                                                           
+##     NEU_T3            1.000                               5.492    0.926
+##   NEUlv_T4 =~                                                           
+##     NEU_T4            1.000                               8.717    0.954
+##   dCOG1 =~                                                              
+##     COGlv_T2          1.000                               0.732    0.732
+##   dCOG2 =~                                                              
+##     COGlv_T3          1.000                               0.467    0.467
+##   dCOG3 =~                                                              
+##     COGlv_T4          1.000                               0.399    0.399
+##   dNEU1 =~                                                              
+##     NEUlv_T2          1.000                               0.673    0.673
+##   dNEU2 =~                                                              
+##     NEUlv_T3          1.000                               0.448    0.448
+##   dNEU3 =~                                                              
+##     NEUlv_T4          1.000                               0.381    0.381
+##   iCOG =~                                                               
+##     COGlv_T1          1.000                               1.000    1.000
+##   sCOG =~                                                               
+##     dCOG1             1.000                               0.851    0.851
+##     dCOG2             1.000                               0.750    0.750
+##     dCOG3             1.000                               0.544    0.544
+##   iNEU =~                                                               
+##     NEUlv_T1          1.000                               1.000    1.000
+##   sNEU =~                                                               
+##     dNEU1             1.000                               0.910    0.910
+##     dNEU2             1.000                               0.791    0.791
+##     dNEU3             1.000                               0.586    0.586
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   COGlv_T2 ~                                                            
+##     COGlv_T1          1.000                               0.466    0.466
+##   COGlv_T3 ~                                                            
+##     COGlv_T2          1.000                               0.562    0.562
+##   COGlv_T4 ~                                                            
+##     COGlv_T3          1.000                               0.620    0.620
+##   NEUlv_T2 ~                                                            
+##     NEUlv_T1          1.000                               0.549    0.549
+##   NEUlv_T3 ~                                                            
+##     NEUlv_T2          1.000                               0.578    0.578
+##   NEUlv_T4 ~                                                            
+##     NEUlv_T3          1.000                               0.630    0.630
+##   dNEU1 ~                                                               
+##     NEUlv_T1  (B1)   -0.030    0.078   -0.388    0.698   -0.025   -0.025
+##   dNEU2 ~                                                               
+##     NEUlv_T2  (B1)   -0.030    0.078   -0.388    0.698   -0.039   -0.039
+##   dNEU3 ~                                                               
+##     NEUlv_T3  (B1)   -0.030    0.078   -0.388    0.698   -0.050   -0.050
+##   dCOG1 ~                                                               
+##     COGlv_T1  (B2)   -0.122    0.068   -1.778    0.075   -0.077   -0.077
+##   dCOG2 ~                                                               
+##     COGlv_T2  (B2)   -0.122    0.068   -1.778    0.075   -0.146   -0.146
+##   dCOG3 ~                                                               
+##     COGlv_T3  (B2)   -0.122    0.068   -1.778    0.075   -0.189   -0.189
+##   dNEU1 ~                                                               
+##     COGlv_T1  (C1)    0.357    0.069    5.151    0.000    0.268    0.268
+##   dNEU2 ~                                                               
+##     COGlv_T2  (C1)    0.357    0.069    5.151    0.000    0.500    0.500
+##   dNEU3 ~                                                               
+##     COGlv_T3  (C1)    0.357    0.069    5.151    0.000    0.659    0.659
+##   dCOG1 ~                                                               
+##     NEUlv_T1  (C2)    0.627    0.076    8.296    0.000    0.433    0.433
+##   dCOG2 ~                                                               
+##     NEUlv_T2  (C2)    0.627    0.076    8.296    0.000    0.696    0.696
+##   dCOG3 ~                                                               
+##     NEUlv_T3  (C2)    0.627    0.076    8.296    0.000    0.873    0.873
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##   iNEU ~~                                                               
+##     sNEU              0.948    0.318    2.983    0.003    0.280    0.280
+##   sCOG ~~                                                               
+##     iNEU              0.766    0.360    2.129    0.033    0.205    0.205
+##   iCOG ~~                                                               
+##     iNEU              1.068    0.325    3.283    0.001    0.382    0.382
+##     sCOG              1.113    0.340    3.272    0.001    0.323    0.323
+##     sNEU              0.754    0.300    2.511    0.012    0.241    0.241
+##   sCOG ~~                                                               
+##     sNEU              0.399    0.393    1.015    0.310    0.096    0.096
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##     iCOG              2.187    0.121   18.079    0.000    1.362    1.362
+##     sCOG              1.818    0.182    9.999    0.000    0.847    0.847
+##     iNEU              1.929    0.124   15.575    0.000    1.107    1.107
+##     sNEU              2.012    0.172   11.718    0.000    1.035    1.035
+##    .COG_T1            0.000                               0.000    0.000
+##    .COG_T2            0.000                               0.000    0.000
+##    .COG_T3            0.000                               0.000    0.000
+##    .COG_T4            0.000                               0.000    0.000
+##    .NEU_T1            0.000                               0.000    0.000
+##    .NEU_T2            0.000                               0.000    0.000
+##    .NEU_T3            0.000                               0.000    0.000
+##    .NEU_T4            0.000                               0.000    0.000
+##    .COGlv_T1          0.000                               0.000    0.000
+##    .COGlv_T2          0.000                               0.000    0.000
+##    .COGlv_T3          0.000                               0.000    0.000
+##    .COGlv_T4          0.000                               0.000    0.000
+##    .NEUlv_T1          0.000                               0.000    0.000
+##    .NEUlv_T2          0.000                               0.000    0.000
+##    .NEUlv_T3          0.000                               0.000    0.000
+##    .NEUlv_T4          0.000                               0.000    0.000
+##    .dCOG1             0.000                               0.000    0.000
+##    .dCOG2             0.000                               0.000    0.000
+##    .dCOG3             0.000                               0.000    0.000
+##    .dNEU1             0.000                               0.000    0.000
+##    .dNEU2             0.000                               0.000    0.000
+##    .dNEU3             0.000                               0.000    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&amp;gt;|z|)   Std.lv  Std.all
+##    .COG_T1            5.229    0.628    8.321    0.000    5.229    0.670
+##    .COG_T2            4.875    0.404   12.070    0.000    4.875    0.291
+##    .COG_T3            5.994    0.587   10.210    0.000    5.994    0.138
+##    .COG_T4            7.294    1.053    6.925    0.000    7.294    0.069
+##    .NEU_T1            5.261    0.605    8.691    0.000    5.261    0.634
+##    .NEU_T2            5.989    0.456   13.120    0.000    5.989    0.373
+##    .NEU_T3            4.986    0.518    9.622    0.000    4.986    0.142
+##    .NEU_T4            7.503    1.033    7.260    0.000    7.503    0.090
+##     iCOG              2.579    0.584    4.414    0.000    1.000    1.000
+##     sCOG              4.605    0.663    6.949    0.000    1.000    1.000
+##     iNEU              3.036    0.563    5.389    0.000    1.000    1.000
+##     sNEU              3.783    0.587    6.446    0.000    1.000    1.000
+##    .COGlv_T1          0.000                               0.000    0.000
+##    .COGlv_T2          0.000                               0.000    0.000
+##    .COGlv_T3          0.000                               0.000    0.000
+##    .COGlv_T4          0.000                               0.000    0.000
+##    .NEUlv_T1          0.000                               0.000    0.000
+##    .NEUlv_T2          0.000                               0.000    0.000
+##    .NEUlv_T3          0.000                               0.000    0.000
+##    .NEUlv_T4          0.000                               0.000    0.000
+##    .dCOG1             0.000                               0.000    0.000
+##    .dCOG2             0.000                               0.000    0.000
+##    .dCOG3             0.000                               0.000    0.000
+##    .dNEU1             0.000                               0.000    0.000
+##    .dNEU2             0.000                               0.000    0.000
+##    .dNEU3             0.000                               0.000    0.000&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;alt-and-alt-sr&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;ALT and ALT-SR&lt;/h2&gt;
+&lt;p&gt;Another way to build both a growth model and look at more specific time associations are through auto-regressive latent trajectory models (ALT) and ALT models with structured residuals (ALT-SR). The latter is a newer (and better) implimentation of the ALT idea.&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>
