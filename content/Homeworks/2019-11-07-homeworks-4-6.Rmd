@@ -22,7 +22,7 @@ Please email your homework files to: HW4_6.wfwewdvlhfgict5w@u.box.com
 Use the dataHW4-6 to answer the questions below. Note that there is also a codebook to help interpret the variables (there are more variables in the codebook than in the file, fyi).
 
 Files are available in github. See here: https://raw.githubusercontent.com/josh-jackson/ALDA/master/dataHW4-6.csv
-https://raw.githubusercontent.com/josh-jackson/ALDA/master/codebookHW4-6.csv
+https://raw.githubusercontent.com/josh-jackson/ALDA/master/codebookHW4-6.xlsx
 
 For the main growth modeling questions please choose one of the big five as your main variable for analysis. Note that for some of the initial questions you will need to create a composite variable AND take the dataset from wide into long format. Starting with q#6 you will use the item variables. 
 
