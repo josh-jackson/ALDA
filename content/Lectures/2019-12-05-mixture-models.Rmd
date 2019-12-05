@@ -1,0 +1,64 @@
+---
+title: Mixture models
+author: ''
+date: '2019-12-05'
+slug: mixture-models
+categories: []
+tags: []
+subtitle: 'Mixture models'
+summary: 'Mixture models'
+authors: []
+lastmod: '2019-12-05T12:23:38-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3718544/
+
+https://www.statmodel.com/download/JungWickramaLCGALGMM.pdf
+
+# latent class growth / growth mixture models
+
+Thus far we have been assuming that people are all coming from a single population, that change paremeters are normally distributed, and that people can differ from the normative trend conitnuously. But what if this wasn't so? What if we were sampling people from different populations, that these different groups had different trajectories and that the variation in trajectories were explained by these groups? 
+
+We can do this through something called latent class mixture models (among other names for a collection of these procedures). What they? Basically HLM + SEM + EFA/cluster analysis so as to "carve nature at its joints". More seriously, this is a procedure that is not unlike what we have been doing where we estimate growth trajectories. From there we are going to see if groups differ in their trajectories. But unlike before when we had groups entered in as covariates or through a multiple group model, we rely on the model to find the groups. That is, we do not have a group variable in our dataset. Instead we are asking to find different "classes" of trajectories (e.g., one group starts high and stays flat, another group starts low and increases). 
+
+These are are thought to identify qualtitative differences in the way people change and develop over time. In one sense it makes it easier to understand the trajetories. Instead of people varying continuously where no one has the same trajectory and everyone is unique you can simplify to these smaller numeber of groups. Awesome! 
+
+Another positive is that you can have differential relationships among covariates. It is possible that covariates are only meaningful for certain populations or groups. In standard growth models a covariate/predictor is thought to impact everyone the same. 
+
+# Longitudinal Mixture models and Latent Class growth models-- what is the difference? 
+
+Much like hlm, mlm, mixed models etcetera, there are a number of names to refer to these types of models. 
+
+Basically, mixtures suggest that people have variability within a class whereas latent class would state that any variability within a class is noise and thus fix the variability to zero. That is, everything within a class/group is exactly the same. 
+
+Other names get thrown around for these procedures, complicating interpretation e.g., latent profile analysis. Some of the differenes in terminology are the result of whether your measured variables are categorical vs continuous. But in broad strokes they all attempt to find groups based on the data. 
+
+As with our general rule of "always keep it maxmimal" I think it is better to model the random effects within classes than not. So to use a mixture growth model rather than a latent class growth model. Even if you aren't interested in the random effects, it is still helpful to parse that variance. 
+
+
+# Cautions
+
+1. Do different populations really exist? Do different growth populations exist? If they do, why do they? Most of assessment has found that people differ in amount not kind, should growth be any different? 
+
+Think of cognition as an example. While some people decline faster than others and others may not at all can you say there are different populations? If so, there must be different mechanisms driving the changes, correct? 
+
+You will always find groups if you look for them. These come in the form of: non changers, increasers, decreasers, etc  -- common paterns of development. But even if you identify these groups are they from different populations? 
+
+
+2. How to determine number of classes? No cut or dry answer. The model defines classes based on the data, not a priori theory, so it is hard to look to theory to justify. Can use aic/bic but there may not be a clear cut answer. Moreover, the number of classes 
+
+You will also need to decide not only the number of classes but whether if the variances, covariances, and patterns (one quad, the other linear) differ. This makes the comparisons more difficult than a does 3 fit better than 2 decision.
+
+
+# in R
+
+```{r}
+library(lcmm)
+```
+

@@ -5,12 +5,56 @@
     <link>/</link>
       <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <description>Applied Longitudinal Data Analysis</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 07 Nov 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 05 Dec 2019 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/img/icon-192.png</url>
       <title>Applied Longitudinal Data Analysis</title>
       <link>/</link>
     </image>
+    
+    <item>
+      <title>Mixture models</title>
+      <link>/lectures/mixture-models/</link>
+      <pubDate>Thu, 05 Dec 2019 00:00:00 +0000</pubDate>
+      <guid>/lectures/mixture-models/</guid>
+      <description>
+
+
+&lt;p&gt;&lt;a href=&#34;https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3718544/&#34; class=&#34;uri&#34;&gt;https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3718544/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.statmodel.com/download/JungWickramaLCGALGMM.pdf&#34; class=&#34;uri&#34;&gt;https://www.statmodel.com/download/JungWickramaLCGALGMM.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;latent-class-growth-growth-mixture-models&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;latent class growth / growth mixture models&lt;/h1&gt;
+&lt;p&gt;Thus far we have been assuming that people are all coming from a single population, that change paremeters are normally distributed, and that people can differ from the normative trend conitnuously. But what if this wasn’t so? What if we were sampling people from different populations, that these different groups had different trajectories and that the variation in trajectories were explained by these groups?&lt;/p&gt;
+&lt;p&gt;We can do this through something called latent class mixture models (among other names for a collection of these procedures). What they? Basically HLM + SEM + EFA/cluster analysis so as to “carve nature at its joints”. More seriously, this is a procedure that is not unlike what we have been doing where we estimate growth trajectories. From there we are going to see if groups differ in their trajectories. But unlike before when we had groups entered in as covariates or through a multiple group model, we rely on the model to find the groups. That is, we do not have a group variable in our dataset. Instead we are asking to find different “classes” of trajectories (e.g., one group starts high and stays flat, another group starts low and increases).&lt;/p&gt;
+&lt;p&gt;These are are thought to identify qualtitative differences in the way people change and develop over time. In one sense it makes it easier to understand the trajetories. Instead of people varying continuously where no one has the same trajectory and everyone is unique you can simplify to these smaller numeber of groups. Awesome!&lt;/p&gt;
+&lt;p&gt;Another positive is that you can have differential relationships among covariates. It is possible that covariates are only meaningful for certain populations or groups. In standard growth models a covariate/predictor is thought to impact everyone the same.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;longitudinal-mixture-models-and-latent-class-growth-models-what-is-the-difference&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Longitudinal Mixture models and Latent Class growth models– what is the difference?&lt;/h1&gt;
+&lt;p&gt;Much like hlm, mlm, mixed models etcetera, there are a number of names to refer to these types of models.&lt;/p&gt;
+&lt;p&gt;Basically, mixtures suggest that people have variability within a class whereas latent class would state that any variability within a class is noise and thus fix the variability to zero. That is, everything within a class/group is exactly the same.&lt;/p&gt;
+&lt;p&gt;Other names get thrown around for these procedures, complicating interpretation e.g., latent profile analysis. Some of the differenes in terminology are the result of whether your measured variables are categorical vs continuous. But in broad strokes they all attempt to find groups based on the data.&lt;/p&gt;
+&lt;p&gt;As with our general rule of “always keep it maxmimal” I think it is better to model the random effects within classes than not. So to use a mixture growth model rather than a latent class growth model. Even if you aren’t interested in the random effects, it is still helpful to parse that variance.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cautions&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Cautions&lt;/h1&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Do different populations really exist? Do different growth populations exist? If they do, why do they? Most of assessment has found that people differ in amount not kind, should growth be any different?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Think of cognition as an example. While some people decline faster than others and others may not at all can you say there are different populations? If so, there must be different mechanisms driving the changes, correct?&lt;/p&gt;
+&lt;p&gt;You will always find groups if you look for them. These come in the form of: non changers, increasers, decreasers, etc – common paterns of development. But even if you identify these groups are they from different populations?&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;How to determine number of classes? No cut or dry answer. The model defines classes based on the data, not a priori theory, so it is hard to look to theory to justify. Can use aic/bic but there may not be a clear cut answer. Moreover, the number of classes&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;You will also need to decide not only the number of classes but whether if the variances, covariances, and patterns (one quad, the other linear) differ. This makes the comparisons more difficult than a does 3 fit better than 2 decision.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;in-r&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;in R&lt;/h1&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(lcmm)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required package: survival&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Homework 4-6 posted</title>
